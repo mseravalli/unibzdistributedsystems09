@@ -8,41 +8,79 @@ import javax.swing.*;
 
 public class GUI extends JFrame {
 
-    private Toolkit toolkit;
 
-    public GUI() {
+	public GUI() {
 
-        setTitle("Buttons");
-        setSize(300, 200);
+		setTitle("BorderLayout");
 
-        toolkit = getToolkit();
-        Dimension size = toolkit.getScreenSize();
-        setLocation((size.width - getWidth())/2, (size.height - getHeight())/2);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+		JPanel connectionSettings = new JPanel(new GridLayout(2,3));
+		
+		JLabel hostLabel = new JLabel("hostname");
+		JLabel nicknameLabel = new JLabel("nickname");
+		JLabel emptyLabel = new JLabel("");
+       
+       
+		JTextField host = new JTextField("127.0.0.1");
+		JTextField nickname = new JTextField("");
+		JButton connect = new JButton("connect");
+       
+		connectionSettings.add(hostLabel);
+		connectionSettings.add(nicknameLabel);
+		connectionSettings.add(emptyLabel);		
+       
+		connectionSettings.add(host);
+		connectionSettings.add(nickname);
+		connectionSettings.add(connect);
+		add(connectionSettings, BorderLayout.NORTH);
+        
+        
+        JScrollPane scrollableTextArea = new JScrollPane();
+        JTextArea area = new JTextArea(); 
 
-        JPanel panel = new JPanel();
-        getContentPane().add(panel);
+        area.setLineWrap(true);
+        area.setWrapStyleWord(true);
 
-	panel.setLayout(null);
+        scrollableTextArea.getViewport().add(area);        
 
-        JTextField beep = new JTextField("inserisci il testo qui");
-        beep.setBounds(150, 60, 80, 30);
-        beep.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent event) {
-                toolkit.beep();
-            }
-        });
+        add(scrollableTextArea, BorderLayout.CENTER);
+        
+        
+        
+        //statusbar.setPreferredSize(new Dimension(0, 22));
 
-       JButton close = new JButton("Close");
-       close.setBounds(50, 60, 80, 30);
-       close.addActionListener(new ActionListener() {
-           public void actionPerformed(ActionEvent event) {
-               System.exit(0);
-          }
-       });
+        //add(writeMessage, BorderLayout.SOUTH);
+        
+        
+        
 
-        panel.add(beep);
-        panel.add(close);
+
+        JPanel sendPanel = new JPanel(new GridLayout(3,1));
+        
+        JLabel typeYourMessage = new JLabel("type your message here:");
+        JTextField writeMessage = new JTextField();
+		JButton sendMessage = new JButton("send");
+       
+		sendPanel.add(typeYourMessage);
+		sendPanel.add(writeMessage);
+		sendPanel.add(sendMessage);
+		add(sendPanel, BorderLayout.SOUTH);
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+        setSize(300, 400);
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setVisible(true);
+
 
     }
 
