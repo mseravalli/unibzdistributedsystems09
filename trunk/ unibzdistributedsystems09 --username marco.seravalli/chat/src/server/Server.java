@@ -50,8 +50,14 @@ class Connection extends Thread {
 
     public void run(){
 		try { // an echo server 
-		    String data = in.readUTF();
-		    out.writeUTF(data);
+			
+			while(true){
+		    
+				String data = in.readUTF();
+		    	System.out.println(data);
+		    		    
+		    	out.writeUTF(data);
+			}
 		    
 		} catch(EOFException e) {
 			System.out.println("EOF: "+e.getMessage()); 

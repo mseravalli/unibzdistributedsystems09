@@ -8,17 +8,20 @@ import javax.swing.*;
 
 public class GUI extends JFrame {
 
+	private static final long serialVersionUID = 1L;
 
 	public GUI() {
 
-		setTitle("BorderLayout");
+		setTitle("chat room");
 
+		
+		/*
+		 * panel with all the settings for the connection
+		 */
 		JPanel connectionSettings = new JPanel(new GridLayout(2,3));
 		
 		JLabel hostLabel = new JLabel("hostname");
-		JLabel nicknameLabel = new JLabel("nickname");
-		JLabel emptyLabel = new JLabel("");
-       
+		JLabel nicknameLabel = new JLabel("nickname");       
        
 		JTextField host = new JTextField("127.0.0.1");
 		JTextField nickname = new JTextField("");
@@ -26,7 +29,7 @@ public class GUI extends JFrame {
        
 		connectionSettings.add(hostLabel);
 		connectionSettings.add(nicknameLabel);
-		connectionSettings.add(emptyLabel);		
+		connectionSettings.add(new JLabel(""));		
        
 		connectionSettings.add(host);
 		connectionSettings.add(nickname);
@@ -34,6 +37,9 @@ public class GUI extends JFrame {
 		add(connectionSettings, BorderLayout.NORTH);
         
         
+		/*
+		 * text area with scrollbar
+		 */
         JScrollPane scrollableTextArea = new JScrollPane();
         JTextArea area = new JTextArea(); 
 
@@ -45,15 +51,10 @@ public class GUI extends JFrame {
         add(scrollableTextArea, BorderLayout.CENTER);
         
         
-        
-        //statusbar.setPreferredSize(new Dimension(0, 22));
 
-        //add(writeMessage, BorderLayout.SOUTH);
-        
-        
-        
-
-
+        /*
+         * this part creates the panel under the text area for the writing of user's messages
+         */
         JPanel sendPanel = new JPanel(new GridLayout(3,1));
         
         JLabel typeYourMessage = new JLabel("type your message here:");
@@ -63,19 +64,11 @@ public class GUI extends JFrame {
 		sendPanel.add(typeYourMessage);
 		sendPanel.add(writeMessage);
 		sendPanel.add(sendMessage);
-		add(sendPanel, BorderLayout.SOUTH);
-        
-        
-        
-        
-        
-        
-        
-        
+		add(sendPanel, BorderLayout.SOUTH);       
         
         
 
-        setSize(300, 400);
+        setSize(300, 450);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

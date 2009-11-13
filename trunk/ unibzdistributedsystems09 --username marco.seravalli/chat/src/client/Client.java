@@ -1,6 +1,7 @@
 package client;
 
 import java.net.*;
+import java.util.Scanner;
 import java.io.*;
 
 
@@ -23,8 +24,14 @@ public class Client {
 			DataInputStream in = new DataInputStream( socket.getInputStream());
 			DataOutputStream out = new DataOutputStream( socket.getOutputStream());
 	    
-	    
-			out.writeUTF(message); // UTF is a string encoding 
+			int i = 0;
+			while(i<1000){
+				Scanner sc = new Scanner(System.in);
+				message = sc.next();
+				System.out.println("ora mando");
+				out.writeUTF(message); // UTF is a string encoding 
+			
+			}
 			
 			String data;
 			
