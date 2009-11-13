@@ -7,10 +7,11 @@ import java.io.*;
 public class Server {
     public static void main (String args[]) { 
 	try{
-	    int serverPort = 7896; 
+	    int serverPort = 8080; 
 	    ServerSocket listenSocket = new ServerSocket(serverPort); 
 	    while(true) {
-		Socket clientSocket = listenSocket.accept(); 
+		Socket clientSocket = listenSocket.accept();
+		System.out.printf("Nuovo client attivo!!\n");
 		Connection c = new Connection(clientSocket);
 	    }
 	} catch(IOException e) {System.out.println("Listen: " + e.getMessage());}
