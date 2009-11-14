@@ -1,13 +1,18 @@
 package server;
 
 import java.net.*;
-import java.util.Scanner;
+import java.util.ArrayList;
 import java.io.*;
 
 
 public class Server {
+	
+	
     
 	public static void main (String args[]) { 
+		
+		ArrayList<Socket> clientList = new ArrayList<Socket>();
+		
 		
     	try{
 		    
@@ -19,7 +24,8 @@ public class Server {
 		    while(true) {
 		    	clientSocket = listenSocket.accept();
 		    	System.out.printf("Nuovo client attivo!!\n");
-		    	Connection c = new Connection(clientSocket);
+		    	clientList.add(clientSocket);
+		    	Connection c = new Connection(clientSocket, clientList);
 		    }
 		    
 		} catch(IOException e) {
@@ -35,13 +41,16 @@ class Connection extends Thread {
     DataOutputStream out; 
     
     Socket clientSocket;
+    ArrayList<Socket> clients;
     
-    public Connection (Socket aClientSocket) { 
+    public Connection (Socket aClientSocket, ArrayList<Socket> clientList) { 
     	
 		try {
-			clientSocket = aClientSocket; 
-		    in = new DataInputStream(clientSocket.getInputStream()); 
-		    out = new DataOutputStream( clientSocket.getOutputStream()); 
+			clientSocket = aClientSocket;
+			clients = clientList;
+			
+		    in = new DataInputStream(clientSocket.getInputStream());
+		    //out = new DataOutputStream( clientSocket.getOutputStream()); 
 		    
 		    this.start();
 		    
@@ -57,8 +66,15 @@ class Connection extends Thread {
 		    
 				String data = in.readUTF();
 		    	System.out.println(data);
-		    		    
-		    	out.writeUTF(data);
+		    	
+		    	
+		    	for(int i = 0; i<clients.size();i++){
+		    		//clients.get(i);
+		    		
+		    		out = new DataOutputStream( clients.get(i).getOutputStream());
+		    		out.writeUTF(data);
+		    	}
+		    	//out.writeUTF(data);
 			}
 		    
 		} catch(EOFException e) {
