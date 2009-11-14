@@ -28,7 +28,6 @@ public class Client {
 			while(i<1000){
 				Scanner sc = new Scanner(System.in);
 				message = sc.next();
-				System.out.println("ora mando");
 				out.writeUTF(message); // UTF is a string encoding 
 			
 			}
