@@ -14,8 +14,10 @@ public class Server {
     		int serverPort = 8080; 
 		    ServerSocket listenSocket = new ServerSocket(serverPort); 
 		    
+		    Socket clientSocket;
+		    
 		    while(true) {
-		    	Socket clientSocket = listenSocket.accept();
+		    	clientSocket = listenSocket.accept();
 		    	System.out.printf("Nuovo client attivo!!\n");
 		    	Connection c = new Connection(clientSocket);
 		    }

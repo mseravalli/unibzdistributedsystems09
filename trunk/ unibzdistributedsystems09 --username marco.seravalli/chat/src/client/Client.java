@@ -16,6 +16,7 @@ public class Client {
 		String hostName = "127.0.0.1";
 		int serverPort = 8080;
 	
+		String data;
 
 		try{ 
 	   
@@ -27,12 +28,15 @@ public class Client {
 			int i = 0;
 			while(i<1000){
 				Scanner sc = new Scanner(System.in);
-				message = sc.next();
+				message = sc.nextLine();
 				out.writeUTF(message); // UTF is a string encoding 
+				
+				data = in.readUTF(); 
+				System.out.println("Received: "+ data);
 			
 			}
 			
-			String data;
+			
 			
 
 				data = in.readUTF(); 
