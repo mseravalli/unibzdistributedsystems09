@@ -21,6 +21,8 @@ public class Server {
 		    
 		    Socket clientSocket;
 		    
+		    System.out.println("sever started");
+		    
 		    while(true) {
 		    	clientSocket = listenSocket.accept();
 		    	System.out.printf("Nuovo client attivo!!\n");

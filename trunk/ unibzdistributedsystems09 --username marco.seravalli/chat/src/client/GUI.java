@@ -9,11 +9,10 @@ import javax.swing.*;
 public class GUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
+	
+	public JTextArea area;
 
 	public GUI() {
-
-		setTitle("chat room");
-
 		
 		/*
 		 * panel with all the settings for the connection
@@ -41,10 +40,11 @@ public class GUI extends JFrame {
 		 * text area with scrollbar
 		 */
         JScrollPane scrollableTextArea = new JScrollPane();
-        JTextArea area = new JTextArea(); 
+        area = new JTextArea(); 
 
         area.setLineWrap(true);
         area.setWrapStyleWord(true);
+        area.setEditable(false);
 
         scrollableTextArea.getViewport().add(area);        
 
@@ -64,23 +64,28 @@ public class GUI extends JFrame {
 		sendPanel.add(typeYourMessage);
 		sendPanel.add(writeMessage);
 		sendPanel.add(sendMessage);
-		add(sendPanel, BorderLayout.SOUTH);       
+		
+		
+		this.add(sendPanel, BorderLayout.SOUTH);       
+                
+		this.setTitle("chat room");
+		
+		this.setSize(300, 450);
+
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setLocationRelativeTo(null);
+		this.setVisible(true);
         
         
-
-        setSize(300, 450);
-
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setVisible(true);
-
-
     }
 
     public static void main(String[] args) {
 
-    	GUI buttons = new GUI();
-        buttons.setVisible(true);
+    	GUI gui = new GUI();
+    	
+    	Client c = new Client (gui.area);
+        
+        c.connect();
 
     }
 }

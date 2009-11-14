@@ -1,18 +1,36 @@
 package client;
 
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 
+import javax.swing.JTextArea;
+
 public class ClientConnection extends Thread {
 	
-	DataInputStream in; 
+	DataInputStream in;
+	
+	JTextArea allMessages;
 
 	Socket serverSocket;
 	
 	public ClientConnection(Socket socket){
+		
+		allMessages = null;
+		
+		serverSocket = socket;
+		try {
+			in = new DataInputStream(serverSocket.getInputStream());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public ClientConnection(Socket socket, JTextArea textArea){
+		
+		allMessages = textArea;
 		
 		serverSocket = socket;
 		try {
@@ -26,10 +44,23 @@ public class ClientConnection extends Thread {
 	public void run(){
 		try {
 			
+			if (allMessages != null)
+				allMessages.setText("");
+			else
+				System.out.println("textArea not found!!");
+			
 			while(true){
 		    
 				String data = in.readUTF();
-		    	System.out.println(data);
+		    	
+				if (allMessages != null){
+					String history = allMessages.getText();
+					history = history + data + "\n";
+					allMessages.setText(history);
+				} else {
+					System.out.println(data);
+				}			
+				
 		    	
 			}
 		    

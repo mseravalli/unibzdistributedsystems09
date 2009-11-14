@@ -4,13 +4,19 @@ import java.net.*;
 import java.util.Scanner;
 import java.io.*;
 
+import javax.swing.JTextArea;
+
 
 public class Client {
 	
-	public Client(){
-		
-		
-		
+	JTextArea allMessages;
+	
+	public Client(){			
+		allMessages = null;	
+	}
+	
+	public Client(JTextArea textArea){		
+		allMessages = textArea;		
 	}
 	
 	public void connect (){
@@ -26,15 +32,14 @@ public class Client {
 			socket = new Socket(hostName, serverPort);
 			
 			DataOutputStream out = new DataOutputStream( socket.getOutputStream());
-	    
-			int i = 0;
 			
-			ClientConnection cc = new ClientConnection(socket);
+			ClientConnection cc = new ClientConnection(socket, allMessages);
 			cc.start();
 			
-			while(i<1000){
+			while(true){
 				Scanner sc = new Scanner(System.in);
 				message = sc.nextLine();
+				
 				out.writeUTF(message); 			
 			}			
 			
@@ -65,7 +70,7 @@ public class Client {
 
 	public static void main (String args[]) { 
     	
-		Client c = new Client ();
+		Client c = new Client();
 		c.connect();
 		
 	}
