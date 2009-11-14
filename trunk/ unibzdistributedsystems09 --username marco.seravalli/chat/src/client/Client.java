@@ -5,24 +5,26 @@ import java.util.Scanner;
 import java.io.*;
 
 
-public class Client { 
-
-	public static void main (String args[]) { 
-    	
-		String message = "message from client";
+public class Client {
+	
+	public Client(){
+		
+		
+		
+	}
+	
+	public void connect (){
+		String message = "";
     	
 		Socket socket = null;
 	
 		String hostName = "127.0.0.1";
 		int serverPort = 8080;
-	
-		String data;
 
 		try{ 
 	   
 			socket = new Socket(hostName, serverPort);
 			
-			DataInputStream in = new DataInputStream( socket.getInputStream());
 			DataOutputStream out = new DataOutputStream( socket.getOutputStream());
 	    
 			int i = 0;
@@ -33,19 +35,9 @@ public class Client {
 			while(i<1000){
 				Scanner sc = new Scanner(System.in);
 				message = sc.nextLine();
-				out.writeUTF(message); // UTF is a string encoding 
-				
-				//data = in.readUTF(); 
-				//System.out.println("Received: "+ data);
+				out.writeUTF(message); 			
+			}			
 			
-			}
-			
-			
-			
-
-				data = in.readUTF(); 
-				System.out.println("Received: "+ data);
-
 			
 		} catch (UnknownHostException e){ 
 			
@@ -69,5 +61,12 @@ public class Client {
 				}
 		
 		}
+	}
+
+	public static void main (String args[]) { 
+    	
+		Client c = new Client ();
+		c.connect();
+		
 	}
 }
