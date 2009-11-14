@@ -26,13 +26,17 @@ public class Client {
 			DataOutputStream out = new DataOutputStream( socket.getOutputStream());
 	    
 			int i = 0;
+			
+			ClientConnection cc = new ClientConnection(socket);
+			cc.start();
+			
 			while(i<1000){
 				Scanner sc = new Scanner(System.in);
 				message = sc.nextLine();
 				out.writeUTF(message); // UTF is a string encoding 
 				
-				data = in.readUTF(); 
-				System.out.println("Received: "+ data);
+				//data = in.readUTF(); 
+				//System.out.println("Received: "+ data);
 			
 			}
 			
