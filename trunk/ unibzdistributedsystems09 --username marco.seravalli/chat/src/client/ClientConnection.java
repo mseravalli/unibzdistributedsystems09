@@ -44,6 +44,9 @@ public class ClientConnection extends Thread {
 	public void run(){
 		try {
 			
+			/*
+			 * if no textArea is found it is notified to the user
+			 */
 			if (allMessages != null)
 				allMessages.setText("");
 			else
@@ -53,6 +56,10 @@ public class ClientConnection extends Thread {
 		    
 				String data = in.readUTF();
 		    	
+				/*
+				 * if no textArea is found the output will be printed on the console
+				 * otherwise the textArea is updated 
+				 */
 				if (allMessages != null){
 					String history = allMessages.getText();
 					history = history + data + "\n";

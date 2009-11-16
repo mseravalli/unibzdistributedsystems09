@@ -9,23 +9,61 @@ import javax.swing.JTextArea;
 
 public class Client {
 	
+	String hostName;
+	int serverPort;
+	Socket socket;
+	
+	String message;
 	JTextArea allMessages;
 	
-	public Client(){			
-		allMessages = null;	
+	/**
+	 * set hostName to localhost (127.0.0.1) and serverPort to 8080
+	 */
+	public Client(){
+		hostName = "127.0.0.1";
+		serverPort = 8080;
+		socket = null;
+		allMessages = null;
 	}
 	
-	public Client(JTextArea textArea){		
+	/**
+	 * set hostName to localhost (127.0.0.1) and serverPort to 8080 
+	 * @param textArea
+	 */
+	public Client(JTextArea textArea){
+		hostName = "127.0.0.1";
+		serverPort = 8080;
+		socket = null;
+		allMessages = textArea;		
+	}
+	
+	/**
+	 * 
+	 * @param host
+	 * @param port
+	 */
+	public Client(String host, int port){
+		hostName = host;
+		serverPort = port;
+		socket = null;
+		allMessages = null;
+	}
+	
+	/**
+	 * 
+	 * @param host
+	 * @param port
+	 * @param textArea
+	 */
+	public Client(String host, int port, JTextArea textArea){
+		hostName = host;
+		serverPort = port;
+		socket = null;
 		allMessages = textArea;		
 	}
 	
 	public void connect (){
-		String message = "";
     	
-		Socket socket = null;
-	
-		String hostName = "127.0.0.1";
-		int serverPort = 8080;
 
 		try{ 
 	   
