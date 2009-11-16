@@ -93,6 +93,7 @@ public class Client {
 			
 			DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 			
+			
 			ClientConnection cc = new ClientConnection(socket, allMessages);
 			cc.start();
 			

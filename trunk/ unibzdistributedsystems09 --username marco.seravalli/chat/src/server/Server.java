@@ -25,7 +25,7 @@ public class Server {
 		    
 		    while(true) {
 		    	clientSocket = listenSocket.accept();
-		    	System.out.printf("Nuovo client attivo!!\n");
+		    	System.out.printf("new client connected!!\n");
 		    	clientList.add(clientSocket);
 		    	Connection c = new Connection(clientSocket, clientList);
 		    }

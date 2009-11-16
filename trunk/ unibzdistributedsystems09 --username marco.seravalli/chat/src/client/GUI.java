@@ -60,8 +60,10 @@ public class GUI extends JFrame {
         area.setLineWrap(true);
         area.setWrapStyleWord(true);
         area.setEditable(false);
+        area.setEnabled(false);
 
-        scrollableTextArea.getViewport().add(area);            
+        scrollableTextArea.getViewport().add(area);    
+        scrollableTextArea.setEnabled(false);
         
 
         /*
@@ -72,6 +74,9 @@ public class GUI extends JFrame {
         typeYourMessage = new JLabel("type your message here:");
         writeMessage = new JTextField();
 		sendMessage = new JButton("send");
+		
+		writeMessage.setEnabled(false);
+		sendMessage.setEnabled(false);
        
 		sendPanel.add(typeYourMessage);
 		sendPanel.add(writeMessage);
