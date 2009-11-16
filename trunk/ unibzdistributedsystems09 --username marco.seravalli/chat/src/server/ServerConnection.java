@@ -1,44 +1,13 @@
 package server;
 
-import java.net.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.EOFException;
+import java.io.IOException;
+import java.net.Socket;
 import java.util.ArrayList;
-import java.io.*;
 
-
-public class Server {
-	
-	
-    
-	public static void main (String args[]) { 
-		
-		ArrayList<Socket> clientList = new ArrayList<Socket>();
-		
-		
-    	try{
-		    
-    		int serverPort = 8080; 
-		    ServerSocket listenSocket = new ServerSocket(serverPort); 
-		    
-		    Socket clientSocket;
-		    
-		    System.out.println("sever started");
-		    
-		    while(true) {
-		    	clientSocket = listenSocket.accept();
-		    	System.out.printf("new client connected!!\n");
-		    	clientList.add(clientSocket);
-		    	ServerConnection sc = new ServerConnection(clientSocket, clientList);
-		    }
-		    
-		} catch(IOException e) {
-			System.out.println("Listen: " + e.getMessage());
-		}
-	}
-
-} 
-
-/*
-class Connection extends Thread {
+public class ServerConnection extends Thread {
 	
     DataInputStream in;
     DataOutputStream out; 
@@ -46,7 +15,7 @@ class Connection extends Thread {
     Socket clientSocket;
     ArrayList<Socket> clients;
     
-    public Connection (Socket aClientSocket, ArrayList<Socket> clientList) { 
+    public ServerConnection (Socket aClientSocket, ArrayList<Socket> clientList) { 
     	
 		try {
 			clientSocket = aClientSocket;
@@ -87,7 +56,7 @@ class Connection extends Thread {
 		} finally {
 		    try {
 		    	clientSocket.close();
-		    } catch (IOException e) {/*close failed}
+		    } catch (IOException e) {/*close failed*/}
 		}
     }
-}*/
+}
