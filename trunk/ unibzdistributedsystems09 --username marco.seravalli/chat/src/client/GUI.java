@@ -25,6 +25,8 @@ public class GUI extends JFrame {
 	JLabel typeYourMessage;
 	JTextField writeMessage;
 	JButton sendMessage;
+	
+	Client client;
 
 	public GUI() {
 		
@@ -90,6 +92,8 @@ public class GUI extends JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
+		
+		this.client = new Client(this.area);
         
         
     }

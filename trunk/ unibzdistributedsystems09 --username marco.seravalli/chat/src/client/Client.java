@@ -9,12 +9,14 @@ import javax.swing.JTextArea;
 
 public class Client {
 	
-	String hostName;
-	int serverPort;
-	Socket socket;
+	private String hostName;
+	private int serverPort;
+	private Socket socket;
 	
-	String message;
-	JTextArea allMessages;
+	private String nickname;
+	
+	private String message;
+	private JTextArea allMessages;
 	
 	/**
 	 * set hostName to localhost (127.0.0.1) and serverPort to 8080
@@ -23,6 +25,7 @@ public class Client {
 		hostName = "127.0.0.1";
 		serverPort = 8080;
 		socket = null;
+		nickname = "nickname";
 		allMessages = null;
 	}
 	
@@ -34,6 +37,7 @@ public class Client {
 		hostName = "127.0.0.1";
 		serverPort = 8080;
 		socket = null;
+		nickname = "nickname";
 		allMessages = textArea;		
 	}
 	
@@ -46,6 +50,7 @@ public class Client {
 		hostName = host;
 		serverPort = port;
 		socket = null;
+		nickname = "nickname";
 		allMessages = null;
 	}
 	
@@ -59,7 +64,24 @@ public class Client {
 		hostName = host;
 		serverPort = port;
 		socket = null;
+		nickname = "nickname";
 		allMessages = textArea;		
+	}
+	
+	public Socket getSocket(){
+		return this.socket;
+	}
+	
+	public void setHostName(String host){
+		this.hostName = host;
+	}
+
+	public void setServerPort(int port){
+		this.serverPort = port;
+	}
+	
+	public void setNickname(String name){
+		this.nickname = name;
 	}
 	
 	public void connect (){
@@ -69,12 +91,13 @@ public class Client {
 	   
 			socket = new Socket(hostName, serverPort);
 			
-			DataOutputStream out = new DataOutputStream( socket.getOutputStream());
+			DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 			
 			ClientConnection cc = new ClientConnection(socket, allMessages);
 			cc.start();
 			
 			while(true){
+				
 				Scanner sc = new Scanner(System.in);
 				message = sc.nextLine();
 				
@@ -103,6 +126,22 @@ public class Client {
 					System.out.println("" + e.getMessage());
 				}
 		
+		}
+	}
+	
+	
+	//TODO implement the following method
+	public void sendMessage(){
+		
+	}
+	
+	
+	
+	public void disconnect(){
+		try {
+			this.socket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
