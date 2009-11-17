@@ -1,113 +1,142 @@
+
 package client;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
-public class GUI extends JFrame {
-
-	private static final long serialVersionUID = 1L;
-	
-	JPanel connectionSettings;
-	
-	JLabel hostLabel;
-	JLabel nicknameLabel;
-	JTextField host;
-	JTextField nickname;
-	JButton connect;
-	
-	JScrollPane scrollableTextArea;
-	public JTextArea area;
-	
-	JPanel sendPanel;
-	JLabel typeYourMessage;
-	JTextField writeMessage;
-	JButton sendMessage;
-	
-	Client client;
-
-	public GUI() {
-		
-		/*
-		 * panel with all the settings for the connection
-		 */
-		connectionSettings = new JPanel(new GridLayout(2,3));
-		
-		hostLabel = new JLabel("hostname");
-		nicknameLabel = new JLabel("nickname");       
-       
-		host = new JTextField("127.0.0.1");
-		nickname = new JTextField("");
-		connect = new JButton("connect");
-       
-		connectionSettings.add(hostLabel);
-		connectionSettings.add(nicknameLabel);
-		connectionSettings.add(new JLabel(""));		
-       
-		connectionSettings.add(host);
-		connectionSettings.add(nickname);
-		connectionSettings.add(connect);
+public class GUI implements ActionListener{
         
+        private JFrame chatWindow;
+        private JTextArea chatField;
+        private JButton connect;
+        private JButton sendButton;
+        private JTextField hostName;
+        private JTextField nicknameField;
+        private JTextField inputField;
+        private String serverIP;
+        private String nickname;
+        private String actualMessage;
+        private Client client;
         
-		/*
-		 * text area with scrollbar
-		 */
-        scrollableTextArea = new JScrollPane();
-        area = new JTextArea(); 
-
-        area.setLineWrap(true);
-        area.setWrapStyleWord(true);
-        area.setEditable(false);
-        area.setEnabled(false);
-
-        scrollableTextArea.getViewport().add(area);    
-        scrollableTextArea.setEnabled(false);
-        
-
-        /*
-         * this part creates the panel under the text area for the writing of user's messages
-         */
-        sendPanel = new JPanel(new GridLayout(3,1));
-        
-        typeYourMessage = new JLabel("type your message here:");
-        writeMessage = new JTextField();
-		sendMessage = new JButton("send");
-		
-		writeMessage.setEnabled(false);
-		sendMessage.setEnabled(false);
-       
-		sendPanel.add(typeYourMessage);
-		sendPanel.add(writeMessage);
-		sendPanel.add(sendMessage);
-		
-		
-		/*
-		 * all the panels above are added to the main window
-		 */
-		this.add(connectionSettings, BorderLayout.NORTH);
-		this.add(scrollableTextArea, BorderLayout.CENTER);
-		this.add(sendPanel, BorderLayout.SOUTH);       
+        public GUI(){
                 
-		this.setTitle("chat room");
-		
-		this.setSize(300, 450);
+                startWindow();
+                client = new Client(this.chatField);
+         }
+         
+         public void startWindow(){
+                 
+                 chatWindow = new JFrame("Chat");
+                 chatWindow.setBounds(100, 100, 400, 500);
+                 
+                 chatWindow.setLayout(null);
+                 
+                 hostName = new JTextField("Server IP");
+                 hostName.setBounds(100,50,200,30);
+                 hostName.setVisible(true);
+                 
+                 
+                 nicknameField = new JTextField("Nickname");
+                 nicknameField.setBounds(100,150,200,30);
+                 nicknameField.setVisible(true);
+                 
+                 
+                 connect = new JButton("Connect");
+                 connect.setBounds(125, 300, 150, 50);
+                 connect.setVisible(true);                
+                 connect.addActionListener(this);
 
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setLocationRelativeTo(null);
-		this.setVisible(true);
-		
-		this.client = new Client(this.area);
+                 
+                 chatField = new JTextArea();
+                 chatField.setBounds(20,30,355,340);
+                 chatField.setVisible(false);
+                 
+                 inputField = new JTextField();
+                 inputField.setBounds(20,400,270,30);
+                 inputField.setVisible(false);
+                 
+                 sendButton = new JButton("Send");
+                 sendButton.addActionListener(this);
+                 sendButton.setBounds(300,400,80,30);
+                 sendButton.setVisible(false);
+                 
+                 
+                 chatWindow.add(hostName);
+                 chatWindow.add(nicknameField);
+                 chatWindow.add(connect);
+                 chatWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                 chatWindow.setVisible(true);
+                 
+                 System.out.println("CHECK");
+        	 
+         }
+         
+         public void enterChat(){
+                 System.out.println("TEEEST");
+                 chatWindow.remove(connect);
+                 chatWindow.remove(nicknameField);
+                 chatWindow.remove(hostName);
+                 
+
+                 chatField.setVisible(true);
+                 chatField.setEditable(false);
+                 chatWindow.add(chatField);
+                 
+                 
+                 inputField.setVisible(true);
+                 chatWindow.add(inputField);
+                 
+                 
+                 sendButton.setVisible(true);
+                 chatWindow.add(sendButton);
+                 
+                 chatWindow.repaint();
+         }
+         
+         public void showConnectionError(){
+                 System.out.println("PROBLEMS WITH CONNECTION");
+         }
+         
+         public void IOProblem(String type){
+                 if(type.equals("output")){
+                         chatField.append("\nProblem sending the message");
+                 }
+         }
+
         
+        public void actionPerformed(ActionEvent e) {
+                if(e.getSource().equals(connect)){
+                        nickname = nicknameField.getText();
+                        //TODO parse the hostName to find the port
+                        if(/*client.connect(this.hostName.getText(), 8080)*/true){
+                                this.enterChat();
+                        }
+                        else{
+                                this.showConnectionError();
+                        }
+                }
+                else if(e.getSource().equals(sendButton)){
+                        System.out.println("SENDBUTTONPRESSED");
+                        try{
+                                actualMessage = inputField.getText();
+                        }
+                        catch (NullPointerException ne){
+                                System.out.println(ne.getMessage());
+                                actualMessage = " ";
+                        }
+                        if(/*!client.send(actualMessage)*/true){
+                                this.IOProblem("output");
+                        }
+                }
+        }
         
-    }
-
-    public static void main(String[] args) {
-
-    	GUI gui = new GUI();
-    	
-    	Client c = new Client (gui.area);
-        
-        c.connect();
-
-    }
+        public static void main(String[] args){
+        	GUI gui = new GUI();
+        }
+                
 }
