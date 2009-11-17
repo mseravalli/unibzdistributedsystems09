@@ -12,9 +12,7 @@ public class Client {
 	private String hostName;
 	private int serverPort;
 	private Socket socket;
-	
-	private String nickname;
-	
+	private DataOutputStream out;
 	private String message;
 	private JTextArea allMessages;
 	
@@ -25,7 +23,6 @@ public class Client {
 		hostName = "127.0.0.1";
 		serverPort = 8080;
 		socket = null;
-		nickname = "nickname";
 		allMessages = null;
 	}
 	
@@ -37,7 +34,6 @@ public class Client {
 		hostName = "127.0.0.1";
 		serverPort = 8080;
 		socket = null;
-		nickname = "nickname";
 		allMessages = textArea;		
 	}
 	
@@ -50,7 +46,6 @@ public class Client {
 		hostName = host;
 		serverPort = port;
 		socket = null;
-		nickname = "nickname";
 		allMessages = null;
 	}
 	
@@ -64,7 +59,6 @@ public class Client {
 		hostName = host;
 		serverPort = port;
 		socket = null;
-		nickname = "nickname";
 		allMessages = textArea;		
 	}
 	
@@ -80,42 +74,46 @@ public class Client {
 		this.serverPort = port;
 	}
 	
-	public void setNickname(String name){
+	/*public void setNickname(String name){
 		this.nickname = name;
-	}
+	}*/
 	
-	public void connect (){
-    	
-
+	public boolean connect (String serverIP, int port){
+    	boolean success = true;
+    	hostName = serverIP;
+    	serverPort = port;
 		try{ 
 	   
-			socket = new Socket(hostName, serverPort);
+			socket = new Socket(serverIP, serverPort);
 			
-			DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+			out = new DataOutputStream(socket.getOutputStream());
 			
 			
 			ClientConnection cc = new ClientConnection(socket, allMessages);
 			cc.start();
-			
+			/*
 			while(true){
 				
 				Scanner sc = new Scanner(System.in);
 				message = sc.nextLine();
 				
 				out.writeUTF(message); 			
-			}			
+			}	*/		
 			
 			
 		} catch (UnknownHostException e){ 
 			
+			success = false;
 			System.out.println("Sock: " + e.getMessage());
 		
 		} catch (EOFException e){
 			
+			success = false;
 			System.out.println("EOF: " + e.getMessage()); 
 		
 		} catch (IOException e){
 			
+			success = false;
 			System.out.println("IO: " + e.getMessage());
 		
 		} finally {
@@ -128,12 +126,19 @@ public class Client {
 				}
 		
 		}
+		
+		return success;
 	}
 	
 	
 	//TODO implement the following method
-	public void sendMessage(){
-		
+	public boolean sendMessage(String message){
+		try {
+			out.writeUTF(message);
+		} catch (IOException e) {
+			return false;
+		}
+		return true;
 	}
 	
 	
@@ -146,10 +151,10 @@ public class Client {
 		}
 	}
 
-	public static void main (String args[]) { 
+	/*public static void main (String args[]) { 
     	
 		Client c = new Client();
 		c.connect();
 		
-	}
+	}*/
 }

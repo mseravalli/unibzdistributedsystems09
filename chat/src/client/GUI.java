@@ -111,9 +111,10 @@ public class GUI implements ActionListener{
         
         public void actionPerformed(ActionEvent e) {
                 if(e.getSource().equals(connect)){
-                        nickname = nicknameField.getText();
-                        //TODO parse the hostName to find the port
-                        if(/*client.connect(this.hostName.getText(), 8080)*/true){
+                        nickname = nicknameField.getText() + ": ";
+                        String delims = "[:]";
+                        String[] tokens = hostName.getText().split(delims);
+                        if(client.connect(tokens[0], Integer.parseInt(tokens[1]))){
                                 this.enterChat();
                         }
                         else{
@@ -129,7 +130,7 @@ public class GUI implements ActionListener{
                                 System.out.println(ne.getMessage());
                                 actualMessage = " ";
                         }
-                        if(/*!client.send(actualMessage)*/true){
+                        if(!client.sendMessage(nickname+actualMessage)){
                                 this.IOProblem("output");
                         }
                 }

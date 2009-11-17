@@ -61,9 +61,11 @@ public class ClientConnection extends Thread {
 				 * otherwise the textArea is updated 
 				 */
 				if (allMessages != null){
-					String history = allMessages.getText();
+					/*String history = allMessages.getText();
 					history = history + data + "\n";
 					allMessages.setText(history);
+					c'é una funzione apposta:*/
+					allMessages.append(data+"\n");
 				} else {
 					System.out.println(data);
 				}			
