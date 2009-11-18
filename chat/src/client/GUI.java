@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -20,6 +21,8 @@ public class GUI implements ActionListener{
         private JTextField hostName;
         private JTextField nicknameField;
         private JTextField inputField;
+        private JLabel errorLabel;
+        
         private String nickname;
         private String actualMessage;
         private Client client;
@@ -43,15 +46,18 @@ public class GUI implements ActionListener{
                  
                  
                  nicknameField = new JTextField("Nickname");
-                 nicknameField.setBounds(100,150,200,30);
+                 nicknameField.setBounds(100,120,200,30);
                  nicknameField.setVisible(true);
                  
                  
                  connect = new JButton("Connect");
-                 connect.setBounds(125, 300, 150, 50);
+                 connect.setBounds(125, 250, 150, 50);
                  connect.setVisible(true);                
                  connect.addActionListener(this);
 
+                 errorLabel = new JLabel("connection failed - please input IP:port as hostname");
+                 errorLabel.setVisible(false);
+                 errorLabel.setBounds(100, 350, 200, 30);
                  
                  scroll = new JScrollPane();
                  scroll.setBounds(5,5,390,390);
@@ -111,7 +117,12 @@ public class GUI implements ActionListener{
          }
          
          public void showConnectionError(){
-                 System.out.println("PROBLEMS WITH CONNECTION");
+                 errorLabel.setVisible(true);
+         }
+         
+         public void disconnect(){
+        	 	chatWindow.removeAll();
+        	 	this.startWindow();
          }
          
          public void IOProblem(String type){
