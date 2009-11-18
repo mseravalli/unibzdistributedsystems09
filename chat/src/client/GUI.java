@@ -36,7 +36,7 @@ public class GUI implements ActionListener{
                  
                  chatWindow.setLayout(null);
                  
-                 hostName = new JTextField("Server IP");
+                 hostName = new JTextField("127.0.0.1:8080");
                  hostName.setBounds(100,50,200,30);
                  hostName.setVisible(true);
                  
@@ -57,6 +57,7 @@ public class GUI implements ActionListener{
                  chatField.setVisible(false);
                  
                  inputField = new JTextField();
+                 inputField.addActionListener(this);
                  inputField.setBounds(20,400,270,30);
                  inputField.setVisible(false);
                  
@@ -117,6 +118,7 @@ public class GUI implements ActionListener{
                         String delims = "[:]";
                         String[] tokens = hostName.getText().split(delims);
                         try{
+                        	//System.out.println(tokens[0] + " " + tokens[1]);
                         	if(client.connect(tokens[0], Integer.parseInt(tokens[1]))){
                         			this.enterChat();
                         	}
@@ -142,7 +144,30 @@ public class GUI implements ActionListener{
                         if(!client.sendMessage(nickname+actualMessage)){
                                 this.IOProblem("output");
                         }
+                        
+                        inputField.setText("");
+                        
                 }
+                //
+                else if(e.getSource().equals(inputField)){
+                    System.out.println("SENDBUTTONPRESSED");
+                    try{
+                            actualMessage = inputField.getText();
+                    }
+                    catch (NullPointerException ne){
+                            System.out.println(ne.getMessage());
+                            actualMessage = " ";
+                    }
+                    if(!client.sendMessage(nickname+actualMessage)){
+                            this.IOProblem("output");
+                    }
+                    
+                    inputField.setText("");
+                    
+            }
+               
+                
+                
         }
         
         public static void main(String[] args){

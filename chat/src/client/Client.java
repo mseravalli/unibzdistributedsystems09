@@ -117,13 +117,14 @@ public class Client {
 			System.out.println("IO: " + e.getMessage());
 		
 		} finally {
-			
+			/*
 			if(socket!=null)			
 				try {
 					socket.close();
 				} catch (IOException e) {
 					System.out.println("" + e.getMessage());
 				}
+				*/
 		
 		}
 		
@@ -151,10 +152,10 @@ public class Client {
 		}
 	}
 
-	/*public static void main (String args[]) { 
+	public static void main (String args[]) { 
     	
 		Client c = new Client();
-		c.connect();
+		c.connect("127.0.0.1", 8080);
 		
-	}*/
+	}
 }
