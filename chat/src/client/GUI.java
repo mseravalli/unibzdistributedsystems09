@@ -3,6 +3,8 @@ package client;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -11,7 +13,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-public class GUI implements ActionListener{
+public class GUI implements ActionListener, WindowListener{
         
         private JFrame chatWindow;
         private JTextArea chatField;
@@ -91,7 +93,8 @@ public class GUI implements ActionListener{
                  chatWindow.add(hostName);
                  chatWindow.add(nicknameField);
                  chatWindow.add(connect);
-                 chatWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                 //chatWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                 chatWindow.addWindowListener(this);
                  chatWindow.setResizable(false);
                  chatWindow.setVisible(true);
                  
@@ -207,7 +210,49 @@ public class GUI implements ActionListener{
                 
                 
         }
-        
+
+		@Override
+		public void windowActivated(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void windowClosed(WindowEvent arg0) {
+			//this.client.disconnect();
+			System.exit(0);
+		}
+
+		@Override
+		public void windowClosing(WindowEvent arg0) {
+			//this.client.disconnect();
+			System.exit(0);			
+		}
+
+		@Override
+		public void windowDeactivated(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void windowDeiconified(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void windowIconified(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void windowOpened(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+		
         public static void main(String[] args){
         	GUI gui = new GUI();
         }
