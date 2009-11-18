@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -13,12 +14,12 @@ public class GUI implements ActionListener{
         
         private JFrame chatWindow;
         private JTextArea chatField;
+        private JScrollPane scroll;
         private JButton connect;
         private JButton sendButton;
         private JTextField hostName;
         private JTextField nicknameField;
         private JTextField inputField;
-        private String serverIP;
         private String nickname;
         private String actualMessage;
         private Client client;
@@ -52,9 +53,18 @@ public class GUI implements ActionListener{
                  connect.addActionListener(this);
 
                  
+                 scroll = new JScrollPane();
+                 scroll.setBounds(5,5,390,390);
+                 scroll.setVisible(false);
+                 
                  chatField = new JTextArea();
-                 chatField.setBounds(20,30,355,340);
+                 //chatField.setBounds(5,5,300,300);
                  chatField.setVisible(false);
+                 chatField.setLineWrap(true);
+                 chatField.setWrapStyleWord(true);
+                 
+                 scroll.getViewport().add(chatField);
+
                  
                  inputField = new JTextField();
                  inputField.addActionListener(this);
@@ -86,7 +96,8 @@ public class GUI implements ActionListener{
 
                  chatField.setVisible(true);
                  chatField.setEditable(false);
-                 chatWindow.add(chatField);
+                 scroll.setVisible(true);
+                 chatWindow.add(scroll);
                  
                  
                  inputField.setVisible(true);
@@ -133,7 +144,7 @@ public class GUI implements ActionListener{
                 
                 //if the "Send" button was pressed
                 else if(e.getSource().equals(sendButton)){
-                        System.out.println("SENDBUTTONPRESSED");
+
                         try{
                                 actualMessage = inputField.getText();
                         }
@@ -148,9 +159,10 @@ public class GUI implements ActionListener{
                         inputField.setText("");
                         
                 }
-                //
+                
+                //if the enter is pressed while typing in the textField
                 else if(e.getSource().equals(inputField)){
-                    System.out.println("SENDBUTTONPRESSED");
+
                     try{
                             actualMessage = inputField.getText();
                     }
