@@ -87,6 +87,7 @@ public class GUI implements ActionListener{
                  chatWindow.add(nicknameField);
                  chatWindow.add(connect);
                  chatWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                 chatWindow.setResizable(false);
                  chatWindow.setVisible(true);
                  
                  System.out.println("CHECK");
