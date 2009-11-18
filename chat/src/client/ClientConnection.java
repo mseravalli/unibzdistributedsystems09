@@ -28,18 +28,12 @@ public class ClientConnection extends Thread {
 		
 	}
 	
-	public ClientConnection(Socket socket, JTextArea textArea){
+	public ClientConnection(DataInputStream input, JTextArea textArea){
 		
 		allMessages = textArea;
-		
-		serverSocket = socket;
-		try {
-			in = new DataInputStream(serverSocket.getInputStream());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-	}	
+		in = input;
+	
+	}
 	
 	public void run(){
 		try {
@@ -77,11 +71,7 @@ public class ClientConnection extends Thread {
 			System.out.println("EOF: "+e.getMessage()); 
 		} catch(IOException e) {
 			System.out.println("IO:s a"+e.getMessage());
-		} finally {
-		    try {
-		    	serverSocket.close();
-		    } catch (IOException e) {/*close failed*/}
-		}
+		} 
     }
 	
 	

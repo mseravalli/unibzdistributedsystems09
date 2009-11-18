@@ -13,6 +13,7 @@ public class Client {
 	private int serverPort;
 	private Socket socket;
 	private DataOutputStream out;
+	private DataInputStream in;
 	private String message;
 	private JTextArea allMessages;
 	
@@ -87,9 +88,9 @@ public class Client {
 			socket = new Socket(serverIP, serverPort);
 			
 			out = new DataOutputStream(socket.getOutputStream());
+			in = new DataInputStream(socket.getInputStream());
 			
-			
-			ClientConnection cc = new ClientConnection(socket, allMessages);
+			ClientConnection cc = new ClientConnection(in, allMessages);
 			cc.start();
 			/*
 			while(true){
@@ -146,6 +147,8 @@ public class Client {
 	
 	public void disconnect(){
 		try {
+			out.close();
+			in.close();
 			this.socket.close();
 		} catch (IOException e) {
 			e.printStackTrace();

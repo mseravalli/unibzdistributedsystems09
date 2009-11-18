@@ -31,42 +31,45 @@ public class GUI implements ActionListener, WindowListener{
         private Client client;
         
         public GUI(){
-                
+
+            
+            	chatWindow = new JFrame("Chat");
+            	chatWindow.setBounds(100, 100, 400, 500);
+            	chatWindow.setLayout(null);
+            	hostName = new JTextField("127.0.0.1:8080");
+            	nicknameField = new JTextField("Nickname");
+                connect = new JButton("Connect");
+                scroll = new JScrollPane();
+                chatField = new JTextArea(); 
+                inputField = new JTextField();
+                sendButton = new JButton("Send");
+                disconnectButton = new JButton("Disconnect");
+                errorLabel = new JLabel("Connection Failed");
                 startWindow();
                 client = new Client(this.chatField);
          }
          
          public void startWindow(){
                  
-                 chatWindow = new JFrame("Chat");
-                 chatWindow.setBounds(100, 100, 400, 500);
                  
-                 chatWindow.setLayout(null);
-                 
-                 hostName = new JTextField("127.0.0.1:8080");
                  hostName.setBounds(100,50,200,30);
                  hostName.setVisible(true);
                  
                  
-                 nicknameField = new JTextField("Nickname");
                  nicknameField.setBounds(100,120,200,30);
                  nicknameField.setVisible(true);
                  
                  
-                 connect = new JButton("Connect");
                  connect.setBounds(125, 250, 150, 50);
                  connect.setVisible(true);                
                  connect.addActionListener(this);
 
-                 errorLabel = new JLabel("connection failed - please input IP:port as hostname");
                  errorLabel.setVisible(false);
                  errorLabel.setBounds(100, 350, 200, 30);
                  
-                 scroll = new JScrollPane();
                  scroll.setBounds(5,5,390,390);
                  scroll.setVisible(false);
                  
-                 chatField = new JTextArea();
                  //chatField.setBounds(5,5,300,300);
                  chatField.setVisible(false);
                  chatField.setLineWrap(true);
@@ -75,17 +78,14 @@ public class GUI implements ActionListener, WindowListener{
                  scroll.getViewport().add(chatField);
 
                  
-                 inputField = new JTextField();
                  inputField.addActionListener(this);
                  inputField.setBounds(5,400,390,30);
                  inputField.setVisible(false);
                  
-                 sendButton = new JButton("Send");
                  sendButton.addActionListener(this);
                  sendButton.setBounds(5,435,80,30);
                  sendButton.setVisible(false);
                  
-                 disconnectButton = new JButton("Disconnect");
                  disconnectButton.addActionListener(this);
                  disconnectButton.setBounds(85, 435, 80, 30);
                  disconnectButton.setVisible(false);
@@ -98,15 +98,17 @@ public class GUI implements ActionListener, WindowListener{
                  chatWindow.setResizable(false);
                  chatWindow.setVisible(true);
                  
+                 chatWindow.repaint();
+                 
                  System.out.println("CHECK");
         	 
          }
          
          public void enterChat(){
                  System.out.println("TEEEST");
-                 chatWindow.remove(connect);
-                 chatWindow.remove(nicknameField);
-                 chatWindow.remove(hostName);
+                 connect.setVisible(false);
+                 nicknameField.setVisible(false);
+                 hostName.setVisible(false);
                  
 
                  chatField.setVisible(true);
@@ -133,7 +135,8 @@ public class GUI implements ActionListener, WindowListener{
          }
          
          public void disconnect(){
-        	 	chatWindow.removeAll();
+        	 	
+        	 	System.out.println("REMOVED");
         	 	this.startWindow();
          }
          
