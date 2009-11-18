@@ -38,30 +38,7 @@ public class Client {
 		allMessages = textArea;		
 	}
 	
-	/**
-	 * 
-	 * @param host
-	 * @param port
-	 */
-	public Client(String host, int port){
-		hostName = host;
-		serverPort = port;
-		socket = null;
-		allMessages = null;
-	}
 	
-	/**
-	 * 
-	 * @param host
-	 * @param port
-	 * @param textArea
-	 */
-	public Client(String host, int port, JTextArea textArea){
-		hostName = host;
-		serverPort = port;
-		socket = null;
-		allMessages = textArea;		
-	}
 	
 	public Socket getSocket(){
 		return this.socket;
@@ -150,6 +127,7 @@ public class Client {
 			out.close();
 			in.close();
 			this.socket.close();
+			this.socket = null;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

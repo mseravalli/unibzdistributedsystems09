@@ -50,13 +50,17 @@ public class ServerConnection extends Thread {
 			}
 		    
 		} catch(EOFException e) {
-			System.out.println("EOF: "+e.getMessage()); 
+			System.out.println("Server Connection EOF: "+e.getMessage());
+			this.clients.remove(this.clientSocket);
+			this.stop();
 		} catch(IOException e) {
-			System.out.println("IO:s a"+e.getMessage());
+			System.out.println("Server Connection IO:s a"+e.getMessage());
 		} finally {
 		    try {
 		    	clientSocket.close();
-		    } catch (IOException e) {/*close failed*/}
+		    } catch (IOException e) {
+		    	System.out.println("Server Connection IO:s a"+e.getMessage());
+		    }
 		}
     }
 }
