@@ -18,6 +18,7 @@ public class GUI implements ActionListener{
         private JScrollPane scroll;
         private JButton connect;
         private JButton sendButton;
+        private JButton disconnectButton;
         private JTextField hostName;
         private JTextField nicknameField;
         private JTextField inputField;
@@ -82,6 +83,10 @@ public class GUI implements ActionListener{
                  sendButton.setBounds(5,435,80,30);
                  sendButton.setVisible(false);
                  
+                 disconnectButton = new JButton("Disconnect");
+                 disconnectButton.addActionListener(this);
+                 disconnectButton.setBounds(85, 435, 80, 30);
+                 disconnectButton.setVisible(false);
                  
                  chatWindow.add(hostName);
                  chatWindow.add(nicknameField);
@@ -113,6 +118,9 @@ public class GUI implements ActionListener{
                  
                  sendButton.setVisible(true);
                  chatWindow.add(sendButton);
+                 
+                 disconnectButton.setVisible(true);
+                 chatWindow.add(disconnectButton);
                  
                  chatWindow.repaint();
          }
@@ -188,7 +196,13 @@ public class GUI implements ActionListener{
                     
                     inputField.setText("");
                     
-            }
+                }
+                
+                //if the disconnect-button was pressed
+                else if(e.getSource().equals(disconnectButton)){
+                	client.disconnect();
+                	this.disconnect();
+                }
                
                 
                 
