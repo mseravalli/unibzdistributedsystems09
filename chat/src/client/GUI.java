@@ -68,12 +68,12 @@ public class GUI implements ActionListener{
                  
                  inputField = new JTextField();
                  inputField.addActionListener(this);
-                 inputField.setBounds(20,400,270,30);
+                 inputField.setBounds(5,400,390,30);
                  inputField.setVisible(false);
                  
                  sendButton = new JButton("Send");
                  sendButton.addActionListener(this);
-                 sendButton.setBounds(300,400,80,30);
+                 sendButton.setBounds(5,435,80,30);
                  sendButton.setVisible(false);
                  
                  
