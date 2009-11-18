@@ -104,23 +104,32 @@ public class GUI implements ActionListener{
          
          public void IOProblem(String type){
                  if(type.equals("output")){
-                         chatField.append("\nProblem sending the message");
+                         chatField.append("Problem sending the message\n");
                  }
          }
 
         
         public void actionPerformed(ActionEvent e) {
+        		
+        		//if the "connect" button was pressed
                 if(e.getSource().equals(connect)){
                         nickname = nicknameField.getText() + ": ";
                         String delims = "[:]";
                         String[] tokens = hostName.getText().split(delims);
-                        if(client.connect(tokens[0], Integer.parseInt(tokens[1]))){
-                                this.enterChat();
+                        try{
+                        	if(client.connect(tokens[0], Integer.parseInt(tokens[1]))){
+                        			this.enterChat();
+                        	}
+                        	else{
+                        			this.showConnectionError();
+                        	}
                         }
-                        else{
-                                this.showConnectionError();
+                        catch(Exception ex){
+                        	this.showConnectionError();
                         }
                 }
+                
+                //if the "Send" button was pressed
                 else if(e.getSource().equals(sendButton)){
                         System.out.println("SENDBUTTONPRESSED");
                         try{
