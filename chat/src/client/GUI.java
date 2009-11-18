@@ -38,13 +38,32 @@ public class GUI implements ActionListener, WindowListener{
             	chatWindow.setLayout(null);
             	hostName = new JTextField("127.0.0.1:8080");
             	nicknameField = new JTextField("Nickname");
-                connect = new JButton("Connect");
+                connect = new JButton("Connect");                
+                connect.addActionListener(this);
                 scroll = new JScrollPane();
                 chatField = new JTextArea(); 
+                scroll.getViewport().add(chatField);
                 inputField = new JTextField();
                 sendButton = new JButton("Send");
+                sendButton.addActionListener(this);
                 disconnectButton = new JButton("Disconnect");
+                disconnectButton.addActionListener(this);
+                inputField.addActionListener(this);
                 errorLabel = new JLabel("Connection Failed");
+                
+                chatWindow.add(hostName);
+                chatWindow.add(nicknameField);
+                chatWindow.add(connect);
+                chatWindow.add(errorLabel);
+                
+                chatWindow.add(scroll);
+                chatWindow.add(inputField);
+                chatWindow.add(sendButton);
+                chatWindow.add(disconnectButton);
+                
+
+                chatWindow.addWindowListener(this);
+                
                 startWindow();
                 client = new Client(this.chatField);
          }
@@ -61,8 +80,7 @@ public class GUI implements ActionListener, WindowListener{
                  
                  
                  connect.setBounds(125, 250, 150, 50);
-                 connect.setVisible(true);                
-                 connect.addActionListener(this);
+                 connect.setVisible(true);
 
                  errorLabel.setVisible(false);
                  errorLabel.setBounds(100, 350, 200, 30);
@@ -75,26 +93,18 @@ public class GUI implements ActionListener, WindowListener{
                  chatField.setLineWrap(true);
                  chatField.setWrapStyleWord(true);
                  
-                 scroll.getViewport().add(chatField);
 
-                 
-                 inputField.addActionListener(this);
                  inputField.setBounds(5,400,390,30);
                  inputField.setVisible(false);
                  
-                 sendButton.addActionListener(this);
                  sendButton.setBounds(5,435,80,30);
                  sendButton.setVisible(false);
                  
-                 disconnectButton.addActionListener(this);
                  disconnectButton.setBounds(85, 435, 80, 30);
                  disconnectButton.setVisible(false);
                  
-                 chatWindow.add(hostName);
-                 chatWindow.add(nicknameField);
-                 chatWindow.add(connect);
+                 
                  //chatWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                 chatWindow.addWindowListener(this);
                  chatWindow.setResizable(false);
                  chatWindow.setVisible(true);
                  
@@ -114,18 +124,14 @@ public class GUI implements ActionListener, WindowListener{
                  chatField.setVisible(true);
                  chatField.setEditable(false);
                  scroll.setVisible(true);
-                 chatWindow.add(scroll);
                  
                  
                  inputField.setVisible(true);
-                 chatWindow.add(inputField);
                  
                  
                  sendButton.setVisible(true);
-                 chatWindow.add(sendButton);
                  
                  disconnectButton.setVisible(true);
-                 chatWindow.add(disconnectButton);
                  
                  chatWindow.repaint();
          }
@@ -151,6 +157,7 @@ public class GUI implements ActionListener, WindowListener{
         		
         		//if the "connect" button was pressed
                 if(e.getSource().equals(connect)){
+                	System.out.println("CONNECTPUSHED");
                         nickname = nicknameField.getText() + ": ";
                         String delims = "[:]";
                         String[] tokens = hostName.getText().split(delims);
