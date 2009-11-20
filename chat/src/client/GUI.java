@@ -110,12 +110,11 @@ public class GUI implements ActionListener, WindowListener{
                  
                  chatWindow.repaint();
                  
-                 System.out.println("CHECK");
         	 
          }
          
          public void enterChat(){
-                 System.out.println("TEEEST");
+                 
                  connect.setVisible(false);
                  nicknameField.setVisible(false);
                  hostName.setVisible(false);
@@ -132,6 +131,8 @@ public class GUI implements ActionListener, WindowListener{
                  sendButton.setVisible(true);
                  
                  disconnectButton.setVisible(true);
+
+                 errorLabel.setVisible(false);
                  
                  chatWindow.repaint();
          }
@@ -142,8 +143,7 @@ public class GUI implements ActionListener, WindowListener{
          
          public void disconnect(){
         	 	
-        	 	System.out.println("REMOVED");
-        	 	this.startWindow();
+        	 this.startWindow();
          }
          
          public void IOProblem(String type){
@@ -157,7 +157,7 @@ public class GUI implements ActionListener, WindowListener{
         		
         		//if the "connect" button was pressed
                 if(e.getSource().equals(connect)){
-                	System.out.println("CONNECTPUSHED");
+                	
                         nickname = nicknameField.getText() + ": ";
                         String delims = "[:]";
                         String[] tokens = hostName.getText().split(delims);
