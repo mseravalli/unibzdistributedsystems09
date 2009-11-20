@@ -85,12 +85,11 @@ public class Client {
 		} catch (IOException e){
 			
 			success = false;
-			System.out.println("IO: " + e.getMessage());
-		
-		} finally {
+                        if (allMessages == null)
+                            System.out.println("IO: " + e.getMessage());
 		
 		}
-		
+        
 		return success;
 	}
 	
