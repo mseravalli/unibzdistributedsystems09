@@ -35,6 +35,7 @@ public class ClientConnection extends Thread {
 	
 	}
 	
+    @Override
 	public void run(){
 		try {
 			
@@ -55,10 +56,6 @@ public class ClientConnection extends Thread {
 				 * otherwise the textArea is updated 
 				 */
 				if (allMessages != null){
-					/*String history = allMessages.getText();
-					history = history + data + "\n";
-					allMessages.setText(history);
-					c'é una funzione apposta:*/
 					allMessages.append(data+"\n");
 				} else {
 					System.out.println(data);
@@ -68,7 +65,11 @@ public class ClientConnection extends Thread {
 			}
 		    
 		} catch(EOFException e) {
-			System.out.println("EOF: "+e.getMessage()); 
+			 if (allMessages != null){
+                            allMessages.append("Server Disconnected\n");
+			} else {
+                            System.out.println("Server Disconnected");
+			}
 		} catch(IOException e) {
 			System.out.println("IO:s a"+e.getMessage());
 		} 

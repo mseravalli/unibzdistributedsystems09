@@ -74,7 +74,12 @@ public class Client {
 		} catch (EOFException e){
 			
 			success = false;
-			System.out.println("EOF: " + e.getMessage()); 
+			//System.out.println("");
+                        if (allMessages != null){
+				allMessages.append("Server Disconnected");
+			} else {
+				System.out.println("Server Disconnected");
+			}
 		
 		} catch (IOException e){
 			
