@@ -1,14 +1,13 @@
 package client;
 
 import java.net.*;
-import java.util.Scanner;
 import java.io.*;
 
 import javax.swing.JTextArea;
 
 
 public class Client {
-	
+
 	private String hostName;
 	private int serverPort;
 	private Socket socket;
@@ -52,10 +51,6 @@ public class Client {
 		this.serverPort = port;
 	}
 	
-	/*public void setNickname(String name){
-		this.nickname = name;
-	}*/
-	
 	public boolean connect (String serverIP, int port){
     	boolean success = true;
     	hostName = serverIP;
@@ -68,15 +63,7 @@ public class Client {
 			in = new DataInputStream(socket.getInputStream());
 			
 			ClientConnection cc = new ClientConnection(in, allMessages);
-			cc.start();
-			/*
-			while(true){
-				
-				Scanner sc = new Scanner(System.in);
-				message = sc.nextLine();
-				
-				out.writeUTF(message); 			
-			}	*/		
+			cc.start();		
 			
 			
 		} catch (UnknownHostException e){ 
@@ -95,14 +82,6 @@ public class Client {
 			System.out.println("IO: " + e.getMessage());
 		
 		} finally {
-			/*
-			if(socket!=null)			
-				try {
-					socket.close();
-				} catch (IOException e) {
-					System.out.println("" + e.getMessage());
-				}
-				*/
 		
 		}
 		
@@ -110,7 +89,14 @@ public class Client {
 	}
 	
 	
-	//TODO implement the following method
+	/**
+         *
+         * The method sends the passed message to the server to which the client
+         * is connected
+         *
+         * @param message
+         * @return
+         */
 	public boolean sendMessage(String message){
 		try {
 			out.writeUTF(message);

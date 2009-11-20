@@ -31,6 +31,7 @@ public class ServerConnection extends Thread {
 		}
     } 
 
+    @Override
     public void run(){
 		try { // an echo server 
 			
@@ -50,9 +51,11 @@ public class ServerConnection extends Thread {
 			}
 		    
 		} catch(EOFException e) {
-			System.out.println("Server Connection EOF: "+e.getMessage());
+                    
+			System.out.println("Client disconnected");
 			this.clients.remove(this.clientSocket);
-			this.stop();
+			
+
 		} catch(IOException e) {
 			System.out.println("Server Connection IO:s a"+e.getMessage());
 		} finally {
@@ -61,6 +64,9 @@ public class ServerConnection extends Thread {
 		    } catch (IOException e) {
 		    	System.out.println("Server Connection IO:s a"+e.getMessage());
 		    }
+
+                    this.stop();
+
 		}
     }
 }
