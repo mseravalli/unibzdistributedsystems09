@@ -15,6 +15,7 @@ public class Client {
 	private DataInputStream in;
 	private String message;
 	private JTextArea allMessages;
+        ClientConnection cc;
 	
 	/**
 	 * set hostName to localhost (127.0.0.1) and serverPort to 8080
@@ -62,7 +63,7 @@ public class Client {
 			out = new DataOutputStream(socket.getOutputStream());
 			in = new DataInputStream(socket.getInputStream());
 			
-			ClientConnection cc = new ClientConnection(in, allMessages);
+			cc = new ClientConnection(socket, allMessages);
 			cc.start();		
 			
 			
@@ -104,7 +105,15 @@ public class Client {
          */
 	public boolean sendMessage(String message){
 		try {
-			out.writeUTF(message);
+                        if(!this.socket.isClosed())
+                            out.writeUTF(message);
+                        else {
+                            if (allMessages != null) {
+                                allMessages.append("No more connected with any server\n");
+                            } else {
+                                System.out.println("No more connected with any server");
+                            }
+                        }
 		} catch (IOException e) {
 			return false;
 		}
@@ -115,10 +124,14 @@ public class Client {
 	
 	public void disconnect(){
 		try {
+
 			out.close();
 			in.close();
 			this.socket.close();
 			this.socket = null;
+                        //the thread is stopped 
+                        cc.interrupt();
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

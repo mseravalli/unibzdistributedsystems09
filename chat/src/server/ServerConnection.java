@@ -64,8 +64,8 @@ public class ServerConnection extends Thread {
 		    } catch (IOException e) {
 		    	System.out.println("Server Connection IO:s a"+e.getMessage());
 		    }
-
-                    this.stop();
+                    //the thread is stopped
+                    this.interrupt();
 
 		}
     }

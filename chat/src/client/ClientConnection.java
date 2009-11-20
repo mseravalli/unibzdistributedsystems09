@@ -5,6 +5,8 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JTextArea;
 
 public class ClientConnection extends Thread {
@@ -15,23 +17,12 @@ public class ClientConnection extends Thread {
 
 	Socket serverSocket;
 	
-	public ClientConnection(Socket socket){
-		
-		allMessages = null;
-		
-		serverSocket = socket;
-		try {
-			in = new DataInputStream(serverSocket.getInputStream());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-	}
-	
-	public ClientConnection(DataInputStream input, JTextArea textArea){
-		
+	public ClientConnection(Socket aSocket, JTextArea textArea) throws IOException{
+
+                serverSocket = aSocket;
+
+                in = new DataInputStream(serverSocket.getInputStream());
 		allMessages = textArea;
-		in = input;
 	
 	}
 	
@@ -60,18 +51,27 @@ public class ClientConnection extends Thread {
 				} else {
 					System.out.println(data);
 				}			
-				
 		    	
 			}
 		    
 		} catch(EOFException e) {
-			 if (allMessages != null){
-                            allMessages.append("Server Disconnected\n");
-			} else {
-                            System.out.println("Server Disconnected");
-			}
+
+                    if (allMessages != null) {
+                        allMessages.append("Server Disconnected\n");
+                    } else {
+                        System.out.println("Server Disconnected");
+                    }
+
+                    try {
+
+                        this.in.close();
+                        this.serverSocket.close();
+                        this.interrupt();
+                    } catch (IOException ex) {
+                        System.out.println("ClientConnection IO:s a"+e.getMessage());
+                    }
 		} catch(IOException e) {
-			System.out.println("IO:s a"+e.getMessage());
+			System.out.println("ClientConnection IO:s a"+e.getMessage());
 		} 
     }
 	
