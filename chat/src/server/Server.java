@@ -13,19 +13,25 @@ public class Server {
         DataInputStream in;
         DataOutputStream out;
 
+	/**
+	 *
+	 */
         public Server(){
 
-                clientList = new ArrayList<Socket>();
+		clientList = new ArrayList<Socket>();
                 nicknameList = new ArrayList<String>();
 
                 isLogged = false;                
             
         }
 
+	/**
+	 * 
+	 */
         public void start(){
-                try{
+		try{
 
-                    int serverPort = 8080;
+		    int serverPort = 8080;
 		    ServerSocket listenSocket = new ServerSocket(serverPort);
 
 		    Socket clientSocket;
@@ -33,6 +39,7 @@ public class Server {
 		    System.out.println("sever started");
 
 		    while(true) {
+			
 		    	clientSocket = listenSocket.accept();
 
                         //the server reads the nickname send by the client
@@ -62,6 +69,10 @@ public class Server {
                             System.out.printf("the nickname %s is already chosen\n", nick);
                             out = new DataOutputStream( clientSocket.getOutputStream());
                             out.writeUTF("Nickname already chosen, please select another one and reconnect");
+
+			    in.close();
+			    out.close();
+
                             clientSocket.close();
                         }
 
