@@ -8,57 +8,53 @@ import javax.swing.JTextArea;
 
 public class Client {
 
-	private String hostName;
-	private int serverPort;
 	private Socket socket;
 	private DataOutputStream out;
 	private DataInputStream in;
-	private String message;
 	private JTextArea allMessages;
         ClientConnection cc;
 	
 	/**
-	 * set hostName to localhost (127.0.0.1) and serverPort to 8080
+	 * Constructs a new Client
 	 */
 	public Client(){
-		hostName = "127.0.0.1";
-		serverPort = 8080;
 		socket = null;
 		allMessages = null;
+		in = null;
+		out = null;
 		cc = null;
 	}
 	
 	/**
-	 * set hostName to localhost (127.0.0.1) and serverPort to 8080 
+	 * Constructs a new Client, it gets as parameter a JTextArea in order to
+	 * print the output there rather than on the console
+	 * 
 	 * @param textArea
 	 */
 	public Client(JTextArea textArea){
-		hostName = "127.0.0.1";
-		serverPort = 8080;
 		socket = null;
 		allMessages = textArea;
+		in = null;
+		out = null;
 		cc = null;
 	}
-	
-	
-	
-	public Socket getSocket(){
-		return this.socket;
-	}
-	
-	public void setHostName(String host){
-		this.hostName = host;
-	}
 
-	public void setServerPort(int port){
-		this.serverPort = port;
-	}
-	
-	public boolean connect (String serverIP, int port, String nickname){
-    	boolean success = true;
-    	hostName = serverIP;
-    	serverPort = port;
-		try{ 
+	/**
+	 * The client connects to the server, the connection parameters such as
+	 * the IP address and the port are passed to the method each time the client
+	 * has to connect, the nickname is also required, because the fist message
+	 * that is passed to the server is actually the nickname
+	 *
+	 * @param serverIP
+	 * @param serverPort
+	 * @param nickname
+	 * @return true if the connection is set correctly
+	 */
+	public boolean connect (String serverIP, int serverPort, String nickname){
+
+		boolean success = true;
+
+		try{
 	   
 			socket = new Socket(serverIP, serverPort);
 			
@@ -87,11 +83,11 @@ public class Client {
 				System.out.println("Server Disconnected");
 			}
 		
-		} catch (IOException e){
+		} catch (IOException ioe){
 			
 			success = false;
                         if (allMessages == null)
-                            System.out.println("IO: " + e.getMessage());
+                            System.out.println("Client IO: " + ioe.getMessage());
 		
 		}
         
@@ -101,11 +97,10 @@ public class Client {
 	
 	/**
          *
-         * The method sends the passed message to the server to which the client
-         * is connected
+         * The method sends the passed message to the server connected
          *
          * @param message
-         * @return
+         * @return true if the message has been sent successfully
          */
 	public boolean sendMessage(String message){
 		try {
@@ -118,14 +113,19 @@ public class Client {
                                 System.out.println("No more connected with any server");
                             }
                         }
-		} catch (IOException e) {
+		} catch (IOException ioe) {
+			System.out.println("Client IO: " + ioe.getMessage());
 			return false;
 		}
 		return true;
 	}
 	
 	
-	
+	/**
+	 * The method disconnects from the server and it closes the I/O streams
+	 * and the socket, if they are open, then the thread ClientConnection is
+	 * stopped too, if it were running
+	 */
 	public void disconnect(){
 		try {
 

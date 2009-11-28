@@ -14,7 +14,7 @@ public class Server {
         DataOutputStream out;
 
 	/**
-	 *
+	 * Constructs a new Server
 	 */
         public Server(){
 
@@ -26,7 +26,9 @@ public class Server {
         }
 
 	/**
-	 * 
+	 * Accepts connections from clients, the nickname of a client is unique,
+	 * if two clients try to connect with the same nickname, the connection
+	 * with the second is dropped
 	 */
         public void start(){
 		try{
