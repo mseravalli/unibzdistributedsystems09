@@ -14,6 +14,8 @@ public class Server {
 		ArrayList<Socket> clientList = new ArrayList<Socket>();
                 ArrayList<String> nicknameList = new ArrayList<String>();
 
+                boolean isLogged = false;
+
                 DataInputStream in;
                 DataOutputStream out;
 		
@@ -27,14 +29,12 @@ public class Server {
 		    System.out.println("sever started");
 		    
 		    while(true) {
-		    	clientSocket = listenSocket.accept();
-		    	System.out.printf("new client connected!!\n");
-		    	clientList.add(clientSocket);
+		    	clientSocket = listenSocket.accept();		    	
 
                         //the server reads the nickname send by the client
                         in = new DataInputStream(clientSocket.getInputStream());
                         String nick = in.readUTF();
-                        boolean isLogged = false;
+                        System.out.printf("new client connected, nickname: %s \n", nick);
 
                         /*
                          * the server checks if the nickname sent is already present
@@ -50,15 +50,18 @@ public class Server {
                          * to the list and another thread is created otherwhise
                          * the client is informed and the connection is closed
                          */
-                        if(!isLogged){
+                        if(!isLogged){                            
+                            clientList.add(clientSocket);
                             nicknameList.add(nick);
-                            ServerConnection sc = new ServerConnection(clientSocket, clientList);
+                            ServerConnection sc = new ServerConnection(clientSocket, clientList, nicknameList);
                         } else {
+                            System.out.printf("the nickname %s is already chosen\n", nick);
                             out = new DataOutputStream( clientSocket.getOutputStream());
                             out.writeUTF("Nickname already chosen, please select another one and reconnect");
+                            clientSocket.close();
                         }
 
-		    	
+		    	isLogged = false;
 		    }
 		    
 		} catch(IOException e) {

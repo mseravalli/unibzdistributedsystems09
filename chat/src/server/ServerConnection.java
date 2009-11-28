@@ -14,12 +14,14 @@ public class ServerConnection extends Thread {
     
     Socket clientSocket;
     ArrayList<Socket> clients;
+    ArrayList<String> nicknames;
     
-    public ServerConnection (Socket aClientSocket, ArrayList<Socket> clientList) { 
+    public ServerConnection (Socket aClientSocket, ArrayList<Socket> clientList, ArrayList<String> nickList) {
     	
 		try {
 			clientSocket = aClientSocket;
 			clients = clientList;
+                        nicknames = nickList;
 			
 		    in = new DataInputStream(clientSocket.getInputStream());
 		    //out = new DataOutputStream( clientSocket.getOutputStream()); 
@@ -53,6 +55,8 @@ public class ServerConnection extends Thread {
 		} catch(EOFException e) {
                     
 			System.out.println("Client disconnected");
+                        int i = this.clients.indexOf(this.clientSocket);
+                        this.nicknames.remove(i);
 			this.clients.remove(this.clientSocket);
 			
 

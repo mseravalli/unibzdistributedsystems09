@@ -52,7 +52,7 @@ public class Client {
 		this.serverPort = port;
 	}
 	
-	public boolean connect (String serverIP, int port){
+	public boolean connect (String serverIP, int port, String nickname){
     	boolean success = true;
     	hostName = serverIP;
     	serverPort = port;
@@ -62,7 +62,10 @@ public class Client {
 			
 			out = new DataOutputStream(socket.getOutputStream());
 			in = new DataInputStream(socket.getInputStream());
-			
+
+                        //the client sends its nickname
+                        out.writeUTF(nickname);
+
 			cc = new ClientConnection(socket, allMessages);
 			cc.start();		
 			
@@ -139,7 +142,7 @@ public class Client {
 	public static void main (String args[]) { 
     	
 		Client c = new Client();
-		c.connect("127.0.0.1", 8080);
+		c.connect("127.0.0.1", 8080, "nickname");
 		
 	}
 }
