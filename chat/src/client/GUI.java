@@ -21,6 +21,7 @@ public class GUI implements ActionListener, WindowListener{
         private JButton connect;
         private JButton sendButton;
         private JButton disconnectButton;
+	private JButton quitButton;
         private JTextField hostName;
         private JTextField nicknameField;
         private JTextField inputField;
@@ -29,7 +30,10 @@ public class GUI implements ActionListener, WindowListener{
         private String nickname;
         private String actualMessage;
         private Client client;
-        
+
+	/**
+	 *
+	 */
         public GUI(){
 
             
@@ -41,13 +45,20 @@ public class GUI implements ActionListener, WindowListener{
                 connect = new JButton("Connect");                
                 connect.addActionListener(this);
                 scroll = new JScrollPane();
-                chatField = new JTextArea(); 
-                scroll.getViewport().add(chatField);
+                chatField = new JTextArea();         
+		scroll.setViewportView(chatField);
+
                 inputField = new JTextField();
-                sendButton = new JButton("Send");
+
+		sendButton = new JButton("Send");
                 sendButton.addActionListener(this);
-                disconnectButton = new JButton("Disconnect");
+
+                disconnectButton = new JButton("Back to menu");
                 disconnectButton.addActionListener(this);
+
+		quitButton = new JButton("Quit");
+                quitButton.addActionListener(this);
+
                 inputField.addActionListener(this);
                 errorLabel = new JLabel("Connection Failed");
                 
@@ -60,6 +71,8 @@ public class GUI implements ActionListener, WindowListener{
                 chatWindow.add(inputField);
                 chatWindow.add(sendButton);
                 chatWindow.add(disconnectButton);
+		chatWindow.add(quitButton);
+
                 
 
                 chatWindow.addWindowListener(this);
@@ -67,52 +80,61 @@ public class GUI implements ActionListener, WindowListener{
                 startWindow();
                 client = new Client(this.chatField);
          }
-         
-         public void startWindow(){
-                 
-                 
-                 hostName.setBounds(100,50,200,30);
-                 hostName.setVisible(true);
-                 
-                 
-                 nicknameField.setBounds(100,120,200,30);
-                 nicknameField.setVisible(true);
-                 
-                 
-                 connect.setBounds(125, 250, 150, 50);
-                 connect.setVisible(true);
 
-                 errorLabel.setVisible(false);
-                 errorLabel.setBounds(100, 350, 200, 30);
+	/**
+	 * 
+	 */
+	public void startWindow(){
                  
-                 scroll.setBounds(5,5,390,390);
-                 scroll.setVisible(false);
                  
-                 //chatField.setBounds(5,5,300,300);
-                 chatField.setVisible(false);
-                 chatField.setLineWrap(true);
-                 chatField.setWrapStyleWord(true);
+                hostName.setBounds(100,50,200,30);
+                hostName.setVisible(true);
                  
+                 
+                nicknameField.setBounds(100,120,200,30);
+                nicknameField.setVisible(true);
+                 
+                 
+                connect.setBounds(125, 250, 150, 50);
+                connect.setVisible(true);
 
-                 inputField.setBounds(5,400,390,30);
-                 inputField.setVisible(false);
+                errorLabel.setVisible(false);
+                errorLabel.setBounds(100, 350, 200, 30);
                  
-                 sendButton.setBounds(5,435,80,30);
-                 sendButton.setVisible(false);
+                scroll.setBounds(5,5,390,390);
+                scroll.setVisible(false);
                  
-                 disconnectButton.setBounds(85, 435, 80, 30);
-                 disconnectButton.setVisible(false);
+                //chatField.setBounds(5,5,300,300);
+                chatField.setVisible(false);
+                chatField.setLineWrap(true);
+                chatField.setWrapStyleWord(true);
+
+
+                inputField.setBounds(5,400,390,30);
+                inputField.setVisible(false);
+                 
+                sendButton.setBounds(5,435,80,30);
+                sendButton.setVisible(false);
+                 
+                disconnectButton.setBounds(140, 435, 120, 30);
+                disconnectButton.setVisible(false);
+
+		quitButton.setBounds(125, 310, 150, 50);
+		quitButton.setVisible(true);
                  
                  
                  //chatWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                 chatWindow.setResizable(false);
-                 chatWindow.setVisible(true);
+                chatWindow.setResizable(false);
+                chatWindow.setVisible(true);
                  
-                 chatWindow.repaint();
+                chatWindow.repaint();
                  
         	 
-         }
-         
+	}
+
+	 /**
+	  * 
+	  */
          public void enterChat(){
                  
                  connect.setVisible(false);
@@ -131,6 +153,8 @@ public class GUI implements ActionListener, WindowListener{
                  sendButton.setVisible(true);
                  
                  disconnectButton.setVisible(true);
+		 
+		 quitButton.setBounds(315, 435, 80, 30);
 
                  errorLabel.setVisible(false);
                  
@@ -152,8 +176,11 @@ public class GUI implements ActionListener, WindowListener{
                  }
          }
 
-        
-        public void actionPerformed(ActionEvent e) {
+        /**
+	 * 
+	 * @param e
+	 */
+	public void actionPerformed(ActionEvent e) {
         		
         		//if the "connect" button was pressed
                 if(e.getSource().equals(connect)){
@@ -216,7 +243,11 @@ public class GUI implements ActionListener, WindowListener{
                 	client.disconnect();
                 	this.disconnect();
                 }
-               
+
+		else if(e.getSource().equals(quitButton)){
+                	client.disconnect();
+                	System.exit(0);
+		}
                 
                 
         }

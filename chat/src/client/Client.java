@@ -25,6 +25,7 @@ public class Client {
 		serverPort = 8080;
 		socket = null;
 		allMessages = null;
+		cc = null;
 	}
 	
 	/**
@@ -35,7 +36,8 @@ public class Client {
 		hostName = "127.0.0.1";
 		serverPort = 8080;
 		socket = null;
-		allMessages = textArea;		
+		allMessages = textArea;
+		cc = null;
 	}
 	
 	
@@ -127,12 +129,20 @@ public class Client {
 	public void disconnect(){
 		try {
 
-			out.close();
-			in.close();
-			this.socket.close();
-			this.socket = null;
+			if(out != null)
+			    out.close();
+
+			if(in != null)				
+			    in.close();
+
+			if(socket != null && !socket.isClosed()){
+			    this.socket.close();
+			    this.socket = null;
+			}
+
                         //the thread is stopped 
-                        cc.interrupt();
+                        if(cc != null)
+			cc.interrupt();
 
 		} catch (IOException e) {
 			e.printStackTrace();
