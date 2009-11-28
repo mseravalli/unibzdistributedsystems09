@@ -163,7 +163,7 @@ public class GUI implements ActionListener, WindowListener{
                         String[] tokens = hostName.getText().split(delims);
                         try{
                         	//System.out.println(tokens[0] + " " + tokens[1]);
-                        	if(client.connect(tokens[0], Integer.parseInt(tokens[1]))){
+                        	if(client.connect(tokens[0], Integer.parseInt(tokens[1]), this.nickname)){
                         			this.enterChat();
                         	}
                         	else{
