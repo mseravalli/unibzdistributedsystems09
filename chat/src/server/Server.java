@@ -12,7 +12,10 @@ public class Server {
 	public static void main (String args[]) { 
 		
 		ArrayList<Socket> clientList = new ArrayList<Socket>();
-		
+                ArrayList<String> nicknameList = new ArrayList<String>();
+
+                DataInputStream in;
+                DataOutputStream out;
 		
     	try{
 		    
@@ -27,7 +30,35 @@ public class Server {
 		    	clientSocket = listenSocket.accept();
 		    	System.out.printf("new client connected!!\n");
 		    	clientList.add(clientSocket);
-		    	ServerConnection sc = new ServerConnection(clientSocket, clientList);
+
+                        //the server reads the nickname send by the client
+                        in = new DataInputStream(clientSocket.getInputStream());
+                        String nick = in.readUTF();
+                        boolean isLogged = false;
+
+                        /*
+                         * the server checks if the nickname sent is already present
+                         * in the list of the nicknames
+                         */
+                        for(int i=0; i<nicknameList.size();i++){
+                            if(nicknameList.get(i).equals(nick))
+                                isLogged = true;
+                        }
+
+                        /*
+                         * if a nickname like the sent one is not present, it is added
+                         * to the list and another thread is created otherwhise
+                         * the client is informed and the connection is closed
+                         */
+                        if(!isLogged){
+                            nicknameList.add(nick);
+                            ServerConnection sc = new ServerConnection(clientSocket, clientList);
+                        } else {
+                            out = new DataOutputStream( clientSocket.getOutputStream());
+                            out.writeUTF("Nickname already chosen, please select another one and reconnect");
+                        }
+
+		    	
 		    }
 		    
 		} catch(IOException e) {
