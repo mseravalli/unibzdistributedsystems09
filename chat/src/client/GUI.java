@@ -1,6 +1,7 @@
 
 package client;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -12,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 public class GUI implements ActionListener, WindowListener{
         
@@ -32,7 +34,7 @@ public class GUI implements ActionListener, WindowListener{
         private Client client;
 
 	/**
-	 *
+	 * Constructs a new GUI
 	 */
         public GUI(){
 
@@ -61,6 +63,7 @@ public class GUI implements ActionListener, WindowListener{
 
                 inputField.addActionListener(this);
                 errorLabel = new JLabel("Connection Failed");
+		errorLabel.setForeground(Color.RED);
                 
                 chatWindow.add(hostName);
                 chatWindow.add(nicknameField);
@@ -82,7 +85,8 @@ public class GUI implements ActionListener, WindowListener{
          }
 
 	/**
-	 * 
+	 * Initializes some components to be visible and to be located in a determined
+	 * part of the window
 	 */
 	public void startWindow(){
                  
@@ -97,9 +101,6 @@ public class GUI implements ActionListener, WindowListener{
                  
                 connect.setBounds(125, 250, 150, 50);
                 connect.setVisible(true);
-
-                errorLabel.setVisible(false);
-                errorLabel.setBounds(100, 350, 200, 30);
                  
                 scroll.setBounds(5,5,390,390);
                 scroll.setVisible(false);
@@ -121,6 +122,10 @@ public class GUI implements ActionListener, WindowListener{
 
 		quitButton.setBounds(125, 310, 150, 50);
 		quitButton.setVisible(true);
+
+		errorLabel.setVisible(false);
+                errorLabel.setBounds(125, 370, 150, 50);
+		errorLabel.setHorizontalAlignment(SwingConstants.CENTER);
                  
                  
                  //chatWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -133,8 +138,9 @@ public class GUI implements ActionListener, WindowListener{
 	}
 
 	 /**
-	  * 
-	  */
+	 * Initializes some components to be visible and to be located in a determined
+	 * part of the window
+	 */
          public void enterChat(){
                  
                  connect.setVisible(false);
@@ -160,16 +166,19 @@ public class GUI implements ActionListener, WindowListener{
                  
                  chatWindow.repaint();
          }
-         
+
+	 /**
+	  * The errorLabel becomes visible
+	  */
          public void showConnectionError(){
                  errorLabel.setVisible(true);
          }
-         
-         public void disconnect(){
-        	 	
-        	 this.startWindow();
-         }
-         
+
+	 /**
+	  * Prints the type of error on the chatField
+	  *
+	  * @param type
+	  */
          public void IOProblem(String type){
                  if(type.equals("output")){
                          chatField.append("Problem sending the message\n");
@@ -177,12 +186,14 @@ public class GUI implements ActionListener, WindowListener{
          }
 
         /**
+	 * Handles all the actions performed by all the components within the
+	 * chatWindow
 	 * 
 	 * @param e
 	 */
 	public void actionPerformed(ActionEvent e) {
         		
-        		//if the "connect" button was pressed
+        	//if the "connect" button was pressed
                 if(e.getSource().equals(connect)){
                 	
                         nickname = nicknameField.getText() + ": ";
@@ -191,10 +202,10 @@ public class GUI implements ActionListener, WindowListener{
                         try{
                         	//System.out.println(tokens[0] + " " + tokens[1]);
                         	if(client.connect(tokens[0], Integer.parseInt(tokens[1]), this.nickname)){
-                        			this.enterChat();
+                        		this.enterChat();
                         	}
                         	else{
-                        			this.showConnectionError();
+					this.showConnectionError();
                         	}
                         }
                         catch(Exception ex){
@@ -241,7 +252,7 @@ public class GUI implements ActionListener, WindowListener{
                 //if the disconnect-button was pressed
                 else if(e.getSource().equals(disconnectButton)){
                 	client.disconnect();
-                	this.disconnect();
+                	this.startWindow();
                 }
 
 		else if(e.getSource().equals(quitButton)){
@@ -264,9 +275,15 @@ public class GUI implements ActionListener, WindowListener{
 			System.exit(0);
 		}
 
+		/**
+		 * Disconnects the client and stops the main, when the window
+		 * is closed
+		 *
+		 * @param arg0
+		 */
 		@Override
 		public void windowClosing(WindowEvent arg0) {
-			//this.client.disconnect();
+			this.client.disconnect();
 			System.exit(0);			
 		}
 

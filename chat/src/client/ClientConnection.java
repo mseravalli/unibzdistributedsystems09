@@ -14,17 +14,48 @@ public class ClientConnection extends Thread {
 	JTextArea allMessages;
 
 	Socket serverSocket;
-	
+
+	/**
+	 * Constructs a new ClientConnection using the socket connected with the
+	 * server, than ClientConnection initializes the dataInputStream using the
+	 * passed socket.
+	 * 
+	 * @param aSocket
+	 * @throws IOException
+	 */
+	public ClientConnection(Socket aSocket) throws IOException{
+
+                serverSocket = aSocket;
+                in = new DataInputStream(serverSocket.getInputStream());
+		allMessages = null;
+
+	}
+
+
+	/**
+	 * Constructs a new ClientConnection using the socket connected with the
+	 * server, than ClientConnection initializes the dataInputStream using the
+	 * passed socket,
+	 * furtheremore, ClientConnection gets as parameter a JTextArea in order
+	 * to print the output there rather than on the console
+	 * 
+	 * @param aSocket
+	 * @param textArea
+	 * @throws IOException
+	 */
 	public ClientConnection(Socket aSocket, JTextArea textArea) throws IOException{
 
                 serverSocket = aSocket;
-
-                in = new DataInputStream(serverSocket.getInputStream());
+                in = new DataInputStream(serverSocket.getInputStream());		
 		allMessages = textArea;
 	
 	}
 	
-    @Override
+	/**
+	 * While is running the thread reads the inputStream and prints the output
+	 * either on the console or on a JTextArea
+	 */
+	@Override
 	public void run(){
 		try {
 			
@@ -65,13 +96,15 @@ public class ClientConnection extends Thread {
                         this.in.close();
                         this.serverSocket.close();
                         this.interrupt();
-                    } catch (IOException ex) {
-                        System.out.println("ClientConnection IO:s a"+e.getMessage());
+			
+                    } catch (IOException ioe) {
+                        System.out.println("ClientConnection IO: "+ioe.getMessage());
                     }
-		} catch(IOException e) {
-			System.out.println("ClientConnection IO:s a"+e.getMessage());
+		} catch(IOException ioe) {
+			System.out.println("Client Disconnected: "+ioe.getMessage());
 		} 
-    }
+
+	}
 	
 	
 	

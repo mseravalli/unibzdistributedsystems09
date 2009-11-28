@@ -15,7 +15,15 @@ public class ServerConnection extends Thread {
     Socket clientSocket;
     ArrayList<Socket> clients;
     ArrayList<String> nicknames;
-    
+
+    /**
+     * Constructs a new ServerConnection with the specified Socket, clientList and
+     * nicknameList, the inputStream is initialized using the passed socket
+     *
+     * @param aClientSocket
+     * @param clientList
+     * @param nickList
+     */
     public ServerConnection (Socket aClientSocket, ArrayList<Socket> clientList, ArrayList<String> nickList) {
     	
 		try {
@@ -23,33 +31,36 @@ public class ServerConnection extends Thread {
 			clients = clientList;
                         nicknames = nickList;
 			
-		    in = new DataInputStream(clientSocket.getInputStream());
-		    //out = new DataOutputStream( clientSocket.getOutputStream()); 
+			in = new DataInputStream(clientSocket.getInputStream());
 		    
-		    this.start();
+			this.start();
 		    
 		} catch(IOException e) {
-			System.out.println("Connection: " + e.getMessage());
+			System.out.println("ServerConnection: " + e.getMessage());
 		}
     } 
 
+    
+    /**
+     * While running, ServerConnection receives a message form the connected client
+     * and sends it to all Sockets contained in the clientList
+     */
     @Override
     public void run(){
-		try { // an echo server 
+		try { 
 			
 			while(true){
 		    
 				String data = in.readUTF();
-		    	System.out.println(data);
+				System.out.println(data);
+
+
+				for(int i = 0; i<clients.size();i++){
+					
+					out = new DataOutputStream( clients.get(i).getOutputStream());
+					out.writeUTF(data);
+				}
 		    	
-		    	
-		    	for(int i = 0; i<clients.size();i++){
-		    		//clients.get(i);
-		    		
-		    		out = new DataOutputStream( clients.get(i).getOutputStream());
-		    		out.writeUTF(data);
-		    	}
-		    	//out.writeUTF(data);
 			}
 		    
 		} catch(EOFException e) {
@@ -61,13 +72,14 @@ public class ServerConnection extends Thread {
 			
 
 		} catch(IOException e) {
-			System.out.println("Server Connection IO:s a"+e.getMessage());
+			System.out.println("ServerConnection IO:s a"+e.getMessage());
 		} finally {
 		    try {
 		    	clientSocket.close();
 		    } catch (IOException e) {
-		    	System.out.println("Server Connection IO:s a"+e.getMessage());
+		    	System.out.println("ServerConnection IO:s a"+e.getMessage());
 		    }
+		    
                     //the thread is stopped
                     this.interrupt();
 
