@@ -6,30 +6,34 @@ import java.io.*;
 
 
 public class Server {
-	
-	
-    
-	public static void main (String args[]) { 
-		
-		ArrayList<Socket> clientList = new ArrayList<Socket>();
-                ArrayList<String> nicknameList = new ArrayList<String>();
 
-                boolean isLogged = false;
+        ArrayList<Socket> clientList;
+        ArrayList<String> nicknameList;
+        boolean isLogged;
+        DataInputStream in;
+        DataOutputStream out;
 
-                DataInputStream in;
-                DataOutputStream out;
-		
-    	try{
-		    
-    		int serverPort = 8080; 
-		    ServerSocket listenSocket = new ServerSocket(serverPort); 
-		    
+        public Server(){
+
+                clientList = new ArrayList<Socket>();
+                nicknameList = new ArrayList<String>();
+
+                isLogged = false;                
+            
+        }
+
+        public void start(){
+                try{
+
+                    int serverPort = 8080;
+		    ServerSocket listenSocket = new ServerSocket(serverPort);
+
 		    Socket clientSocket;
-		    
+
 		    System.out.println("sever started");
-		    
+
 		    while(true) {
-		    	clientSocket = listenSocket.accept();		    	
+		    	clientSocket = listenSocket.accept();
 
                         //the server reads the nickname send by the client
                         in = new DataInputStream(clientSocket.getInputStream());
@@ -50,7 +54,7 @@ public class Server {
                          * to the list and another thread is created otherwhise
                          * the client is informed and the connection is closed
                          */
-                        if(!isLogged){                            
+                        if(!isLogged){
                             clientList.add(clientSocket);
                             nicknameList.add(nick);
                             ServerConnection sc = new ServerConnection(clientSocket, clientList, nicknameList);
@@ -62,66 +66,20 @@ public class Server {
                         }
 
 		    	isLogged = false;
-		    }
-		    
-		} catch(IOException e) {
+                    }
+
+                } catch(IOException e) {
 			System.out.println("Listen: " + e.getMessage());
-		}
+            }
+        }
+	
+	
+    
+	public static void main (String args[]) { 
+		
+		Server server = new Server();
+                server.start();
+
 	}
 
 } 
-
-/*
-class Connection extends Thread {
-	
-    DataInputStream in;
-    DataOutputStream out; 
-    
-    Socket clientSocket;
-    ArrayList<Socket> clients;
-    
-    public Connection (Socket aClientSocket, ArrayList<Socket> clientList) { 
-    	
-		try {
-			clientSocket = aClientSocket;
-			clients = clientList;
-			
-		    in = new DataInputStream(clientSocket.getInputStream());
-		    //out = new DataOutputStream( clientSocket.getOutputStream()); 
-		    
-		    this.start();
-		    
-		} catch(IOException e) {
-			System.out.println("Connection: " + e.getMessage());
-		}
-    } 
-
-    public void run(){
-		try { // an echo server 
-			
-			while(true){
-		    
-				String data = in.readUTF();
-		    	System.out.println(data);
-		    	
-		    	
-		    	for(int i = 0; i<clients.size();i++){
-		    		//clients.get(i);
-		    		
-		    		out = new DataOutputStream( clients.get(i).getOutputStream());
-		    		out.writeUTF(data);
-		    	}
-		    	//out.writeUTF(data);
-			}
-		    
-		} catch(EOFException e) {
-			System.out.println("EOF: "+e.getMessage()); 
-		} catch(IOException e) {
-			System.out.println("IO:s a"+e.getMessage());
-		} finally {
-		    try {
-		    	clientSocket.close();
-		    } catch (IOException e) {/*close failed}
-		}
-    }
-}*/
