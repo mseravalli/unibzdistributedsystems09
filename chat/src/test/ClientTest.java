@@ -12,7 +12,6 @@ public class ClientTest {
 	
 	String serverIP = "127.0.0.1";
 	int serverPort = 8080;
-	String nickname1 = "nickname1";
 	String message = "Test message";
 
 	
@@ -23,7 +22,7 @@ public class ClientTest {
 	@Test
 	public void testConnect() {		
 		
-		assertEquals(false, aClient.connect(serverIP, serverPort, nickname1));
+		assertEquals(false, aClient.connect(serverIP, serverPort, "nickname1"));
 		
 		theServer.start();
 		
@@ -36,18 +35,9 @@ public class ClientTest {
 			e.printStackTrace();
 		}
 		
-		assertEquals(true, aClient.connect(serverIP, serverPort, nickname1));
+		assertEquals(true, aClient.connect(serverIP, serverPort, "nickname1"));
 		
 		aClient.disconnect();
-		
-		/*
-		 * this part is needed in order to that the client disconnects
-		 */
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 		
 	}
 
@@ -58,7 +48,7 @@ public class ClientTest {
 		
 		assertEquals(false, aClient.sendMessage(message));
 		
-		aClient.connect(serverIP, serverPort, nickname1);
+		aClient.connect(serverIP, serverPort, "nickname2");
 		
 		assertEquals(true, aClient.sendMessage(message));
 		
