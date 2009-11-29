@@ -104,20 +104,22 @@ public class Client {
          */
 	public boolean sendMessage(String message){
 		try {
-                        if(!this.socket.isClosed())
-                            out.writeUTF(message);
-                        else {
-                            if (allMessages != null) {
-                                allMessages.append("No more connected with any server\n");
-                            } else {
-                                System.out.println("No more connected with any server");
-                            }
-                        }
+			if(socket!=null && !this.socket.isClosed()){
+				out.writeUTF(message);
+				return true;
+			} else {
+				if (allMessages != null) {
+					allMessages.append("No more connected with any server\n");
+				} else {
+					System.out.println("No more connected with any server");
+				}
+                            
+				return false;
+			}
 		} catch (IOException ioe) {
 			System.out.println("Client IO: " + ioe.getMessage());
 			return false;
 		}
-		return true;
 	}
 	
 	

@@ -5,17 +5,17 @@ import java.util.ArrayList;
 import java.io.*;
 
 
-public class Server {
+public class Server implements Runnable{
 
-        ArrayList<Socket> clientList;
+		ArrayList<Socket> clientList;
         ArrayList<String> nicknameList;
         boolean isLogged;
         DataInputStream in;
         DataOutputStream out;
 
-	/**
-	 * Constructs a new Server
-	 */
+		/**
+		 * Constructs a new Server
+		 */
         public Server(){
 
 		clientList = new ArrayList<Socket>();
@@ -25,12 +25,12 @@ public class Server {
             
         }
 
-	/**
-	 * Accepts connections from clients, the nickname of a client is unique,
-	 * if two clients try to connect with the same nickname, the connection
-	 * with the second is dropped
-	 */
-        public void start(){
+		/**
+		 * Accepts connections from clients, the nickname of a client is unique,
+		 * if two clients try to connect with the same nickname, the connection
+		 * with the second is dropped
+		 */
+        public void startServer(){
 		try{
 
 		    int serverPort = 8080;
@@ -64,7 +64,7 @@ public class Server {
                          * the client is informed and the connection is closed
                          */
                         if(!isLogged){
-                            clientList.add(clientSocket);
+                        	clientList.add(clientSocket);
                             nicknameList.add(nick);
                             ServerConnection sc = new ServerConnection(clientSocket, clientList, nicknameList);
                         } else {
@@ -86,12 +86,16 @@ public class Server {
             }
         }
 	
-	
+        @Override
+    	public void run() {
+    		this.startServer();    		
+    	}
+        
     
 	public static void main (String args[]) { 
 		
 		Server server = new Server();
-                server.start();
+                server.startServer();
 
 	}
 
