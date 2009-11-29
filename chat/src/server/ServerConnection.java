@@ -29,7 +29,7 @@ public class ServerConnection extends Thread {
 		try {
 			clientSocket = aClientSocket;
 			clients = clientList;
-                        nicknames = nickList;
+            nicknames = nickList;
 			
 			in = new DataInputStream(clientSocket.getInputStream());
 		    
@@ -54,11 +54,15 @@ public class ServerConnection extends Thread {
 				String data = in.readUTF();
 				System.out.println(data);
 
-
+				/*
+				 * the message is sent so each client present in the clients list
+				 * for each client it is created a new outputStream
+				 */
 				for(int i = 0; i<clients.size();i++){
 					
 					out = new DataOutputStream( clients.get(i).getOutputStream());
 					out.writeUTF(data);
+
 				}
 		    	
 			}
