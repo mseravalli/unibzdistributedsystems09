@@ -42,8 +42,7 @@ public class ClientTest {
 	}
 
 	@Test
-	public void testSendMessage() {
-		
+	public void testSendMessage() {		
 		
 		
 		assertEquals(false, aClient.sendMessage(message));
