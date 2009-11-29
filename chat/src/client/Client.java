@@ -61,9 +61,12 @@ public class Client {
 			out = new DataOutputStream(socket.getOutputStream());
 			in = new DataInputStream(socket.getInputStream());
 
-                        //the client sends its nickname
-                        out.writeUTF(nickname);
+            //the client sends its nickname
+            out.writeUTF(nickname);
 
+            /*
+             * after the sending of the name Client connection starts
+             */
 			cc = new ClientConnection(socket, allMessages);
 			cc.start();		
 			
@@ -71,13 +74,12 @@ public class Client {
 		} catch (UnknownHostException e){ 
 			
 			success = false;
-			System.out.println("Sock: " + e.getMessage());
+			System.out.println("Client Sock: " + e.getMessage());
 		
 		} catch (EOFException e){
 			
 			success = false;
-			//System.out.println("");
-                        if (allMessages != null){
+            if (allMessages != null){
 				allMessages.append("Server Disconnected");
 			} else {
 				System.out.println("Server Disconnected");
@@ -86,8 +88,8 @@ public class Client {
 		} catch (IOException ioe){
 			
 			success = false;
-                        if (allMessages == null)
-                            System.out.println("Client IO: " + ioe.getMessage());
+            if (allMessages == null)
+            	System.out.println("Client IO: " + ioe.getMessage());
 		
 		}
         
@@ -104,6 +106,9 @@ public class Client {
          */
 	public boolean sendMessage(String message){
 		try {
+			/*
+			 * if the socket exists and it is connected the message is sent
+			 */
 			if(socket!=null && !this.socket.isClosed()){
 				out.writeUTF(message);
 				return true;
@@ -131,6 +136,9 @@ public class Client {
 	public void disconnect(){
 		try {
 
+			/*
+			 * if the streams are opened they will be closed
+			 */
 			if(out != null)
 			    out.close();
 
@@ -142,8 +150,8 @@ public class Client {
 			    this.socket = null;
 			}
 
-                        //the thread is stopped 
-                        if(cc != null)
+            //the thread ClientConnection is stopped 
+			if(cc != null)
 			cc.interrupt();
 
 		} catch (IOException e) {

@@ -4,7 +4,9 @@ import java.net.*;
 import java.util.ArrayList;
 import java.io.*;
 
-
+/*
+ * Server implements Runnable in order to be able to execute the tests
+ */
 public class Server implements Runnable{
 
 		ArrayList<Socket> clientList;
@@ -72,20 +74,23 @@ public class Server implements Runnable{
                             out = new DataOutputStream( clientSocket.getOutputStream());
                             out.writeUTF("Nickname already chosen, please select another one and reconnect");
 
-			    in.close();
-			    out.close();
+						    in.close();
+						    out.close();
 
                             clientSocket.close();
                         }
 
-		    	isLogged = false;
+                        isLogged = false;
                     }
 
                 } catch(IOException e) {
-			System.out.println("Listen: " + e.getMessage());
-            }
+                	System.out.println("Listen: " + e.getMessage());
+	            }
         }
 	
+        /**
+         * starts the server
+         */
         @Override
     	public void run() {
     		this.startServer();    		
@@ -95,7 +100,7 @@ public class Server implements Runnable{
 	public static void main (String args[]) { 
 		
 		Server server = new Server();
-                server.startServer();
+        server.startServer();
 
 	}
 

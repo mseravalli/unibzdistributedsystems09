@@ -44,9 +44,8 @@ public class ClientConnection extends Thread {
 	 * @throws IOException
 	 */
 	public ClientConnection(Socket aSocket, JTextArea textArea) throws IOException{
-
-                serverSocket = aSocket;
-                in = new DataInputStream(serverSocket.getInputStream());		
+		serverSocket = aSocket;
+		in = new DataInputStream(serverSocket.getInputStream());		
 		allMessages = textArea;
 	
 	}

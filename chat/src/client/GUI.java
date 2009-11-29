@@ -48,22 +48,22 @@ public class GUI implements ActionListener, WindowListener{
                 connect.addActionListener(this);
                 scroll = new JScrollPane();
                 chatField = new JTextArea();         
-		scroll.setViewportView(chatField);
+                scroll.setViewportView(chatField);
 
                 inputField = new JTextField();
 
-		sendButton = new JButton("Send");
+                sendButton = new JButton("Send");
                 sendButton.addActionListener(this);
 
                 disconnectButton = new JButton("Back to menu");
                 disconnectButton.addActionListener(this);
 
-		quitButton = new JButton("Quit");
+                quitButton = new JButton("Quit");
                 quitButton.addActionListener(this);
 
                 inputField.addActionListener(this);
                 errorLabel = new JLabel("Connection Failed");
-		errorLabel.setForeground(Color.RED);
+                errorLabel.setForeground(Color.RED);
                 
                 chatWindow.add(hostName);
                 chatWindow.add(nicknameField);
@@ -74,7 +74,7 @@ public class GUI implements ActionListener, WindowListener{
                 chatWindow.add(inputField);
                 chatWindow.add(sendButton);
                 chatWindow.add(disconnectButton);
-		chatWindow.add(quitButton);
+                chatWindow.add(quitButton);
 
                 
 
@@ -105,7 +105,6 @@ public class GUI implements ActionListener, WindowListener{
                 scroll.setBounds(5,5,390,390);
                 scroll.setVisible(false);
                  
-                //chatField.setBounds(5,5,300,300);
                 chatField.setVisible(false);
                 chatField.setLineWrap(true);
                 chatField.setWrapStyleWord(true);
@@ -120,15 +119,13 @@ public class GUI implements ActionListener, WindowListener{
                 disconnectButton.setBounds(140, 435, 120, 30);
                 disconnectButton.setVisible(false);
 
-		quitButton.setBounds(125, 310, 150, 50);
-		quitButton.setVisible(true);
-
-		errorLabel.setVisible(false);
-                errorLabel.setBounds(125, 370, 150, 50);
-		errorLabel.setHorizontalAlignment(SwingConstants.CENTER);
+				quitButton.setBounds(125, 310, 150, 50);
+				quitButton.setVisible(true);
+		
+				errorLabel.setVisible(false);
+				errorLabel.setBounds(125, 370, 150, 50);
+				errorLabel.setHorizontalAlignment(SwingConstants.CENTER);
                  
-                 
-                 //chatWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 chatWindow.setResizable(false);
                 chatWindow.setVisible(true);
                  
@@ -160,32 +157,32 @@ public class GUI implements ActionListener, WindowListener{
                  
                  disconnectButton.setVisible(true);
 		 
-		 quitButton.setBounds(315, 435, 80, 30);
+                 quitButton.setBounds(315, 435, 80, 30);
 
                  errorLabel.setVisible(false);
                  
                  chatWindow.repaint();
          }
 
-	 /**
-	  * The errorLabel becomes visible
-	  */
+		 /**
+		  * The errorLabel becomes visible
+		  */
          public void showConnectionError(){
                  errorLabel.setVisible(true);
          }
 
-	 /**
-	  * Prints the type of error on the chatField
-	  *
-	  * @param type
-	  */
+		 /**
+		  * Prints the type of error on the chatField
+		  *
+		  * @param type
+		  */
          public void IOProblem(String type){
                  if(type.equals("output")){
                          chatField.append("Problem sending the message\n");
                  }
          }
 
-        /**
+    /**
 	 * Handles all the actions performed by all the components within the
 	 * chatWindow
 	 * 
@@ -193,14 +190,18 @@ public class GUI implements ActionListener, WindowListener{
 	 */
 	public void actionPerformed(ActionEvent e) {
         		
-        	//if the "connect" button was pressed
+        		/*
+        		 * if the "connect" button was pressed the server field is parsed 
+        		 * in order to obtain the ip address and the port, then if the 
+        		 * client successfully connects to the server another screen is
+        		 * displayed in the window otherwise an error message
+        		 */
                 if(e.getSource().equals(connect)){
                 	
                         nickname = nicknameField.getText() + ": ";
                         String delims = "[:]";
                         String[] tokens = hostName.getText().split(delims);
                         try{
-                        	//System.out.println(tokens[0] + " " + tokens[1]);
                         	if(client.connect(tokens[0], Integer.parseInt(tokens[1]), this.nickname)){
                         		this.enterChat();
                         	}
@@ -213,7 +214,10 @@ public class GUI implements ActionListener, WindowListener{
                         }
                 }
                 
-                //if the "Send" button was pressed
+                /*
+                 * if the "Send" button was pressed the message present in the 
+                 * input field is sent to the server
+                 */
                 else if(e.getSource().equals(sendButton)){
 
                         try{
@@ -231,7 +235,10 @@ public class GUI implements ActionListener, WindowListener{
                         
                 }
                 
-                //if the enter is pressed while typing in the textField
+                /*
+                 * if the enter is pressed while typing in the textField the message
+                 * present in the input field is sent to the server
+                 */
                 else if(e.getSource().equals(inputField)){
 
                     try{
@@ -249,16 +256,23 @@ public class GUI implements ActionListener, WindowListener{
                     
                 }
                 
-                //if the disconnect-button was pressed
+                /*
+                 * if the disconnect-button was pressed the client disconnects and
+                 * shows the main menu
+                 */
                 else if(e.getSource().equals(disconnectButton)){
                 	client.disconnect();
                 	this.startWindow();
                 }
 
-		else if(e.getSource().equals(quitButton)){
-                	client.disconnect();
-                	System.exit(0);
-		}
+                /*
+                 * if the quit-button was pressed the client disconnects and the
+                 * program exits
+                 */
+				else if(e.getSource().equals(quitButton)){
+		                	client.disconnect();
+		                	System.exit(0);
+				}
                 
                 
         }
