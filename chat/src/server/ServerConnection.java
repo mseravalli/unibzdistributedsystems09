@@ -52,13 +52,15 @@ public class ServerConnection extends Thread {
 			while(true){
 		    
 				String data = in.readUTF();
-				System.out.println(data);
+				
 				/*
 				 * adds at the beginning of the message the nickname of the sender
 				 */
 				int index = this.clients.indexOf(clientSocket);
 				data = this.nicknames.get(index) +": " + data;
-
+				
+				System.out.println(data);
+				
 				/*
 				 * the message is sent so each client present in the clients list
 				 * for each client it is created a new outputStream
@@ -74,9 +76,10 @@ public class ServerConnection extends Thread {
 		    
 		} catch(EOFException e) {
                     
-			System.out.println("Client disconnected");
-                        int i = this.clients.indexOf(this.clientSocket);
-                        this.nicknames.remove(i);
+			
+			int i = this.clients.indexOf(this.clientSocket);
+			System.out.println("Client "+this.nicknames.get(i)+" disconnected");
+			this.nicknames.remove(i);
 			this.clients.remove(this.clientSocket);
 			
 
