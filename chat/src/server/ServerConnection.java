@@ -57,7 +57,7 @@ public class ServerConnection extends Thread {
 				 * adds at the beginning of the message the nickname of the sender
 				 */
 				int index = this.clients.indexOf(clientSocket);
-				data = this.nicknames.get(index) + data;
+				data = this.nicknames.get(index) +": " + data;
 
 				/*
 				 * the message is sent so each client present in the clients list

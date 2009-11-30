@@ -41,10 +41,16 @@ public class GUI implements ActionListener, WindowListener{
             	chatWindow = new JFrame("Chat");
             	chatWindow.setBounds(100, 100, 400, 500);
             	chatWindow.setLayout(null);
+            	
             	hostName = new JTextField("127.0.0.1:8080");
+            	hostName.addActionListener(this);
+            	
             	nicknameField = new JTextField("Nickname");
+            	nicknameField.addActionListener(this);
+            	
                 connect = new JButton("Connect");                
                 connect.addActionListener(this);
+                
                 scroll = new JScrollPane();
                 chatField = new JTextArea();         
                 scroll.setViewportView(chatField);
@@ -88,7 +94,8 @@ public class GUI implements ActionListener, WindowListener{
 	 * part of the window
 	 */
 	public void startWindow(){
-                 
+                
+				chatWindow.setTitle("Chat");
                  
                 hostName.setBounds(100,50,200,30);
                 hostName.setVisible(true);
@@ -138,29 +145,29 @@ public class GUI implements ActionListener, WindowListener{
 	 * part of the window
 	 */
          public void enterChat(){
-                 
-                 connect.setVisible(false);
-                 nicknameField.setVisible(false);
-                 hostName.setVisible(false);
+        	 
+        	 chatWindow.setTitle("Chat - " + this.nicknameField.getText());
+        	 
+        	 connect.setVisible(false);
+        	 nicknameField.setVisible(false);
+        	 hostName.setVisible(false);
                  
 
-                 chatField.setVisible(true);
-                 chatField.setEditable(false);
-                 scroll.setVisible(true);
+        	 chatField.setVisible(true);
+        	 chatField.setEditable(false);
+        	 scroll.setVisible(true);                 
+                 
+        	 inputField.setVisible(true);
                  
                  
-                 inputField.setVisible(true);
-                 
-                 
-                 sendButton.setVisible(true);
-                 
-                 disconnectButton.setVisible(true);
-		 
-                 quitButton.setBounds(315, 435, 80, 30);
+        	 sendButton.setVisible(true);                 
+        	 disconnectButton.setVisible(true);	
+        	 
+             quitButton.setBounds(315, 435, 80, 30);
 
-                 errorLabel.setVisible(false);
+             errorLabel.setVisible(false);
                  
-                 chatWindow.repaint();
+             chatWindow.repaint();
          }
 
 		 /**
@@ -189,27 +196,17 @@ public class GUI implements ActionListener, WindowListener{
 	 */
 	public void actionPerformed(ActionEvent e) {
         		
-        		/*
-        		 * if the "connect" button was pressed the server field is parsed 
-        		 * in order to obtain the ip address and the port, then if the 
-        		 * client successfully connects to the server another screen is
-        		 * displayed in the window otherwise an error message
-        		 */
-                if(e.getSource().equals(connect)){
-                	
-                        String delims = "[:]";
-                        String[] tokens = hostName.getText().split(delims);
-                        try{
-                        	if(client.connect(tokens[0], Integer.parseInt(tokens[1]), this.nicknameField.getText() + ": ")){
-                        		this.enterChat();
-                        	}
-                        	else{
-					this.showConnectionError();
-                        	}
-                        }
-                        catch(Exception ex){
-                        	this.showConnectionError();
-                        }
+                if(e.getSource().equals(this.connect)){
+                	this.connectToServer();
+                }
+                
+                else if(e.getSource().equals(hostName)){
+                	System.out.println("shoene da");
+                	this.connectToServer();
+                }
+                
+                else if(e.getSource().equals(nicknameField)){
+                	this.connectToServer();
                 }
                 
                 /*
@@ -218,18 +215,7 @@ public class GUI implements ActionListener, WindowListener{
                  */
                 else if(e.getSource().equals(sendButton)){
 
-                        try{
-                                actualMessage = inputField.getText();
-                        }
-                        catch (NullPointerException ne){
-                                System.out.println(ne.getMessage());
-                                actualMessage = " ";
-                        }
-                        if(!client.sendMessage(actualMessage)){
-                                this.IOProblem("output");
-                        }
-                        
-                        inputField.setText("");
+                        this.sendMessage();
                         
                 }
                 
@@ -239,18 +225,7 @@ public class GUI implements ActionListener, WindowListener{
                  */
                 else if(e.getSource().equals(inputField)){
 
-                    try{
-                            actualMessage = inputField.getText();
-                    }
-                    catch (NullPointerException ne){
-                            System.out.println(ne.getMessage());
-                            actualMessage = " ";
-                    }
-                    if(!client.sendMessage(actualMessage)){
-                            this.IOProblem("output");
-                    }
-                    
-                    inputField.setText("");
+                    this.sendMessage();
                     
                 }
                 
@@ -274,6 +249,44 @@ public class GUI implements ActionListener, WindowListener{
                 
                 
         }
+	
+		private void sendMessage(){
+			try{
+                actualMessage = inputField.getText();
+	        }
+	        catch (NullPointerException ne){
+	                System.out.println(ne.getMessage());
+	                actualMessage = " ";
+	        }
+	        if(!client.sendMessage(actualMessage)){
+	                this.IOProblem("output");
+	        }
+	        
+	        inputField.setText("");
+		}
+		
+		
+		/*
+		 * the method parses the server field 
+		 * in order to obtain the ip address and the port, then if the 
+		 * client successfully connects to the server another screen is
+		 * displayed in the window otherwise an error message
+		 */
+		private void connectToServer(){
+			String delims = "[:]";
+            String[] tokens = hostName.getText().split(delims);
+            try{
+            	if(client.connect(tokens[0], Integer.parseInt(tokens[1]), this.nicknameField.getText())){
+            		this.enterChat();
+            	}
+            	else{
+            		this.showConnectionError();
+            	}
+            }
+            catch(Exception ex){
+            	this.showConnectionError();
+            }
+		}
 
 		@Override
 		public void windowActivated(WindowEvent arg0) {
