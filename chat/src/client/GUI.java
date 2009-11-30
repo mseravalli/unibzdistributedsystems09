@@ -201,7 +201,6 @@ public class GUI implements ActionListener, WindowListener{
                 }
                 
                 else if(e.getSource().equals(hostName)){
-                	System.out.println("shoene da");
                 	this.connectToServer();
                 }
                 
