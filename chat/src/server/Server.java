@@ -11,19 +11,33 @@ public class Server implements Runnable{
 
 		ArrayList<Socket> clientList;
         ArrayList<String> nicknameList;
-        boolean isLogged;
+        boolean isClientLogged;
         DataInputStream in;
         DataOutputStream out;
+        int serverPort;
 
 		/**
 		 * Constructs a new Server
 		 */
         public Server(){
 
-		clientList = new ArrayList<Socket>();
-                nicknameList = new ArrayList<String>();
+        	serverPort = 8080;
+        	clientList = new ArrayList<Socket>();
+            nicknameList = new ArrayList<String>();
+            isClientLogged = false;                
+            
+        }
+        
+        /**
+         * Constructs a new Server with the given port
+         * @param port
+         */
+        public Server(int port){
 
-                isLogged = false;                
+        	serverPort = port;
+        	clientList = new ArrayList<Socket>();
+            nicknameList = new ArrayList<String>();
+            isClientLogged = false;                
             
         }
 
@@ -35,7 +49,6 @@ public class Server implements Runnable{
         public void startServer(){
 		try{
 
-		    int serverPort = 8080;
 		    ServerSocket listenSocket = new ServerSocket(serverPort);
 
 		    Socket clientSocket;
@@ -57,7 +70,7 @@ public class Server implements Runnable{
                          */
                         for(int i=0; i<nicknameList.size();i++){
                             if(nicknameList.get(i).equals(nick))
-                                isLogged = true;
+                            	isClientLogged = true;
                         }
 
                         /*
@@ -65,7 +78,7 @@ public class Server implements Runnable{
                          * to the list and another thread is created otherwhise
                          * the client is informed and the connection is closed
                          */
-                        if(!isLogged){
+                        if(!isClientLogged){
                         	clientList.add(clientSocket);
                             nicknameList.add(nick);
                             ServerConnection sc = new ServerConnection(clientSocket, clientList, nicknameList);
@@ -80,7 +93,7 @@ public class Server implements Runnable{
                             clientSocket.close();
                         }
 
-                        isLogged = false;
+                        isClientLogged = false;
                     }
 
                 } catch(IOException e) {
@@ -98,8 +111,12 @@ public class Server implements Runnable{
         
     
 	public static void main (String args[]) { 
+		Server server;
 		
-		Server server = new Server();
+		if (args != null && args.length>0){
+			server = new Server(Integer.parseInt(args[0]));
+		} else 
+			server = new Server();
         server.startServer();
 
 	}

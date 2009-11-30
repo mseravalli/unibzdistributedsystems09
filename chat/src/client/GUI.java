@@ -23,13 +23,12 @@ public class GUI implements ActionListener, WindowListener{
         private JButton connect;
         private JButton sendButton;
         private JButton disconnectButton;
-	private JButton quitButton;
+        private JButton quitButton;
         private JTextField hostName;
         private JTextField nicknameField;
         private JTextField inputField;
         private JLabel errorLabel;
         
-        private String nickname;
         private String actualMessage;
         private Client client;
 
@@ -198,11 +197,10 @@ public class GUI implements ActionListener, WindowListener{
         		 */
                 if(e.getSource().equals(connect)){
                 	
-                        nickname = nicknameField.getText() + ": ";
                         String delims = "[:]";
                         String[] tokens = hostName.getText().split(delims);
                         try{
-                        	if(client.connect(tokens[0], Integer.parseInt(tokens[1]), this.nickname)){
+                        	if(client.connect(tokens[0], Integer.parseInt(tokens[1]), this.nicknameField.getText() + ": ")){
                         		this.enterChat();
                         	}
                         	else{
@@ -227,7 +225,7 @@ public class GUI implements ActionListener, WindowListener{
                                 System.out.println(ne.getMessage());
                                 actualMessage = " ";
                         }
-                        if(!client.sendMessage(nickname+actualMessage)){
+                        if(!client.sendMessage(actualMessage)){
                                 this.IOProblem("output");
                         }
                         
@@ -248,7 +246,7 @@ public class GUI implements ActionListener, WindowListener{
                             System.out.println(ne.getMessage());
                             actualMessage = " ";
                     }
-                    if(!client.sendMessage(nickname+actualMessage)){
+                    if(!client.sendMessage(actualMessage)){
                             this.IOProblem("output");
                     }
                     
