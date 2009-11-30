@@ -249,7 +249,10 @@ public class GUI implements ActionListener, WindowListener{
                 
                 
         }
-	
+		
+		/*
+		 * the message that is in the inputfield is sent to the server
+		 */
 		private void sendMessage(){
 			try{
                 actualMessage = inputField.getText();
