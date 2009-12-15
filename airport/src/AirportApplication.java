@@ -13,6 +13,18 @@ public class AirportApplication extends PostgreSqlAccess{
 	
 	System.out.println("I am connected to the database " + dburl + ".");
 
+	String updatePassengerPattern = "BEGIN TRANSACTION;" +
+			"UPDATE trip" +
+			"SET embarked = true" +
+			"WHERE passport_id = ? AND flight_id = ?" +
+			"COMMIT WORK;";
+	
+	PreparedStatement updatePassengerState = con.prepareStatement(updatePassengerPattern);
+	
+	
+	
+	
+	
 	//Close connection
 	con.close();
 
