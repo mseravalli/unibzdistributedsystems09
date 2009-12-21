@@ -36,7 +36,7 @@ public class AirportApplication extends PostgreSqlAccess{
 			
 			updatePassengerState.setString(1, oldDate);
 			updatePassengerState.setString(2, flightID);
-			updatePassengerState.setDate(3, (Date)newDate);
+			updatePassengerState.setDate(3, newDate);
 			
 			updatePassengerState.executeUpdate();
 			
