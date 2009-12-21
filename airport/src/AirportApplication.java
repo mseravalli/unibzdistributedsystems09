@@ -33,12 +33,25 @@ public class AirportApplication extends PostgreSqlAccess{
 			//Date newDate = df.parse("2009-11-19 17:35:00");
 			Date newDate = new Date(df.parse("2009-11-19 17:35:00").getTime());
 			
-			
+			/*
 			updatePassengerState.setString(1, oldDate);
 			updatePassengerState.setString(2, flightID);
 			updatePassengerState.setDate(3, newDate);
 			
-			updatePassengerState.executeUpdate();
+			updatePassengerState.executeUpdate();*/
+			
+			
+			String selectQuery1 =
+				"BEGIN TRANSACTION;" +
+				"UPDATE daily_flight SET departure_date = '"+newDateString+"' " +
+				"WHERE flight_id = '"+flightID+"' AND departure_date = '"+oldDate+"';" +
+				"COMMIT WORK;";
+			
+			Statement stmt1 = con.createStatement();
+			stmt1.executeQuery(selectQuery1);
+			
+			
+			
 			
 			String selectQuery =
 			    "SELECT   * " +
