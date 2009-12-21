@@ -70,16 +70,7 @@ public class AirportApplication extends PostgreSqlAccess{
 			Statement stmt = con.createStatement();
 			stmt.executeQuery(selectQuery);
 	    	
-	    	
-	        //Move cursor over the result set
-	         while (rs.next()) {
-	             //Fetch components of result tuples
-	             String ename = rs.getString(1);
-	             int sal = rs.getInt(2);
-	             //Feed components into computation
-	             screen.println(ename +" \t earns   " + sal + "\t per month");}
-	        //Close result set
-	         rs.close();
+	        rs.close();
 	    //Catch exceptions
 	    }catch (Exception e) {
 	         screen.println(e.toString());}
