@@ -60,7 +60,7 @@ public class AirportApplication extends PostgreSqlAccess{
 	    	rs.next();
 	    	
 	    	String flightID = rs.getString(1);
-	    	String oldDate = rs.getString(2);
+	    	Date oldDate = rs.getDate(2);
 	    	
 	    	String selectQuery =
 			    "UPDATE trip" +
@@ -76,6 +76,28 @@ public class AirportApplication extends PostgreSqlAccess{
 	         screen.println(e.toString());}
 	}
 
+	
+	public static void changeCIPAssignement(ResultSet rs, Connection con, String newDate) {
+	    try{
+	    	
+	    	rs.next();
+	    	
+	    	String flightID = rs.getString(1);
+	    	String oldDate = rs.getString(2);
+	    	
+	    	String selectQuery =
+			    "UPDATE cip_assignment" +
+			    "SET 	departure_date = '" + newDate + "' " +
+			    "WHERE	flight_id = '"+flightID+"' AND departure_date = '"+oldDate+"';";
+			
+			Statement stmt = con.createStatement();
+			stmt.executeQuery(selectQuery);
+	    	
+	        rs.close();
+	    //Catch exceptions
+	    }catch (Exception e) {
+	         screen.println(e.toString());}
+	}
 	
 
     public static void main(String args[]) throws Exception {
