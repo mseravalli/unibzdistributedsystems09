@@ -48,7 +48,7 @@ public class AirportApplication extends PostgreSqlAccess{
 				"COMMIT WORK;";
 			
 			Statement stmt1 = con.createStatement();
-			stmt1.executeQuery(selectQuery1);
+			stmt1.executeUpdate(selectQuery1);
 			
 			
 			
@@ -96,7 +96,6 @@ public class AirportApplication extends PostgreSqlAccess{
 	         screen.println(e.toString());}
 	}
 
-	
 	public static void changeCIPAssignement(ResultSet rs, Connection con, String newDate) {
 	    try{
 	    	
@@ -119,6 +118,41 @@ public class AirportApplication extends PostgreSqlAccess{
 	         screen.println(e.toString());}
 	}
 	
+	
+	public static void tripForAPassenger(){
+		
+		try {
+			Class.forName(driverName);
+		
+		
+		
+			//establish a connection to the database via the driver
+			Connection con = DriverManager.getConnection(dburl, user, passwd);
+			
+			System.out.println("I am connected to the database " + dburl + ".");
+			
+			//firstly a passenger is created
+			String createPassenger = "BEGIN TRANSACTION;" +
+					"INSERT INTO passenger (passport_ID,birthdate,name,surname,address) " +
+					"VALUES ('152647867','1990-02-18','Javier','Casorla','SP,Cervera, Carrer de Napols 7');";
+			
+			Statement stmt = con.createStatement();
+			
+			stmt.executeUpdate(createPassenger);
+			
+			
+			
+			stmt.close();
+			con.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	
 
     public static void main(String args[]) throws Exception {
     	
@@ -128,6 +162,9 @@ public class AirportApplication extends PostgreSqlAccess{
     	
     }
 /*
+ * 
+ * INSERT INTO passenger (passport_ID,birthdate,name,surname,address) VALUES ('152647867','1990-02-18','Javier','Casorla','SP,Cervera, Carrer de Napols 7');
+ * 
 		//load the driver 
 		Class.forName(driverName);
 	
