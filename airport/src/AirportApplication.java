@@ -43,7 +43,7 @@ public class AirportApplication extends PostgreSqlAccess{
 			
 			ResultSet rs = stmt.executeQuery(selectQuery);
 
-			changeTrips(rs);
+			changeTrips(rs, con, newDate);
 			
 			con.close();
 			
@@ -54,8 +54,23 @@ public class AirportApplication extends PostgreSqlAccess{
 		
 	}
 	
-	public static void changeTrips(ResultSet rs) {
+	public static void changeTrips(ResultSet rs, Connection con, String newDate) {
 	    try{
+	    	
+	    	rs.next();
+	    	
+	    	String flightID = rs.getString(1);
+	    	String oldDate = rs.getString(2);
+	    	
+	    	String selectQuery =
+			    "UPDATE trip" +
+			    "SET 	departure_date = '" + newDate + "' " +
+			    "WHERE	flight_id = '"+flightID+"' AND departure_date = '"+oldDate+"';";
+			
+			Statement stmt = con.createStatement();
+			stmt.executeQuery(selectQuery);
+	    	
+	    	
 	        //Move cursor over the result set
 	         while (rs.next()) {
 	             //Fetch components of result tuples
