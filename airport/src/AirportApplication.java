@@ -1,11 +1,13 @@
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Scanner;
 import java.io.*;
 
 public class AirportApplication extends PostgreSqlAccess{
 	
 	
-	public void updateFlyingTime(){
+	public static void updateFlyingTime(){
 		try {
 			Class.forName(driverName);
 		
@@ -24,13 +26,14 @@ public class AirportApplication extends PostgreSqlAccess{
 	
 			PreparedStatement updatePassengerState = con.prepareStatement(updatePassengerPattern);
 			
-			String oldDate = "";
-			String flightID = "";
-			String newDate = "";
+			String oldDate = "2009-11-19 15:35:00";
+			String flightID = "BA9376";
+			DateFormat df = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss"); 
+			Date newDate = (Date) df.parse("2009-11-19 17:35:00");
 			
 			updatePassengerState.setString(1, oldDate);
 			updatePassengerState.setString(2, flightID);
-			updatePassengerState.setString(3, newDate);
+			updatePassengerState.setDate(3, newDate);
 			
 			updatePassengerState.executeUpdate();
 			
@@ -43,7 +46,8 @@ public class AirportApplication extends PostgreSqlAccess{
 			
 			ResultSet rs = stmt.executeQuery(selectQuery);
 
-			changeTrips(rs, con, newDate);
+			changeTrips(rs, con, newDate.toString());
+			changeCIPAssignement(rs, con, newDate.toString());
 			
 			con.close();
 			
@@ -101,7 +105,13 @@ public class AirportApplication extends PostgreSqlAccess{
 	
 
     public static void main(String args[]) throws Exception {
-
+    	
+    	
+    	updateFlyingTime();
+    	
+    	
+    }
+/*
 		//load the driver 
 		Class.forName(driverName);
 	
@@ -157,5 +167,6 @@ public class AirportApplication extends PostgreSqlAccess{
 		con.close();
 	
 		System.out.println("I am disconneted from the database.");
-	    }    
+	    }   
+	    */
 }
