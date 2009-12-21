@@ -16,29 +16,12 @@ public class AirportApplication extends PostgreSqlAccess{
 			Connection con = DriverManager.getConnection(dburl, user, passwd);
 			
 			System.out.println("I am connected to the database " + dburl + ".");
-		
 			
-			
-			String updatePassengerPattern = "BEGIN TRANSACTION;" +
-					"UPDATE daily_flight SET departure_date = ? " +
-					"WHERE flight_id = ? AND departure_date = ?;" +
-					"COMMIT WORK;";
-	
-			PreparedStatement updatePassengerState = con.prepareStatement(updatePassengerPattern);
-			
-			String oldDate = "2009-11-19 15:35:00";
+			String oldDate = "2009-11-19 17:35:00";
 			String flightID = "BA9376";
-			String newDateString = "2009-11-19 17:35:00";
+			String newDateString = "2009-11-19 15:35:00";
 			DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"); 
-			//Date newDate = df.parse("2009-11-19 17:35:00");
 			Date newDate = new Date(df.parse("2009-11-19 17:35:00").getTime());
-			
-			/*
-			updatePassengerState.setString(1, oldDate);
-			updatePassengerState.setString(2, flightID);
-			updatePassengerState.setDate(3, newDate);
-			
-			updatePassengerState.executeUpdate();*/
 			
 			
 			String selectQuery1 =
@@ -134,13 +117,18 @@ public class AirportApplication extends PostgreSqlAccess{
 			//firstly a passenger is created
 			String createPassenger = "BEGIN TRANSACTION;" +
 					"INSERT INTO passenger (passport_ID,birthdate,name,surname,address) " +
-					"VALUES ('152647867','1990-02-18','Javier','Casorla','SP,Cervera, Carrer de Napols 7');";
+					"VALUES ('152347867','1990-06-14','Javier','Casorla','SP,Cervera, Carrer de Napols 7');" +
+					"SAVEPOINT passenger_created;";
 			
 			Statement stmt = con.createStatement();
 			
 			stmt.executeUpdate(createPassenger);
 			
+			String createTrip = " INSERT INTO trip (flight_ID,departure_date,passport_ID,booking_date,cip_no,embarked) " +
+					"VALUES ('U27309','2009-11-20 01:35:00','152347867','2009-09-27',4,FALSE);" +
+					"rollback to savepoint passenger_created;";
 			
+			stmt.executeUpdate(createTrip);
 			
 			stmt.close();
 			con.close();
@@ -157,13 +145,13 @@ public class AirportApplication extends PostgreSqlAccess{
     public static void main(String args[]) throws Exception {
     	
     	
-    	updateFlyingTime();
+    	tripForAPassenger();
     	
     	
     }
 /*
  * 
- * INSERT INTO passenger (passport_ID,birthdate,name,surname,address) VALUES ('152647867','1990-02-18','Javier','Casorla','SP,Cervera, Carrer de Napols 7');
+ *  INSERT INTO trip (flight_ID,departure_date,passport_ID,booking_date,cip_no,embarked) VALUES ('U27309','2009-11-20 01:35:00','152647867','2009-09-27',4,FALSE);
  * 
 		//load the driver 
 		Class.forName(driverName);
