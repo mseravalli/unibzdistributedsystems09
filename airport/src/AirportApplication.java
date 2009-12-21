@@ -19,10 +19,7 @@ public class AirportApplication extends PostgreSqlAccess{
 			
 			String oldDate = "2009-11-19 17:35:00";
 			String flightID = "BA9376";
-			String newDateString = "2009-11-19 15:35:00";
-			DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"); 
-			Date newDate = new Date(df.parse("2009-11-19 17:35:00").getTime());
-			
+			String newDateString = "2009-11-19 15:35:00";			
 			
 			String selectQuery1 =
 				"BEGIN TRANSACTION;" +
@@ -33,21 +30,6 @@ public class AirportApplication extends PostgreSqlAccess{
 			Statement stmt1 = con.createStatement();
 			stmt1.executeUpdate(selectQuery1);
 			
-			
-			
-			
-			String selectQuery =
-			    "SELECT   * " +
-			    "FROM     trip " +
-			    "WHERE    flight_id = '"+flightID+"' AND departure_date = '"+oldDate+"';";
-			
-			Statement stmt = con.createStatement();
-			
-			ResultSet rs = stmt.executeQuery(selectQuery);
-
-			changeTrips(rs, con, newDate.toString());
-			changeCIPAssignement(rs, con, newDate.toString());
-			
 			con.close();
 			
 		} catch (Exception e) {
@@ -56,50 +38,7 @@ public class AirportApplication extends PostgreSqlAccess{
 		}
 		
 	}
-	
-	public static void changeTrips(ResultSet rs, Connection con, String newDate) {
-	    try{
-	    	
-	    	rs.next();
-	    	
-	    	String flightID = rs.getString(1);
-	    	Date oldDate = rs.getDate(2);
-	    	
-	    	String selectQuery =
-			    "UPDATE trip" +
-			    "SET 	departure_date = '" + newDate + "' " +
-			    "WHERE	flight_id = '"+flightID+"' AND departure_date = '"+oldDate+"';";
-			
-			Statement stmt = con.createStatement();
-			stmt.executeQuery(selectQuery);
-	    	
-	        rs.close();
-	    //Catch exceptions
-	    }catch (Exception e) {
-	         screen.println(e.toString());}
-	}
 
-	public static void changeCIPAssignement(ResultSet rs, Connection con, String newDate) {
-	    try{
-	    	
-	    	rs.next();
-	    	
-	    	String flightID = rs.getString(1);
-	    	String oldDate = rs.getString(2);
-	    	
-	    	String selectQuery =
-			    "UPDATE cip_assignment" +
-			    "SET 	departure_date = '" + newDate + "' " +
-			    "WHERE	flight_id = '"+flightID+"' AND departure_date = '"+oldDate+"';";
-			
-			Statement stmt = con.createStatement();
-			stmt.executeQuery(selectQuery);
-	    	
-	        rs.close();
-	    //Catch exceptions
-	    }catch (Exception e) {
-	         screen.println(e.toString());}
-	}
 	
 	
 	public static void tripForAPassenger(){
@@ -153,7 +92,7 @@ public class AirportApplication extends PostgreSqlAccess{
 			System.out.println("I am connected to the database " + dburl + ".");
 		
 			String updatePassengerPattern = "BEGIN TRANSACTION;" +
-					"SET TRANSACTION SET TRANSACTION READ COMMITTED;" +
+					"SET TRANSACTION ISOLATION LEVEL READ COMMITTED;" +
 					"UPDATE trip SET embarked = ? WHERE passport_id = ? AND flight_id = ?;" +
 					"COMMIT WORK;";
 			
@@ -205,7 +144,7 @@ public class AirportApplication extends PostgreSqlAccess{
     public static void main(String args[]) throws Exception {
     	
     	
-    	embarkPassenger();
+    	updateFlyingTime();
     	
     	
     }
