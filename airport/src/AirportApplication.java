@@ -28,12 +28,12 @@ public class AirportApplication extends PostgreSqlAccess{
 			
 			String oldDate = "2009-11-19 15:35:00";
 			String flightID = "BA9376";
-			DateFormat df = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss"); 
-			Date newDate = (Date) df.parse("2009-11-19 17:35:00");
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"); 
+			java.util.Date newDate = df.parse("2009-11-19 17:35:00");
 			
 			updatePassengerState.setString(1, oldDate);
 			updatePassengerState.setString(2, flightID);
-			updatePassengerState.setDate(3, newDate);
+			updatePassengerState.setDate(3, (Date)newDate);
 			
 			updatePassengerState.executeUpdate();
 			
