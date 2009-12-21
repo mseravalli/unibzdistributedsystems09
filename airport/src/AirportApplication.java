@@ -3,6 +3,45 @@ import java.util.Scanner;
 import java.io.*;
 
 public class AirportApplication extends PostgreSqlAccess{
+	
+	
+	public void updateFlyingTime(){
+		try {
+			Class.forName(driverName);
+		
+		
+			//establish a connection to the database via the driver
+			Connection con = DriverManager.getConnection(dburl, user, passwd);
+			
+			System.out.println("I am connected to the database " + dburl + ".");
+		
+			
+			
+			String updatePassengerPattern = "BEGIN TRANSACTION;" +
+					"UPDATE daily_flight SET departure_date = ? " +
+					"WHERE flight_id = ? AND departure_date = ?;" +
+					"COMMIT WORK;";
+	
+			PreparedStatement updatePassengerState = con.prepareStatement(updatePassengerPattern);
+			
+			String oldDate = "";
+			String flightID = "";
+			String newDate = "";
+			
+			updatePassengerState.setString(1, oldDate);
+			updatePassengerState.setString(2, flightID);
+			updatePassengerState.setString(3, newDate);
+			
+			
+			con.close();
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 
     public static void main(String args[]) throws Exception {
 
