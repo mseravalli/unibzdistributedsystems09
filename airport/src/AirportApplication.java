@@ -19,13 +19,13 @@ public class AirportApplication extends PostgreSqlAccess{
 			Scanner sc = new Scanner(System.in);
 			
 			System.out.println("Insert the flight id");
-			//flightID = sc.nextLine();
+			//flightID = sc.nextLine().toUpperCase();
 			
 			System.out.println("Insert the departure date of the flight");
-			//oldDate = sc.nextLine();
+			//oldDate = sc.nextLine().toUpperCase();
 			
 			System.out.println("Insert the new departure date of the flight");
-			//newDateString = sc.nextLine();
+			//newDateString = sc.nextLine().toUpperCase();
 			
 
 			Class.forName(driverName);
@@ -62,9 +62,49 @@ public class AirportApplication extends PostgreSqlAccess{
 		
 		try {
 			
-			
 			Scanner sc = new Scanner(System.in);
 			
+			Class.forName(driverName);
+			
+			//establish a connection to the database via the driver
+			Connection con = DriverManager.getConnection(dburl, user, passwd);
+			
+			Statement stmt = con.createStatement();
+			
+			stmt.execute("BEGIN TRANSACTION; SET TRANSACTION ISOLATION LEVEL READ COMMITTED;");
+			
+			
+			String departureLocation = "Bolzano";
+			String arrivalLocation = "New York";
+			
+			
+			/**
+			 * the user selects a flight to a destination and then (s)he will choose
+			 * between one of the results, so it is important that the  read value
+			 * will not change before the insertion
+			 */
+			System.out.println("Insert the departure location");
+			//departureLocation = sc.nextLine().toUpperCase();
+			System.out.println("Insert the arrival location");
+			//arrivalLocation = sc.nextLine().toUpperCase();
+			
+			String selectFlight = "" +
+					"SELECT df.flight_id, df.departure_date, df.arrival_date, df.duration " +
+					"FROM flight f natural join daily_flight df " +
+					"WHERE f.departure_location = '"+departureLocation+"' and f.arrival_location = '"+arrivalLocation+"';";
+			
+			//System.out.printf("%s\n", selectFlight);
+			
+			ResultSet rs = stmt.executeQuery(selectFlight);
+			
+			//print all the results
+			System.out.printf("flight id\tdeparture date\t\tarrival date\t\tduration\n");
+			while(rs.next()){
+				System.out.printf("%s\t\t%s\t%s\t%s\n",rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4));
+			}
+			
+			rs.close();			
+						
 			String passportID = "152347867";
 			String birthDate = "1993-06-14";
 			String name = "Javier";
@@ -78,53 +118,45 @@ public class AirportApplication extends PostgreSqlAccess{
 			String embarked = "FALSE";
 			
 			System.out.println("Insert the passport id");
-			//passportID = sc.nextLine();
+			//passportID = sc.nextLine().toUpperCase();
 			
 			System.out.println("Insert the birth date");
-			//birthDate = sc.nextLine();
+			//birthDate = sc.nextLine().toUpperCase();
 			
 			System.out.println("Insert the name");
-			//name = sc.nextLine();
+			//name = sc.nextLine().toUpperCase();
 			
 			System.out.println("Insert the surname");
-			//surname = sc.nextLine();
+			//surname = sc.nextLine().toUpperCase();
 			
 			System.out.println("Insert the address");
-			//address = sc.nextLine();
+			//address = sc.nextLine().toUpperCase();
 			
 			
-			Class.forName(driverName);
-		
-		
-		
-			//establish a connection to the database via the driver
-			Connection con = DriverManager.getConnection(dburl, user, passwd);
 			
-			//System.out.println("I am connected to the database " + dburl + ".");
 			
 			//firstly a passenger is created
-			String createPassenger = "BEGIN TRANSACTION;" +
+			String createPassenger = "" +
 					"INSERT INTO passenger (passport_ID,birthdate,name,surname,address) " +
 					"VALUES ('" + passportID + "','" + birthDate + "','" + name + 
 					"','" + surname + "','" + address + "');" +
 					"SAVEPOINT passenger_created;";
 			
-			Statement stmt = con.createStatement();
 			
 			System.out.println("passenger created");
 			
 			System.out.println("Insert the flight id");
-			//flightID = sc.nextLine();
+			//flightID = sc.nextLine().toUpperCase();
 			System.out.println("Insert the departure date");
-			//departureDate = sc.nextLine();
+			//departureDate = sc.nextLine().toUpperCase();
 			System.out.println("Insert the booking date");
-			//bookingDate = sc.nextLine();
+			//bookingDate = sc.nextLine().toUpperCase();
 			
 			stmt.executeUpdate(createPassenger);
 			
 			String createTrip = "INSERT INTO trip (flight_ID, departure_date, passport_ID, booking_date, cip_no,embarked) " +
 					"VALUES ('"+flightID+"','"+departureDate+"','"+passportID+"','"+bookingDate+"',"+cipNo+" ,"+embarked+");" +
-					"rollback to savepoint passenger_created;";
+					"rollback to savepoint passenger_created; ";
 					//"COMMIT WORK;";
 			
 			//System.out.println(createTrip);
@@ -157,7 +189,6 @@ public class AirportApplication extends PostgreSqlAccess{
 			//System.out.println("I am connected to the database " + dburl + ".");
 		
 			String updatePassengerPattern = "BEGIN TRANSACTION;" +
-					"SET TRANSACTION ISOLATION LEVEL READ COMMITTED;" +
 					"UPDATE trip SET embarked = ? WHERE passport_id = ? AND flight_id = ?;" +
 					"COMMIT WORK;";
 			
@@ -175,10 +206,10 @@ public class AirportApplication extends PostgreSqlAccess{
 		
 			
 			System.out.print("passport id: ");
-			//passportID = sc.nextLine();
+			//passportID = sc.nextLine().toUpperCase();
 			
 			System.out.print("flight id: ");
-			//flightID = sc.nextLine();
+			//flightID = sc.nextLine().toUpperCase();
 			
 			System.out.print("is embarked: ");
 			isEmbarked = sc.nextBoolean();
@@ -196,11 +227,6 @@ public class AirportApplication extends PostgreSqlAccess{
 		} catch (Exception e){
 			e.printStackTrace();
 		}	
-		
-		//Close connection
-
-	
-		System.out.println("I am disconneted from the database.");
 	    
 	}
 	
@@ -256,9 +282,10 @@ public class AirportApplication extends PostgreSqlAccess{
     			}
     			
     			
-    			
-    		} catch(java.util.InputMismatchException e) {
+    		//to prevent mismatch errors	
+    		} catch(Exception e) {
     			e.printStackTrace();
+    			System.exit(0);
     		}
     		
     	}while(selection != 0);
