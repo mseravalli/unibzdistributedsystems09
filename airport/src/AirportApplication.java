@@ -4,6 +4,15 @@ import java.text.SimpleDateFormat;
 import java.util.Scanner;
 import java.io.*;
 
+
+/**
+ * 
+ * In the program all the readings are disabled in order to speed up the tests
+ * to enable them just recompile and run!!
+ * 
+ * @author group7
+ *
+ */
 public class AirportApplication extends PostgreSqlAccess{
 	
 	
