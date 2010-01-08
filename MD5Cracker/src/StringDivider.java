@@ -1,25 +1,27 @@
 
+import java.util.Arrays;
+
 public class StringDivider {
 
 	/* this is set to 96 because there are 95 characters + the special case for 
 	 * the first string and the strings to remember*/
-	private final int parsedStringLength = 96;
+	public static final int PARSED_STRING_LENGTH = 5;
+	public static final int FIRST_CHAR = 65;
+	public static final int LAST_CHAR = 68;
 	
-	private ParsedString[] testedStrings = new ParsedString[parsedStringLength];
+	private ParsedString[] testedStrings = new ParsedString[PARSED_STRING_LENGTH];
 	
 	public StringDivider(){
-		for(int i=0; i<parsedStringLength;i++){
+		for(int i=0; i<PARSED_STRING_LENGTH;i++){
 			testedStrings[i] = new ParsedString();
 		}
-	}
-	
-	public void divideString(){		
+		
 		
 		testedStrings[0].str = "***";
 		
-		for(int i=1; i<parsedStringLength;i++){
+		for(int i=1; i<PARSED_STRING_LENGTH;i++){
 			
-			char c = (char) (i+31);
+			char c = (char) (i+64);
 			
 			/* '\' is used as escape sequence in front of '*' and '\' itself */
 			if (c == '*' || c =='\\')
@@ -27,9 +29,13 @@ public class StringDivider {
 			else
 				testedStrings[i].str=c+testedStrings[0].str;
 			
-			System.out.println(testedStrings[i].str);
 		}
 		
+		
+	}
+	
+	public ParsedString[] getTestedStrings(){		
+		return this.testedStrings;		
 	}
 	
 	
@@ -37,17 +43,51 @@ public class StringDivider {
 	 * will be created*/
 	public void reconstructParsedString(){
 		
-		boolean areComputed = true;
+		Arrays.sort(testedStrings, new StringCoparator());
 		
-		/* it checks whether all string in the data structure have been computed*/
-		for(int i=0; i<parsedStringLength; i++){
-			areComputed = testedStrings[i].isComputed && areComputed;
+		if(testedStrings[0].str.equals("")){
+			//the empty string is put at the end
+			for(int i = 0; i < PARSED_STRING_LENGTH-1; i++){				
+				testedStrings[i]=testedStrings[i+1].clone();
+				//System.out.println(testedStrings[i].str);
+			}
+			
+			testedStrings[PARSED_STRING_LENGTH-1] = new ParsedString();
+			
+			
+			
+			
+			
+			//create the last string
+			
+			String s = testedStrings[PARSED_STRING_LENGTH-2].str;
+			//s.charAt(s.length()-3);
+			
+			int position = s.length()-4;
+			
+			char charToCheck = s.charAt(s.length()-4);
+						
+			if( charToCheck == (char) LAST_CHAR){
+				
+				s = (char)FIRST_CHAR + s.substring(1);
+				
+				if(position == 0){
+					s = (char)FIRST_CHAR + s;
+				}
+			} else {
+				//System.out.println(charToCheck);(char)(charToCheck+1)
+				s = s.substring(0, position)+ (char)(charToCheck+1) + s.substring(position+1);
+			}
+			
+			
+			
+			testedStrings[PARSED_STRING_LENGTH-1].str = s;
+			
+			System.out.printf("resulting string: %s\n",s);
+			
 		}
 		
 		
-		if (areComputed){
-			//TODO
-		}
 		
 	}
 	
@@ -56,7 +96,24 @@ public class StringDivider {
 		
 		StringDivider sd = new StringDivider();
 		
-		sd.divideString();
+		
+		ParsedString[] testedStrings = sd.getTestedStrings();
+		
+		testedStrings[2].str = "";		
+		sd.reconstructParsedString();			
+		
+		testedStrings[2].str = "";			
+		sd.reconstructParsedString();
+		testedStrings[2].str = "";		
+		sd.reconstructParsedString();	
+		testedStrings[2].str = "";		
+		sd.reconstructParsedString();	
+		
+		for(int i = 0; i < PARSED_STRING_LENGTH; i++){
+			System.out.println(testedStrings[i].str);
+		}
+			
+		
 		
 		
 	}
