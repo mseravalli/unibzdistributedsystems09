@@ -3,9 +3,7 @@ import java.util.Arrays;
 
 public class StringDivider {
 
-	/* this is set to 96 because there are 95 characters + the special case for 
-	 * the first string and the strings to remember*/
-	public static final int PARSED_STRING_LENGTH = 7;
+	public static final int PARSED_STRING_LENGTH = 10;
 	public static final int FIRST_CHAR = 65;
 	public static final int LAST_CHAR = 66;
 	//have to be equal to the number of * + 1
@@ -85,25 +83,17 @@ public class StringDivider {
 			//the empty string is put at the end
 			for(int i = 0; i < PARSED_STRING_LENGTH-1; i++){				
 				testedStrings[i]=testedStrings[i+1].clone();
-				//System.out.println(testedStrings[i].str);
 			}
 			
-			testedStrings[PARSED_STRING_LENGTH-1] = new ParsedString();
-			
-			
-			
-			
+			testedStrings[PARSED_STRING_LENGTH-1] = new ParsedString();			
 			
 			//create the last string
 			
 			String s = testedStrings[PARSED_STRING_LENGTH-2].str;
 			
-			testedStrings[PARSED_STRING_LENGTH-1].str = this.createNextString(s);
+			testedStrings[PARSED_STRING_LENGTH-1].str = this.createNextString(s);			
 			
-			
-		}
-		
-		
+		}	
 		
 	}
 	
@@ -114,7 +104,7 @@ public class StringDivider {
 		
 		
 		ParsedString[] testedStrings = sd.getTestedStrings();
-		
+		/*
 		testedStrings[2].str = "";		
 		sd.reconstructParsedString();			
 		
@@ -125,14 +115,12 @@ public class StringDivider {
 		sd.reconstructParsedString();	
 		
 		testedStrings[2].str = "";		
-		sd.reconstructParsedString();
+		sd.reconstructParsedString();*/
 		
 		
 		for(int i = 0; i < PARSED_STRING_LENGTH; i++){
 			System.out.println(testedStrings[i].str);
-		}
-			
-		
+		}		
 		
 		
 	}
