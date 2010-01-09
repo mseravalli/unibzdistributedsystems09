@@ -40,25 +40,24 @@ public class StringDividerTest {
 		
 		ParsedString[] testedStrings = sd.getTestedStrings();
 		
-		for(int i = 0; i < sd.PARSED_STRING_LENGTH; i++){
-			//System.out.println(testedStrings[i].str);
+		for(int i = 0; i < 6; i++){
+			sd.setStartedInArray(true, i);
+			sd.setFinishedInArray(true, i);
 		}	
 		
-		sd.setStringInArray("", 1);	
-		sd.setStringInArray("", 2);	
-		sd.setStringInArray("", 3);	
-		sd.setStringInArray("", 4);	
-		sd.setStringInArray("", 5);	
+		
+
+		
 		sd.reconstructParsedString();
 		
 		
 		for(int i = 0; i < sd.PARSED_STRING_LENGTH; i++){
-			//System.out.println(testedStrings[i].str);
+			System.out.println(testedStrings[i].str);
 		}		
 		
 		
 		
-		assertEquals(true, "BBB***".equals(sd.getTestedStrings()[9].str));
+		assertEquals(true, "AAAA***".equals(sd.getTestedStrings()[9].str));
 	}
 
 }
