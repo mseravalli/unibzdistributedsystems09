@@ -32,6 +32,16 @@ public class StringDivider {
 		return this.testedStrings;		
 	}
 	
+	public void setStringInArray(String newString, int position){
+		
+		if(position < PARSED_STRING_LENGTH && position >= 0){
+			
+			this.testedStrings[position].str = newString;
+			
+		}
+		
+	}
+	
 	
 	public String createNextString(String s){
 		
@@ -80,21 +90,20 @@ public class StringDivider {
 		
 		Arrays.sort(testedStrings, new StringCoparator());
 		
-		if(testedStrings[0].str.equals("")){
-			//the empty string is put at the end
-			for(int i = 0; i < PARSED_STRING_LENGTH-1; i++){				
-				testedStrings[i]=testedStrings[i+1].clone();
-			}
-			
-			testedStrings[PARSED_STRING_LENGTH-1] = new ParsedString();			
-			
-			//create the last string
-			
-			String s = testedStrings[PARSED_STRING_LENGTH-2].str;
-			
-			testedStrings[PARSED_STRING_LENGTH-1].str = this.createNextString(s);			
-			
-		}	
+		//count number of free slots
+		int freeSlots = 0;
+		for (int i = 0; i < PARSED_STRING_LENGTH; i++){
+			if(testedStrings[i].str.equals(""))
+				freeSlots++;
+		}
+		
+		for(int i = 0; i < PARSED_STRING_LENGTH-freeSlots; i++){				
+			testedStrings[i]=testedStrings[i+freeSlots].clone();
+		}
+		
+		for(int i = freeSlots; i < PARSED_STRING_LENGTH; i++){				
+			testedStrings[i].str=createNextString(testedStrings[i-1].str);
+		}
 		
 	}
 	
