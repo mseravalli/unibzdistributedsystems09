@@ -4,8 +4,9 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import Cracker.ParsedString;
-import Cracker.StringDivider;
+import cracker.ParsedString;
+import cracker.StringDivider;
+
 
 public class StringDividerTest {
 	
