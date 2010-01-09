@@ -1,4 +1,4 @@
-package Cracker;
+package cracker;
 
 import java.util.Arrays;
 
