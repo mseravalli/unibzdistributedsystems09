@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import Cracker.ParsedString;
 import Cracker.StringDivider;
 
 public class StringDividerTest {
@@ -33,7 +34,30 @@ public class StringDividerTest {
 
 	@Test
 	public void testReconstructParsedString() {
-		fail("Not yet implemented");
+		
+		
+		
+		ParsedString[] testedStrings = sd.getTestedStrings();
+		
+		for(int i = 0; i < sd.PARSED_STRING_LENGTH; i++){
+			//System.out.println(testedStrings[i].str);
+		}	
+		
+		sd.setStringInArray("", 1);	
+		sd.setStringInArray("", 2);	
+		sd.setStringInArray("", 3);	
+		sd.setStringInArray("", 4);	
+		sd.setStringInArray("", 5);	
+		sd.reconstructParsedString();
+		
+		
+		for(int i = 0; i < sd.PARSED_STRING_LENGTH; i++){
+			//System.out.println(testedStrings[i].str);
+		}		
+		
+		
+		
+		assertEquals(true, "BBB***".equals(sd.getTestedStrings()[9].str));
 	}
 
 }
