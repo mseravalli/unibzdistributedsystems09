@@ -8,6 +8,7 @@ public class StringDivider {
 	public static final int PARSED_STRING_LENGTH = 7;
 	public static final int FIRST_CHAR = 65;
 	public static final int LAST_CHAR = 66;
+	//have to be equal to the number of * + 1
 	public static final int FREE_CHARACTERS = 4;
 	
 	private ParsedString[] testedStrings = new ParsedString[PARSED_STRING_LENGTH];
