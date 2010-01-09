@@ -32,14 +32,22 @@ public class StringDivider {
 		return this.testedStrings;		
 	}
 	
-	public void setStringInArray(String newString, int position){
-		
-		if(position < PARSED_STRING_LENGTH && position >= 0){
-			
-			this.testedStrings[position].str = newString;
-			
-		}
-		
+	public void setStringInArray(String newString, int position){		
+		if(position < PARSED_STRING_LENGTH && position >= 0){			
+			this.testedStrings[position].str = newString;			
+		}		
+	}
+	
+	public void setStartedInArray(boolean isStarted, int position){		
+		if(position < PARSED_STRING_LENGTH && position >= 0){			
+			this.testedStrings[position].isStarted = isStarted;			
+		}		
+	}
+	
+	public void setFinishedInArray(boolean isFinished, int position){		
+		if(position < PARSED_STRING_LENGTH && position >= 0){			
+			this.testedStrings[position].isFinished = isFinished;			
+		}		
 	}
 	
 	
@@ -93,45 +101,26 @@ public class StringDivider {
 		//count number of free slots
 		int freeSlots = 0;
 		for (int i = 0; i < PARSED_STRING_LENGTH; i++){
-			if(testedStrings[i].str.equals(""))
+			if(testedStrings[i].isStarted && testedStrings[i].isFinished)
 				freeSlots++;
 		}
 		
-		for(int i = 0; i < PARSED_STRING_LENGTH-freeSlots; i++){				
-			testedStrings[i]=testedStrings[i+freeSlots].clone();
+		for(int i = 0; i < PARSED_STRING_LENGTH-freeSlots; i++){
+			testedStrings[i].str = testedStrings[i+freeSlots].str;
+			testedStrings[i].isStarted = testedStrings[i+freeSlots].isStarted;
+			testedStrings[i].isFinished = testedStrings[i+freeSlots].isFinished;
+			
+			//testedStrings[i]=testedStrings[i+freeSlots].clone();
 		}
 		
-		for(int i = freeSlots; i < PARSED_STRING_LENGTH; i++){				
-			testedStrings[i].str=createNextString(testedStrings[i-1].str);
+		if(freeSlots >0){		
+			for(int i = PARSED_STRING_LENGTH -freeSlots; i < PARSED_STRING_LENGTH; i++){
+				testedStrings[i].str = "";
+				testedStrings[i].isStarted = false;
+				testedStrings[i].isFinished = false;
+				testedStrings[i].str=createNextString(testedStrings[i-1].str);
+			}
 		}
-		
-	}
-	
-	
-	public static void main(String[] args){
-		
-		StringDivider sd = new StringDivider();
-		
-		
-		ParsedString[] testedStrings = sd.getTestedStrings();
-		/*
-		testedStrings[2].str = "";		
-		sd.reconstructParsedString();			
-		
-		testedStrings[2].str = "";			
-		sd.reconstructParsedString();
-		
-		testedStrings[2].str = "";		
-		sd.reconstructParsedString();	
-		
-		testedStrings[2].str = "";		
-		sd.reconstructParsedString();*/
-		
-		
-		for(int i = 0; i < PARSED_STRING_LENGTH; i++){
-			System.out.println(testedStrings[i].str);
-		}		
-		
 		
 	}
 	

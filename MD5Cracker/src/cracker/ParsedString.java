@@ -5,13 +5,11 @@ import java.util.Comparator;
 public class ParsedString {
 
 	public String str;
-	public boolean isComputed;
 	public boolean isStarted;
 	public boolean isFinished;
 	
 	public ParsedString(){
 		str = "";
-		isComputed = false;
 		isStarted = false;
 		isFinished = false;
 	}
@@ -21,7 +19,6 @@ public class ParsedString {
 		ParsedString ps = new ParsedString();
 		
 		ps.str = this.str;
-		ps.isComputed = this.isComputed;
 		ps.isStarted = this.isStarted;
 		ps.isFinished = this.isFinished;
 		
