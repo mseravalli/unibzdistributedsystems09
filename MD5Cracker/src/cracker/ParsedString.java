@@ -27,7 +27,7 @@ public class ParsedString {
 	
 }
 
-class StringCoparator implements Comparator<Object>{
+class ParsedStringCoparator implements Comparator<Object>{
 
 	public int compare(Object str1, Object str2){
 
@@ -36,15 +36,29 @@ class StringCoparator implements Comparator<Object>{
 		String firstStr = ( (ParsedString) str1 ).str;
 	
 		String secondStr = ( (ParsedString) str2 ).str;
+		
+		boolean isFisrtFinished = ( (ParsedString) str1 ).isFinished;
+		boolean isSecondFinished = ( (ParsedString) str2 ).isFinished;
 	
 		//uses compareTo method of String class to compare names of the StringCoparator
 		
-		if(firstStr.length() == secondStr.length()){
-			return firstStr.compareTo(secondStr);
-		} else if(firstStr.length() < secondStr.length()){
-			return -1;
+		//if both strings are not finished or both are finished
+		if((!isFisrtFinished && !isSecondFinished) || (isFisrtFinished && isSecondFinished)){
+			
+			if(firstStr.length() == secondStr.length()){
+				return firstStr.compareTo(secondStr);
+			} else if(firstStr.length() < secondStr.length()){
+				return -1;
+			} else {
+				return 1;
+			}
+		
 		} else {
-			return 1;
+			if (isFisrtFinished && !isSecondFinished){
+				return 1;
+			} else {
+				return -1;
+			}
 		}
 
 	}

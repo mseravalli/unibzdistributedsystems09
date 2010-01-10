@@ -48,11 +48,11 @@ public class StringDividerTest {
 		
 
 		
-		sd.reconstructParsedString();
+		sd.reconstructParsedString(6);
 		
 		
 		for(int i = 0; i < StringDivider.PARSED_STRING_LENGTH; i++){
-			System.out.println(testedStrings[i].str);
+			System.out.printf("%s - %b - %b\n",testedStrings[i].str, testedStrings[i].isStarted, testedStrings[i].isFinished);
 		}		
 		
 		
