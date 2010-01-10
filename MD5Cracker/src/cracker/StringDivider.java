@@ -142,9 +142,9 @@ public class StringDivider {
 	 * data structure is rebuilt, checked elements are deleted and the stack is
 	 * re-populated started from the last valid element in the list
 	 */
-	public void reconstructParsedString(int freeSlots){
+	public void reconstructParsedString(int computedElements){
 		
-		if(freeSlots >0){
+		if(computedElements > 0){
 			
 			/*
 			 * firstly the array is sorted and the already checked elements are put
@@ -155,7 +155,7 @@ public class StringDivider {
 			/*
 			 * then starting form the last valid element the stack is repopulated
 			 */
-			for(int i = PARSED_STRING_LENGTH -freeSlots; i < PARSED_STRING_LENGTH; i++){
+			for(int i = PARSED_STRING_LENGTH - computedElements; i < PARSED_STRING_LENGTH; i++){
 				testedStrings[i].str = "";
 				testedStrings[i].isStarted = false;
 				testedStrings[i].isFinished = false;
