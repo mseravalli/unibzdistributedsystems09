@@ -51,7 +51,7 @@ public class StringDividerTest {
 		sd.reconstructParsedString();
 		
 		
-		for(int i = 0; i < sd.PARSED_STRING_LENGTH; i++){
+		for(int i = 0; i < StringDivider.PARSED_STRING_LENGTH; i++){
 			System.out.println(testedStrings[i].str);
 		}		
 		
