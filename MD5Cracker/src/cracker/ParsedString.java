@@ -37,16 +37,22 @@ class ParsedStringCoparator implements Comparator<Object>{
 	
 		String secondStr = ( (ParsedString) str2 ).str;
 		
+		boolean isFisrtStarted = ( (ParsedString) str1 ).isStarted;
 		boolean isFisrtFinished = ( (ParsedString) str1 ).isFinished;
+		boolean isFirstComputed = isFisrtStarted && isFisrtFinished;
+		
+		boolean isSecondStarted = ( (ParsedString) str2 ).isStarted;		
 		boolean isSecondFinished = ( (ParsedString) str2 ).isFinished;
+		boolean isSecondComputed = isSecondStarted && isSecondFinished;
+		
 	
 		//uses compareTo method of String class to compare names of the StringCoparator
 		
 		/*
-		 * if both strings are not finished or both are finished they are comparated
+		 * if both strings are computed or both are not, they are comparated
 		 * as two strings
 		 */
-		if((!isFisrtFinished && !isSecondFinished) || (isFisrtFinished && isSecondFinished)){
+		if((!isFirstComputed && !isSecondComputed) || (isFirstComputed && isSecondComputed)){
 			
 			if(firstStr.length() == secondStr.length()){
 				return firstStr.compareTo(secondStr);
@@ -58,11 +64,11 @@ class ParsedStringCoparator implements Comparator<Object>{
 		
 			
 		/*
-		 * if one of the two strings is already finished that one will be put
+		 * if one of the two strings is already computed that one will be put
 		 * at the end of the array
 		 */
 		} else {
-			if (isFisrtFinished && !isSecondFinished){
+			if (isFirstComputed && !isSecondComputed){
 				return 1;
 			} else {
 				return -1;

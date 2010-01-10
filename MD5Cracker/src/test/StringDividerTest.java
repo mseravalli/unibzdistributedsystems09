@@ -45,9 +45,6 @@ public class StringDividerTest {
 			sd.setFinishedInArray(true, i);
 		}	
 		
-		
-
-		
 		sd.reconstructParsedString(6);
 		
 		
