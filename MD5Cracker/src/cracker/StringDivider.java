@@ -50,20 +50,28 @@ public class StringDivider {
 		}		
 	}
 	
-	
+	/**
+	 * given a string the method returns the next string according to preset 
+	 * parameters
+	 * 
+	 * @param s
+	 * @return
+	 */
 	public String createNextString(String s){
 		
+		//it goes to the first char different from *
 		int position = s.length()-FREE_CHARACTERS;
 		
 		char charToCheck = s.charAt(position);
 		
-		
+		//if charToCheck is the last char of our set of chars
 		if( charToCheck == (char) LAST_CHAR){			
 			
 			s = recurseLastChar(s, position, charToCheck);
 			
 		} else {
-			//substitute the first char from the right that is not '*'
+			//substitute the first char from the right that is not '*' with the 
+			//following one in the unicode table
 			s = s.substring(0, position)+ (char)(charToCheck+1) + s.substring(position+1);
 		}
 		
@@ -71,13 +79,50 @@ public class StringDivider {
 		
 	}
 	
-	
+	/**
+	 * the method changes all the chars which are equal to the final char in the
+	 * set of chars to take into account, eventually adding the first char at the
+	 * beginning if the string is composed by only "last" chars
+	 * 
+	 * @param s
+	 * @param position
+	 * @param charToCheck
+	 * @return
+	 */
 	public String recurseLastChar(String s, int position, char charToCheck){
 		
+		/*
+		 * fist of all substitute the last with the first
+		 * e.g. first = 'a' last = 'z'
+		 * if the passed string is "bbbbz***" this immediately becomes "bbbba***" 
+		 */
 		s = s.substring(0, position)+ (char)FIRST_CHAR + s.substring(position+1);
 		
+		
+		/*
+		 *  if we are in the first position we add at the beginning the first
+		 *  char of our set
+		 *  e.g first = 'a' last = 'z'
+		 *  firstly the passed string was "z***", it is then immediately transformed
+		 *  to "a***" and then since we were parsing the char at position 0 
+		 *  (first char of the string) we add in front of it the first char of
+		 *  our set, thus the string becomes "aa***" which was what we were
+		 *  interested in
+		 */
 		if(position == 0){
 			s = (char)FIRST_CHAR + s;
+		
+			
+		/*
+		 * if we are not in the first position of the string we go backwards and 
+		 * if the char in that position is the last char we recursively call this
+		 * method, otherwise we simply substitute the char with its following one
+		 * on the list
+		 * e.g. first 'a'   last 'z'
+		 * at the beginning the string was "bbbbz***" then it has become "bbbba***"
+		 * now we go backwards and we substitute the first 'b' from the right with
+		 * its successor and the string becomes "bbbca***"
+		 */
 		} else {
 			position--;
 			charToCheck = s.charAt(position);
@@ -92,28 +137,24 @@ public class StringDivider {
 	}
 	
 	
-	/* when all the elements in the data structure are checked a new datastructure
-	 * will be created*/
-	public void reconstructParsedString(){
+	/**
+	 * when some of the elements in the data structure are checked the whole
+	 * data structure is rebuilt, checked elements are deleted and the stack is
+	 * re-populated started from the last valid element in the list
+	 */
+	public void reconstructParsedString(int freeSlots){
 		
-		Arrays.sort(testedStrings, new StringCoparator());
-		
-		//count number of free slots
-		int freeSlots = 0;
-		for (int i = 0; i < PARSED_STRING_LENGTH; i++){
-			if(testedStrings[i].isStarted && testedStrings[i].isFinished)
-				freeSlots++;
-		}
-		
-		for(int i = 0; i < PARSED_STRING_LENGTH-freeSlots; i++){
-			testedStrings[i].str = testedStrings[i+freeSlots].str;
-			testedStrings[i].isStarted = testedStrings[i+freeSlots].isStarted;
-			testedStrings[i].isFinished = testedStrings[i+freeSlots].isFinished;
+		if(freeSlots >0){
 			
-			//testedStrings[i]=testedStrings[i+freeSlots].clone();
-		}
-		
-		if(freeSlots >0){		
+			/*
+			 * firstly the array is sorted and the already checked elements are put
+			 * at the end
+			 */
+			Arrays.sort(testedStrings, new ParsedStringCoparator());
+			
+			/*
+			 * then starting form the last valid element the stack is repopulated
+			 */
 			for(int i = PARSED_STRING_LENGTH -freeSlots; i < PARSED_STRING_LENGTH; i++){
 				testedStrings[i].str = "";
 				testedStrings[i].isStarted = false;
