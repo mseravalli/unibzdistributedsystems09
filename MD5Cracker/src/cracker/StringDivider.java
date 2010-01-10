@@ -13,10 +13,10 @@ public class StringDivider {
 	private ParsedString[] testedStrings = new ParsedString[PARSED_STRING_LENGTH];
 	
 	public StringDivider(){
+		
 		for(int i=0; i<PARSED_STRING_LENGTH;i++){
 			testedStrings[i] = new ParsedString();
-		}
-		
+		}		
 		
 		testedStrings[0].str = "***";
 		testedStrings[1].str = (char)FIRST_CHAR+testedStrings[0].str;
