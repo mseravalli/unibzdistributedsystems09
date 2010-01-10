@@ -42,7 +42,10 @@ class ParsedStringCoparator implements Comparator<Object>{
 	
 		//uses compareTo method of String class to compare names of the StringCoparator
 		
-		//if both strings are not finished or both are finished
+		/*
+		 * if both strings are not finished or both are finished they are comparated
+		 * as two strings
+		 */
 		if((!isFisrtFinished && !isSecondFinished) || (isFisrtFinished && isSecondFinished)){
 			
 			if(firstStr.length() == secondStr.length()){
@@ -53,6 +56,11 @@ class ParsedStringCoparator implements Comparator<Object>{
 				return 1;
 			}
 		
+			
+		/*
+		 * if one of the two strings is already finished that one will be put
+		 * at the end of the array
+		 */
 		} else {
 			if (isFisrtFinished && !isSecondFinished){
 				return 1;
