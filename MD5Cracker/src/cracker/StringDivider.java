@@ -59,7 +59,7 @@ public class StringDivider {
 	 */
 	public String createNextString(String s){
 		
-		//it goes to the first char different from *
+		//it goes to the first char different from * from the right
 		int position = s.length()-FREE_CHARACTERS;
 		
 		char charToCheck = s.charAt(position);

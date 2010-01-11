@@ -1,3 +1,4 @@
+package cracker;
 import java.security.MessageDigest;
 
 /* Class written by Chris Mair for Distributed Systems Labs */
