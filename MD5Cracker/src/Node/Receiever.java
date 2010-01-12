@@ -8,13 +8,13 @@ import java.net.Socket;
 import java.util.ArrayList;
 import cracker.RoutingRecord;
 
-public class Reciever extends Thread{
+public class Receiever extends Thread{
 	
 	private ArrayList <RoutingRecord> routingTable;
 	private Socket nodeSocket;
 	private int port;
 	
-	public Reciever(ArrayList <RoutingRecord> rT, int p){
+	public Receiever(ArrayList <RoutingRecord> rT, int p){
 		routingTable = rT;
 		port = p;
 	}
