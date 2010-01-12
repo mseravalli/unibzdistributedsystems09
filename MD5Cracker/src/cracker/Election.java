@@ -7,15 +7,20 @@ import java.util.ArrayList;
 
 public class Election {
 
-	ArrayList<RoutingRecord> routingTable;
+	private ArrayList<RoutingRecord> routingTable;
 	
-	ObjectOutputStream oos;
+	private ObjectOutputStream oos;
 	
-	Socket socket;
+	private String ip;
+	private int port;
 	
-	public Election(ArrayList<RoutingRecord> rTable, Socket aSocket){
+	private Socket socket;
+	
+	public Election(ArrayList<RoutingRecord> rTable, String ipAddress, int portNumber){
 		routingTable = rTable;
-		socket = aSocket;
+		this.ip = ipAddress;
+		this.port = portNumber;
+		socket = new Socket();
 	}
 	
 	public void broadCastID(){
@@ -25,24 +30,24 @@ public class Election {
 		//set the id of the current process to
 		for(RoutingRecord rr : routingTable){
 		
-			if(rr.IP.equals(socket.getInetAddress().toString())){
+			if(rr.IP.equals(this.ip) && rr.port == this.port){
 				rr.ID = id;
 			}
 			
 		}
 		
-		try {
-			
-			//TODO really broadcast
-			oos = new ObjectOutputStream(socket.getOutputStream());
-			
-			oos.writeObject(routingTable);
-			
-			
-		} catch (IOException e) {
-			e.getMessage();
-			e.printStackTrace();
-		}
+//		try {
+//			
+//			//TODO really broadcast
+//			oos = new ObjectOutputStream(socket.getOutputStream());
+//			
+//			oos.writeObject(routingTable);
+//			
+//			
+//		} catch (IOException e) {
+//			e.getMessage();
+//			e.printStackTrace();
+//		}
 		
 	}
 	
@@ -113,7 +118,7 @@ public class Election {
 class ElectionConnection extends Election implements Runnable {
 
 	public ElectionConnection(ArrayList<RoutingRecord> rTable, Socket aSocket) {
-		super(rTable, aSocket);
+		super(rTable, "127.0.0.1", 4334);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -122,21 +127,34 @@ class ElectionConnection extends Election implements Runnable {
 		
 		do{
 			
-			super.broadCastID();
+//			super.broadCastID();
 			
-			//read until the table is completely filled
+			//wait until the table is completely filled
 			do{
-				//TODO
+				try {
+					Thread.sleep(200);
+				} catch (InterruptedException e) {
+					e.getMessage();
+					e.printStackTrace();
+				}
+				System.out.println("waiting for the ids");
 			}while(!super.isFilled());
+			
+			System.out.println("every node has an id");
 			
 			//if there is no unique max id clear the routing table and wait until
 			//it is completely clean
 			if(!isUniqueMaxID()){
-				super.clearRTable();
+//				super.clearRTable();
 				
-				//read table until it is clean
+				//wait until table until it is clean
 				do{
-					//TODO
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+						e.getMessage();
+						e.printStackTrace();
+					}
 				}while(!super.isClean());				
 			}			
 			
