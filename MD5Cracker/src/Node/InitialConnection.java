@@ -19,7 +19,7 @@ import java.util.Scanner;
 import cracker.Election;
 import cracker.RoutingRecord;
 
-public class InitialConnection {
+public class InitialConnection implements Runnable{
 	
 	private static final String INTERFACE_NAME = "wlan0";
 	
@@ -29,6 +29,7 @@ public class InitialConnection {
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
 	private String IP;
+	private String isNew;
 	private int port;
 	private Ping ping;
 	private Node node;
@@ -36,16 +37,10 @@ public class InitialConnection {
 	private Election el;
 	
 	
-	public InitialConnection(String connectionIP,int pt){
+	public InitialConnection(String connectionIP, int pt){
+		isNew = connectionIP;
 		port = pt;
-		IP = getOwnIP(INTERFACE_NAME);
-		
-		if(connectionIP.equals("new"))
-				newNetwork();
-		else
-			connectToNode(connectionIP);
-		
-		
+		IP = getOwnIP(INTERFACE_NAME);	
 	}
 	
 	public void newNetwork(){
@@ -76,14 +71,27 @@ public class InitialConnection {
 		String IP = connectionIP.substring(0, connectionIP.indexOf(':'));
 		Integer Port = Integer.parseInt(connectionIP.substring(connectionIP.indexOf(':')+1));
 		
+		System.out.println("trying to connect to " + connectionIP);
+		
 		try {
 			
 			connectionSocket = new Socket(IP, Port.intValue());
+			
+			System.out.println("connected to : " + IP);
+			
 			out = new ObjectOutputStream(connectionSocket.getOutputStream());
+			//arriva solo fino qua e non piu avanti
+			
+			
+			
 			in = new ObjectInputStream(connectionSocket.getInputStream());
 			
-			out.writeObject(new HelloPacket(getOwnIP(INTERFACE_NAME),port,true,-1));
+			HelloPacket hp = new HelloPacket(getOwnIP(INTERFACE_NAME), port , true, RoutingRecord.NULL_ID);
+			
+			out.writeObject(hp);
+			System.out.println("Object sended");
 			routingTable = (ArrayList <RoutingRecord>) in.readObject();
+			
 			
 			//routingTable.add(new RoutingRecord(this.getOwnIP("wlan0"),port));
 			
@@ -115,6 +123,35 @@ public class InitialConnection {
         }
         return ip;
     }
+
+	@Override
+	public void run() {
+		if(this.isNew.equals("new"))
+			newNetwork();
+	else
+		connectToNode(this.isNew);
+		
+	}
+	
+	
+	public static void main (String[] args){
+		
+		Scanner sc = new Scanner(System.in);
+		
+		System.out.println("first insert the ip and then the port to use");
+		
+		Runnable first = new InitialConnection(sc.next(),sc.nextInt());		
+		Thread firstThread = new Thread(first);
+		
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		firstThread.start();		
+		
+	}
 	
 	
 }
