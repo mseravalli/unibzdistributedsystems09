@@ -8,8 +8,11 @@ import java.net.Socket;
 import java.util.Comparator;
 
 public class RoutingRecord {
-	public String IP;
+	
+	private static final int NULL_ID = -1;
+	
 	public int ID;
+	public String IP;
 	public int port;
 	public Socket socket;
 	
@@ -17,7 +20,7 @@ public class RoutingRecord {
 	//constructor that sets the IP and sets the ID to null
 	public RoutingRecord(String ip, int po){
 		IP = ip;
-		ID = -1;
+		ID = NULL_ID;
 		port = po;
 		try {
 			socket = new Socket(IP,port);
