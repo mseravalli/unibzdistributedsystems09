@@ -15,6 +15,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
+import cracker.Election;
 import cracker.RoutingRecord;
 
 public class InitialConnection {
@@ -26,14 +27,17 @@ public class InitialConnection {
 	private Socket mySocket;
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
+	private String IP;
 	private int port;
 	private Ping ping;
 	private Node node;
 	private Receiever rec;
+	private Election el;
 	
 	
 	public InitialConnection(String connectionIP,int pt){
 		port = pt;
+		IP = getOwnIP(INTERFACE_NAME);
 		if(connectionIP.equals("new"))
 				newNetwork();
 		else
@@ -52,6 +56,9 @@ public class InitialConnection {
 		//start Ping, which sends out acknowledgments every second
 		ping = new Ping(routingTable);
 		ping.start();
+		
+		//elect Leader
+		el = new Election(routingTable,IP,port);
 		
 	}
 	
