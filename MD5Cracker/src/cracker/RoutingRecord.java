@@ -9,7 +9,7 @@ import java.util.Comparator;
 
 public class RoutingRecord {
 	
-	private static final int NULL_ID = -1;
+	public static final int NULL_ID = -1;
 	
 	public int ID;
 	public String IP;

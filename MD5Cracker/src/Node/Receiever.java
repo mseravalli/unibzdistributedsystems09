@@ -29,10 +29,22 @@ public class Receiever extends Thread{
 			HelloPacket packet;
 	    
 			while(true){
-				System.out.println("RUNNING");
+				System.out.println("listening");
+				
 				nodeSocket = listenSocket.accept();
+				
+				System.out.println("new connection accepted");
+				
 				in = new ObjectInputStream(nodeSocket.getInputStream());
+				
+				in.readObject();
+				
+				System.out.println("the packet is arrived from: ");
+				
 				packet = (HelloPacket) in.readObject();
+				
+				
+				
 				if(packet.hello){
 					sendRoutingTable();
 				}
