@@ -20,7 +20,6 @@ import cracker.RoutingRecord;
 public class InitialConnection {
 	
 	private static final String INTERFACE_NAME = "wlan0";
-	private static final int NO_ID = -1;
 	
 	private ArrayList <RoutingRecord> routingTable;
 	private Socket connectionSocket;
@@ -30,7 +29,7 @@ public class InitialConnection {
 	private int port;
 	private Ping ping;
 	private Node node;
-	private Reciever rec;
+	private Receiever rec;
 	
 	
 	public InitialConnection(String connectionIP,int pt){
@@ -46,11 +45,11 @@ public class InitialConnection {
 	public void newNetwork(){
 		routingTable = new ArrayList <RoutingRecord>();
 		
-		//start Reciever, which is waiting for HelloPackets
-		rec = new Reciever(routingTable,port);
+		//start Receiver, which is waiting for HelloPackets
+		rec = new Receiever(routingTable,port);
 		rec.start();
 		
-		//start Ping, which 
+		//start Ping, which sends out acknowledgments every second
 		ping = new Ping(routingTable);
 		ping.start();
 		
@@ -67,7 +66,7 @@ public class InitialConnection {
 			out = new ObjectOutputStream(connectionSocket.getOutputStream());
 			in = new ObjectInputStream(connectionSocket.getInputStream());
 			
-			out.writeObject(new HelloPacket(getOwnIP(INTERFACE_NAME),port,true,NO_ID));
+			out.writeObject(new HelloPacket(getOwnIP(INTERFACE_NAME),port,true,-1));
 			routingTable = (ArrayList <RoutingRecord>) in.readObject();
 			
 			//routingTable.add(new RoutingRecord(this.getOwnIP("wlan0"),port));
@@ -82,15 +81,7 @@ public class InitialConnection {
 		
 		
 		
-	}
-	
-	//public void createNode(){
-	//	
-		
-	//}
-	
-	
-	
+	}	
 		
 	//Returns the correct network ip-address, given an InterfaceName
 	public String getOwnIP(String interfaceName){
