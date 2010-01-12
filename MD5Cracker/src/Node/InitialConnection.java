@@ -14,6 +14,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Scanner;
 
 import cracker.Election;
 import cracker.RoutingRecord;
@@ -38,6 +39,7 @@ public class InitialConnection {
 	public InitialConnection(String connectionIP,int pt){
 		port = pt;
 		IP = getOwnIP(INTERFACE_NAME);
+		
 		if(connectionIP.equals("new"))
 				newNetwork();
 		else
@@ -49,14 +51,21 @@ public class InitialConnection {
 	public void newNetwork(){
 		routingTable = new ArrayList <RoutingRecord>();
 		
+		System.out.println("Creating new Network");
+		
 		//start Receiver, which is waiting for HelloPackets
 		rec = new Receiever(routingTable,port);
 		rec.start();
+		
+		System.out.println("Receiever started");
 		
 		//start Ping, which sends out acknowledgments every second
 		ping = new Ping(routingTable);
 		ping.start();
 		
+		
+		Scanner sc = new Scanner(System.in);
+		sc.next();
 		//elect Leader
 		el = new Election(routingTable,IP,port);
 		

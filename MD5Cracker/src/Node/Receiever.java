@@ -29,6 +29,7 @@ public class Receiever extends Thread{
 			HelloPacket packet;
 	    
 			while(true){
+				System.out.println("RUNNING");
 				nodeSocket = listenSocket.accept();
 				in = new ObjectInputStream(nodeSocket.getInputStream());
 				packet = (HelloPacket) in.readObject();
@@ -39,11 +40,21 @@ public class Receiever extends Thread{
 					updateRoutingTable(packet);
 				}
 				nodeSocket.close();
+				
+				for(int i = 0; i< routingTable.size();i++){
+					System.out.println(routingTable.get(i).IP);
+				}
+				
+				Thread.sleep(500);
+				
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
