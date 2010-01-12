@@ -1,22 +1,31 @@
-package cracker;
+package Node;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.security.MessageDigest;
+import java.util.Enumeration;
 
 
-public class Node {
+public class Node extends Thread{
+	
+	
+	
 	
 	public Node(){
-		NodeConnection nc = new NodeConnection(String md5, ParsedString range);
-		nc.start();
+		
 	}
 	
+	public void run(){
+		
+	}
 	
-	//Checks all Strings in a certain range
+	//Recursively checks all Strings in a certain range
 	public void checkStrings(String toFind, String rng, int noOfUnknown){
 		
 		//base case - we've only one variable char left
 		if (noOfUnknown == 0){
 			System.out.println(rng);
-			encode(rng);
+			encode(rng,toFind);
 		}
 		
 		//recursive case - we don't know how many variable chars left
@@ -29,7 +38,13 @@ public class Node {
 		}
 	}
 	
-	public String encode(String toTest){
+	
+	
+	//Encodes a certain String and compares it to the searched String, 
+	//if they are the same (key was cracked), then it returns the original msg
+	//else it returns null
+	public String encode(String toTest, String toFind){
+		
 		String encoded = "";
         byte a[] = toTest.getBytes();
         try {
@@ -41,9 +56,15 @@ public class Node {
         } catch (java.security.NoSuchAlgorithmException e) {
             System.exit(1);
         };
-        if (encoded = toFind)
+        if (encoded == toFind)
         	return toTest;
+        else 
+        	return null;
+        
 	}
+	
+	
+
 	
 	
 }
