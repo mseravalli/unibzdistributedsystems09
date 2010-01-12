@@ -127,7 +127,7 @@ class ElectionConnection extends Election implements Runnable {
 		
 		do{
 			
-//			super.broadCastID();
+			super.broadCastID();
 			
 			//wait until the table is completely filled
 			do{
@@ -145,7 +145,9 @@ class ElectionConnection extends Election implements Runnable {
 			//if there is no unique max id clear the routing table and wait until
 			//it is completely clean
 			if(!isUniqueMaxID()){
-//				super.clearRTable();
+				super.clearRTable();
+				System.out.println("there are 2 nodes that have the same max id" +
+						"the ids will be cleared");
 				
 				//wait until table until it is clean
 				do{
@@ -160,6 +162,7 @@ class ElectionConnection extends Election implements Runnable {
 			
 		} while(!isUniqueMaxID());
 		
+		System.out.println("we have the leader;");
 		
 		//we have a leader!!
 		
