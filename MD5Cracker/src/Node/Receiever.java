@@ -28,7 +28,7 @@ public class Receiever extends Thread{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		Socket nodeSocket;
+//		Socket nodeSocket;
 		ObjectInputStream in;
 		ObjectOutputStream out;
 		HelloPacket packet;
