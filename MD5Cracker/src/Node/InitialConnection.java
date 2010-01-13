@@ -84,16 +84,18 @@ public class InitialConnection implements Runnable{
 			System.out.println("connected to : " + IP + ":" +Port.toString());
 			
 			out = new ObjectOutputStream(connectionSocket.getOutputStream());
-			//arriva solo fino qua e non piu avanti
+			//arriva solo fino qua e non piu avanti	
 			
 			
+//			in = new ObjectInputStream(connectionSocket.getInputStream());
 			
-			in = new ObjectInputStream(connectionSocket.getInputStream());
+			
 			System.out.println("STREAMS CREATED, READY TO WRITE");
 			HelloPacket hp = new HelloPacket(getOwnIP(INTERFACE_NAME), port , true, RoutingRecord.NULL_ID);
 			
 			out.writeObject(hp);
-			System.out.println("Object sended");
+			System.out.println("Object sent");
+			
 			//routingTable = (ArrayList <RoutingRecord>) in.readObject();
 			//routingTable.add(new RoutingRecord(getOwnIP(INTERFACE_NAME),port,IS_ME));
 			
