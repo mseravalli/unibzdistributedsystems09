@@ -32,6 +32,21 @@ public class RoutingRecord {
 			e.printStackTrace();
 		}
 	}
+	
+	public RoutingRecord(String ip, int id, int po){
+		IP = ip;
+		ID = id;
+		port = po;
+		try {
+			socket = new Socket(IP,port);
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 }
 
