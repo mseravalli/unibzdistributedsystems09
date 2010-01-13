@@ -59,6 +59,10 @@ public class Receiever extends Thread{
 			else{
 				updateRoutingTable(packet);
 			}
+			
+			
+			//perche qua il socket viene chiuso? non si potrebbe in qualche modo
+			//passarlo a ping? che così ha già la connessione con gli altri nodi
 			nodeSocket.close();
 			
 			System.out.println("This is the received routing table");
