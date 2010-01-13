@@ -44,11 +44,11 @@ public class Receiever extends Thread{
 				
 			in = new ObjectInputStream(nodeSocket.getInputStream());
 				
-			in.readObject();				
-				
+//			in.readObject();				
+//			System.out.println("the packet is arrived from: ");
 			packet = (HelloPacket) in.readObject();
 				
-			System.out.println("the packet is arrived from: ");
+			System.out.println("the received packet is correct");
 				
 			if(packet.hello){
 				sendRoutingTable();
