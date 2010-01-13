@@ -81,10 +81,7 @@ public class InitialConnection implements Runnable{
 			//arriva solo fino qua e non piu avanti	
 			
 			
-//			in = new ObjectInputStream(this.connectionSocket.getInputStream());
-			InputStream instr = this.connectionSocket.getInputStream();
-			//instr è null
-			in = new ObjectInputStream(instr);
+			in = new ObjectInputStream(this.connectionSocket.getInputStream());
 			
 			
 			System.out.println("STREAMS CREATED, READY TO WRITE");
@@ -93,15 +90,17 @@ public class InitialConnection implements Runnable{
 			out.writeObject(hp);
 			System.out.println("Object sent");
 			
-			//routingTable = (ArrayList <RoutingRecord>) in.readObject();
-			//routingTable.add(new RoutingRecord(getOwnIP(INTERFACE_NAME),port,IS_ME));
+			routingTable = (ArrayList <RoutingRecord>) in.readObject();
+			routingTable.add(new RoutingRecord(getOwnIP(INTERFACE_NAME),port,IS_ME));
 			
-			//routingTable.add(new RoutingRecord(this.getOwnIP("wlan0"),port));
+			routingTable.add(new RoutingRecord(this.getOwnIP("wlan0"),port, false));
 			
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.getMessage();
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 		
