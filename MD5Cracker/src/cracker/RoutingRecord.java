@@ -15,37 +15,45 @@ public class RoutingRecord {
 	public String IP;
 	public int port;
 	public Socket socket;
+	public boolean isMe;
 	
 	
 	//constructor that sets the IP and sets the ID to null
-	public RoutingRecord(String ip, int po){
+	public RoutingRecord(String ip, int po,boolean iM){
 		IP = ip;
 		ID = NULL_ID;
 		port = po;
-		try {
-			socket = new Socket(IP,port);
-		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		isMe = iM;
+		if(!iM){
+			try {
+				socket = new Socket(IP,port);
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	
-	public RoutingRecord(String ip, int id, int po){
+	public RoutingRecord(String ip, int id, int po,boolean iM){
 		IP = ip;
 		ID = id;
 		port = po;
-		try {
-			socket = new Socket(IP,port);
-		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		isMe = iM;
+		if(!iM){
+			try {
+				socket = new Socket(IP,port);
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+		
 	}
 
 }

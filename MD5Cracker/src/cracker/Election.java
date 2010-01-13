@@ -30,7 +30,7 @@ public class Election {
 		//set the id of the current process to
 		for(RoutingRecord rr : routingTable){
 		
-			if(rr.IP.equals(this.ip) && rr.port == this.port){
+			if(rr.isMe){
 				rr.ID = id;
 			}
 			
