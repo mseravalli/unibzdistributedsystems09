@@ -30,6 +30,7 @@ public class Receiever extends Thread{
 		}
 		Socket nodeSocket;
 		ObjectInputStream in;
+		ObjectOutputStream out;
 		HelloPacket packet;
 	    
 		while(true){
@@ -43,6 +44,7 @@ public class Receiever extends Thread{
 			System.out.println("new connection accepted");
 				
 			in = new ObjectInputStream(nodeSocket.getInputStream());
+			out = new ObjectOutputStream(nodeSocket.getOutputStream());
 				
 //			in.readObject();				
 //			System.out.println("the packet is arrived from: ");
