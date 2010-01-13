@@ -22,6 +22,8 @@ import cracker.RoutingRecord;
 public class InitialConnection implements Runnable{
 	
 	private static final String INTERFACE_NAME = "wlan0";
+
+	private static final boolean IS_ME = true;
 	
 	private ArrayList <RoutingRecord> routingTable;
 	private Socket connectionSocket;
@@ -46,7 +48,7 @@ public class InitialConnection implements Runnable{
 	public void newNetwork(){
 		
 		routingTable = new ArrayList <RoutingRecord>();
-		routingTable.add(new RoutingRecord(getOwnIP(INTERFACE_NAME),port));
+		routingTable.add(new RoutingRecord(getOwnIP(INTERFACE_NAME),port,IS_ME));
 		
 		System.out.println("Creating new Network");
 		
@@ -79,7 +81,7 @@ public class InitialConnection implements Runnable{
 			
 			connectionSocket = new Socket(IP, Port.intValue());
 			
-			System.out.println("connected to : " + IP);
+			System.out.println("connected to : " + IP + ":" +Port.toString());
 			
 			out = new ObjectOutputStream(connectionSocket.getOutputStream());
 			//arriva solo fino qua e non piu avanti
@@ -87,13 +89,13 @@ public class InitialConnection implements Runnable{
 			
 			
 			in = new ObjectInputStream(connectionSocket.getInputStream());
-			
+			System.out.println("STREAMS CREATED, READY TO WRITE");
 			HelloPacket hp = new HelloPacket(getOwnIP(INTERFACE_NAME), port , true, RoutingRecord.NULL_ID);
 			
 			out.writeObject(hp);
 			System.out.println("Object sended");
-			routingTable = (ArrayList <RoutingRecord>) in.readObject();
-			routingTable.add(new RoutingRecord(getOwnIP(INTERFACE_NAME),port));
+			//routingTable = (ArrayList <RoutingRecord>) in.readObject();
+			//routingTable.add(new RoutingRecord(getOwnIP(INTERFACE_NAME),port,IS_ME));
 			
 			//routingTable.add(new RoutingRecord(this.getOwnIP("wlan0"),port));
 			
@@ -101,10 +103,23 @@ public class InitialConnection implements Runnable{
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		}
 		
+		//start Receiver, which is waiting for HelloPackets
+		rec = new Receiever(routingTable,port);
+		rec.start();
+		
+		System.out.println("Receiever started");
+		
+		//start Ping, which sends out acknowledgments every second
+		ping = new Ping(routingTable);
+		ping.start();
+		
+		
+		Scanner sc = new Scanner(System.in);
+		sc.next();
+		//elect Leader
+		el = new Election(routingTable,IP,port);
 		
 		
 	}	
