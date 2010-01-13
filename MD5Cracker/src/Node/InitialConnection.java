@@ -88,6 +88,7 @@ public class InitialConnection implements Runnable{
 			HelloPacket hp = new HelloPacket(getOwnIP(INTERFACE_NAME), port , true, RoutingRecord.NULL_ID);
 			
 			out.writeObject(hp);
+			out.flush();
 			System.out.println("Object sent");
 			
 			routingTable = (ArrayList <RoutingRecord>) in.readObject();
