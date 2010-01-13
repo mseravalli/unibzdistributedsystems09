@@ -44,7 +44,9 @@ public class InitialConnection implements Runnable{
 	}
 	
 	public void newNetwork(){
+		
 		routingTable = new ArrayList <RoutingRecord>();
+		routingTable.add(new RoutingRecord(getOwnIP(INTERFACE_NAME),port));
 		
 		System.out.println("Creating new Network");
 		
@@ -91,7 +93,7 @@ public class InitialConnection implements Runnable{
 			out.writeObject(hp);
 			System.out.println("Object sended");
 			routingTable = (ArrayList <RoutingRecord>) in.readObject();
-			
+			routingTable.add(new RoutingRecord(getOwnIP(INTERFACE_NAME),port));
 			
 			//routingTable.add(new RoutingRecord(this.getOwnIP("wlan0"),port));
 			
