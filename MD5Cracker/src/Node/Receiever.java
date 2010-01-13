@@ -13,6 +13,8 @@ public class Receiever extends Thread{
 	private static final boolean IS_NOT_ME = false;
 	private ArrayList <RoutingRecord> routingTable;
 	private Socket nodeSocket;
+	private ObjectInputStream in;
+	private ObjectOutputStream out;
 	private int port;
 	
 	public Receiever(ArrayList <RoutingRecord> rT, int p){
@@ -29,8 +31,7 @@ public class Receiever extends Thread{
 			e1.printStackTrace();
 		}
 //		Socket nodeSocket;
-		ObjectInputStream in;
-		ObjectOutputStream out;
+		
 		HelloPacket packet;
 	    
 		while(true){
@@ -59,12 +60,13 @@ public class Receiever extends Thread{
 				updateRoutingTable(packet);
 			}
 			nodeSocket.close();
-				
+			
+			System.out.println("This is the received routing table");
 			for(int i = 0; i< routingTable.size();i++){
-				System.out.println(routingTable.get(i).IP);
+				System.out.printf("%s:%d\n",routingTable.get(i).IP, routingTable.get(i).port);
 			}
 				
-			Thread.sleep(500);
+			Thread.sleep(2000);
 				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -83,9 +85,9 @@ public class Receiever extends Thread{
 
 	private void sendRoutingTable() {
 
-		ObjectOutputStream out;
+//		ObjectOutputStream out;
 		try {
-			out = new ObjectOutputStream(nodeSocket.getOutputStream());
+//			out = new ObjectOutputStream(nodeSocket.getOutputStream());
 			out.writeObject(routingTable);
 			out.flush();
 			out.close();

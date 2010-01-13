@@ -36,6 +36,7 @@ public class Ping extends Thread {
 						asocket = new Socket(actualRecord.IP,actualRecord.port);
 						out = new ObjectOutputStream(asocket.getOutputStream());
 						out.writeObject(actualHello);
+						out.flush();
 						out.close();
 						out = null;
 					} catch (UnknownHostException e) {

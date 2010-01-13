@@ -2,12 +2,13 @@ package cracker;
 
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 import java.util.Comparator;
 
-public class RoutingRecord {
+public class RoutingRecord implements Serializable{
 	
 	public static final int NULL_ID = -1;
 	
