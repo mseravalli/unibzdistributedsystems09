@@ -1,12 +1,6 @@
 package Node;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.Socket;
@@ -87,7 +81,10 @@ public class InitialConnection implements Runnable{
 			//arriva solo fino qua e non piu avanti	
 			
 			
-			in = new ObjectInputStream(connectionSocket.getInputStream());
+//			in = new ObjectInputStream(this.connectionSocket.getInputStream());
+			InputStream instr = this.connectionSocket.getInputStream();
+			//instr è null
+			in = new ObjectInputStream(instr);
 			
 			
 			System.out.println("STREAMS CREATED, READY TO WRITE");
