@@ -22,6 +22,8 @@ public class Ping extends Thread {
 		routingTable = rT;
 	}
 	
+	// da quello che ho capito ping si collega ogni volta con un nodo e manda
+	// un pacchetto, non è meglio tenere le connessioni vecchie?
 	public void run(){
 		
 		while(true){
