@@ -1,6 +1,8 @@
 package Node;
 
-public class HelloPacket {
+import java.io.Serializable;
+
+public class HelloPacket implements Serializable{
 	
 	public boolean hello;
 	public String IP;
