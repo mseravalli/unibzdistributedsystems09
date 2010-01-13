@@ -20,57 +20,63 @@ public class Receiever extends Thread{
 		port = p;
 	}
 	
-	public void run(){
+	public void run(){			
+		ServerSocket listenSocket = null;
 		try {
-			
-			ServerSocket listenSocket;
 			listenSocket = new ServerSocket(port);
-			Socket nodeSocket;
-			ObjectInputStream in;
-			HelloPacket packet;
-	    
-			while(true){
-				System.out.println("listening");
-				
-				nodeSocket = listenSocket.accept();
-				
-				System.out.println("new connection accepted");
-				
-				in = new ObjectInputStream(nodeSocket.getInputStream());
-				
-				in.readObject();
-				
-				System.out.println("the packet is arrived from: ");
-				
-				packet = (HelloPacket) in.readObject();
-				
-				
-				
-				if(packet.hello){
-					sendRoutingTable();
-				}
-				else{
-					updateRoutingTable(packet);
-				}
-				nodeSocket.close();
-				
-				for(int i = 0; i< routingTable.size();i++){
-					System.out.println(routingTable.get(i).IP);
-				}
-				
-				Thread.sleep(500);
-				
-			}
-		} catch (IOException e) {
+		} catch (IOException e1) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e1.printStackTrace();
 		}
+		Socket nodeSocket;
+		ObjectInputStream in;
+		HelloPacket packet;
+	    
+		while(true){
+			
+			try {
+			
+			System.out.println("listening");
+			
+			nodeSocket = listenSocket.accept();
+				
+			System.out.println("new connection accepted");
+				
+			in = new ObjectInputStream(nodeSocket.getInputStream());
+				
+			in.readObject();				
+				
+			packet = (HelloPacket) in.readObject();
+				
+			System.out.println("the packet is arrived from: ");
+				
+			if(packet.hello){
+				sendRoutingTable();
+			}
+			else{
+				updateRoutingTable(packet);
+			}
+			nodeSocket.close();
+				
+			for(int i = 0; i< routingTable.size();i++){
+				System.out.println(routingTable.get(i).IP);
+			}
+				
+			Thread.sleep(500);
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+				
+		}
+		
 	}
 
 	private void sendRoutingTable() {
