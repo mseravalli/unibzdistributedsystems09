@@ -87,7 +87,7 @@ public class InitialConnection implements Runnable{
 			//arriva solo fino qua e non piu avanti	
 			
 			
-//			in = new ObjectInputStream(connectionSocket.getInputStream());
+			in = new ObjectInputStream(connectionSocket.getInputStream());
 			
 			
 			System.out.println("STREAMS CREATED, READY TO WRITE");
@@ -104,6 +104,7 @@ public class InitialConnection implements Runnable{
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
+			e.getMessage();
 			e.printStackTrace();
 		}
 		
