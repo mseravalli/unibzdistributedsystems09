@@ -10,6 +10,7 @@ import cracker.RoutingRecord;
 
 public class Receiever extends Thread{
 	
+	private static final boolean IS_NOT_ME = false;
 	private ArrayList <RoutingRecord> routingTable;
 	private Socket nodeSocket;
 	private int port;
@@ -88,7 +89,16 @@ public class Receiever extends Thread{
 	}
 
 	private void updateRoutingTable(HelloPacket node) {
-		routingTable.add(new RoutingRecord(node.IP,node.port));
+		
+		boolean isAlreadyThere = false;
+		for(int i = 0;i<routingTable.size();i++){
+			if((routingTable.get(i).IP.equals(node.IP)) && (routingTable.get(i).ID == node.ID))
+				isAlreadyThere = true;
+			
+		}
+		
+		if (!isAlreadyThere)
+			routingTable.add(new RoutingRecord(node.IP,node.port,node.ID,IS_NOT_ME));
 		
 	}
 
