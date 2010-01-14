@@ -63,6 +63,14 @@ public class Receiever extends Thread{
 			
 			//perche qua il socket viene chiuso? non si potrebbe in qualche modo
 			//passarlo a ping? che così ha già la connessione con gli altri nodi
+			
+			//hai ragione nel senso che creiamo un socket ogni volta, nel ping 
+			//invece i socket vengono creati una volta per tutte e salvate nella 
+			//routingTable. In ricezione sarebbe piu problematico visto che dovremmo 
+			//avere 1 Thread per ogni nodo su ogni nodo (n² threads) che aspettano,
+			//allora pensavo che 1 che riceveva tutti e aprisse un socket quando ce né 
+			//bisognofosse piu conveniente
+			
 			nodeSocket.close();
 			
 			System.out.println("This is the received routing table");
