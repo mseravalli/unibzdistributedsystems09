@@ -38,11 +38,11 @@ public class InitialConnection implements Runnable{
 		isNew = connectionIP;
 		port = pt;
 		IP = getOwnIP(INTERFACE_NAME);	
+		routingTable = new ArrayList <RoutingRecord>();
 	}
 	
 	public void newNetwork(){
 		
-		routingTable = new ArrayList <RoutingRecord>();
 		routingTable.add(new RoutingRecord(getOwnIP(INTERFACE_NAME),port,IS_ME));
 		
 		System.out.println("Creating new Network");
@@ -92,8 +92,11 @@ public class InitialConnection implements Runnable{
 			out.flush();
 			System.out.println("Object sent");
 			
-			routingTable = (ArrayList <RoutingRecord>) in.readObject();
+//			routingTable = (ArrayList <RoutingRecord>) in.readObject();
+			in.readObject();
 			routingTable.add(new RoutingRecord(getOwnIP(INTERFACE_NAME),port,IS_ME));
+			routingTable.add(new RoutingRecord(IP,Port,false, -1, connectionSocket));
+			
 			
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -113,6 +116,8 @@ public class InitialConnection implements Runnable{
 		//start Ping, which sends out acknowledgments every second
 		ping = new Ping(routingTable);
 		ping.start();
+		
+		System.out.println("Ping started");
 		
 		//start Tableupdate, which checks for nodes that left connection
 		update = new TableUpdate(routingTable);

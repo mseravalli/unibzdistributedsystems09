@@ -53,8 +53,9 @@ public class Receiever extends Thread{
 				
 			System.out.println("the received packet is correct");
 				
-			if(packet.hello){
+			if(packet.isHello){
 				sendRoutingTable();
+				updateRoutingTable(packet);
 			}
 			else{
 				updateRoutingTable(packet);
@@ -71,7 +72,10 @@ public class Receiever extends Thread{
 			//allora pensavo che 1 che riceveva tutti e aprisse un socket quando ce né 
 			//bisognofosse piu conveniente
 			
-			nodeSocket.close();
+			//nodeSocket.close();
+			
+			TableUpdater tu = new TableUpdater(routingTable, in);
+			tu.start();
 			
 			System.out.println("This is the received routing table");
 			for(int i = 0; i< routingTable.size();i++){
@@ -102,7 +106,7 @@ public class Receiever extends Thread{
 //			out = new ObjectOutputStream(nodeSocket.getOutputStream());
 			out.writeObject(routingTable);
 			out.flush();
-			out.close();
+//			out.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -114,13 +118,13 @@ public class Receiever extends Thread{
 		
 		boolean isAlreadyThere = false;
 		for(int i = 0;i<routingTable.size();i++){
-			if((routingTable.get(i).IP.equals(node.IP)) && (routingTable.get(i).ID == node.ID))
+			if((routingTable.get(i).IP.equals(node.IP)) && (routingTable.get(i).port == node.port))
 				isAlreadyThere = true;
 			
 		}
 		
 		if (!isAlreadyThere)
-			routingTable.add(new RoutingRecord(node.IP,node.port,node.ID,IS_NOT_ME));
+			routingTable.add(new RoutingRecord(node.IP, node.port, IS_NOT_ME, node.ID, nodeSocket));
 		
 	}
 
