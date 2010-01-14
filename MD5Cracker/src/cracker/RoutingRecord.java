@@ -11,6 +11,8 @@ import java.util.Comparator;
 public class RoutingRecord implements Serializable{
 	
 	public static final int NULL_ID = -1;
+	public static final boolean IS_ME = true;
+	public static final boolean IS_NOT_ME = false;
 	
 	public int ID;
 	public String IP;
