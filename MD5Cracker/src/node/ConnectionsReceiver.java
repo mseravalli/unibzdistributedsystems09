@@ -49,9 +49,11 @@ public class ConnectionsReceiver implements Runnable {
 			
 			while(true){
 				
-				System.out.println("Listening");
+				System.out.println("Listening on " + port);
 				
 				incomingSocket = listenSocket.accept();
+				
+				System.out.println("contacted by a new node");
 				
 				in = new ObjectInputStream(incomingSocket.getInputStream());
 				out = new ObjectOutputStream(incomingSocket.getOutputStream());
@@ -68,7 +70,7 @@ public class ConnectionsReceiver implements Runnable {
 					
 					
 					InputReceiver receiver = new InputReceiver(in);
-					receiver.start();
+//					receiver.start();
 					
 					
 				} catch (ClassNotFoundException e) {

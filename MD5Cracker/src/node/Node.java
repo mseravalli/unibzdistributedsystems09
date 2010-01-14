@@ -72,13 +72,14 @@ public class Node {
 			out = new ObjectOutputStream(mySocket.getOutputStream());
 			in = new ObjectInputStream(mySocket.getInputStream());
 			
-			System.out.println("connected to " + this.connectionIP);
+			
 			
 			HelloPacket packet = new HelloPacket(this.myIP, this.myPort, true, NULL_ID);
 			
 			out.writeObject(packet);
 			out.flush();
 			
+			System.out.println("connected to " + this.connectionIP);
 			
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
