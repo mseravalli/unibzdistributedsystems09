@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class HelloPacket implements Serializable{
 	
-	public boolean hello;
+	public boolean isHello;
 	public String IP;
 	public int ID;
 	public int port;
@@ -13,7 +13,7 @@ public class HelloPacket implements Serializable{
 		IP = ip;
 		port = po;
 		ID = id;
-		hello = hi;
+		isHello = hi;
 		
 	}
 }

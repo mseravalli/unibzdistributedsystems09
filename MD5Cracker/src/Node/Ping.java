@@ -36,13 +36,16 @@ public class Ping extends Thread {
 				actualRecord = routingTable.get(i);
 				
 				if(!actualRecord.isMe){
+					
+					System.out.printf("Sending the ping to %s:%d\n", actualRecord.IP, actualRecord.port);
+					
 					actualHello = new HelloPacket(actualRecord.IP,actualRecord.port,IS_HELLO,actualRecord.ID);
 					try {
 						asocket = actualRecord.socket;
 						out = new ObjectOutputStream(asocket.getOutputStream());
 						out.writeObject(actualHello);
 						out.flush();
-						out.close();
+//						out.close();
 						out = null;
 					} catch (UnknownHostException e) {
 						// TODO Auto-generated catch block
@@ -55,7 +58,7 @@ public class Ping extends Thread {
 			}
 			
 			try {
-				Thread.sleep(100);
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -40,22 +40,25 @@ public class RoutingRecord implements Serializable{
 		}
 	}
 	
-	public RoutingRecord(String ip, int id, int po,boolean iM){
+	public RoutingRecord(String ip, int po, boolean iM, int id, Socket aSocket){
 		age = 0;
 		IP = ip;
 		ID = id;
 		port = po;
 		isMe = iM;
 		if(!iM){
-			try {
-				socket = new Socket(IP,port);
-			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			
+			socket = aSocket;
+			
+//			try {
+//				socket = new Socket(IP,port);
+//			} catch (NumberFormatException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 		}
 		
 	}
