@@ -30,7 +30,6 @@ public class Receiever extends Thread{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-//		Socket nodeSocket;
 		
 		HelloPacket packet;
 	    
@@ -47,8 +46,7 @@ public class Receiever extends Thread{
 			in = new ObjectInputStream(nodeSocket.getInputStream());
 			out = new ObjectOutputStream(nodeSocket.getOutputStream());
 				
-//			in.readObject();				
-//			System.out.println("the packet is arrived from: ");
+
 			packet = (HelloPacket) in.readObject();
 				
 			System.out.println("the received packet is correct");
@@ -61,20 +59,8 @@ public class Receiever extends Thread{
 				updateRoutingTable(packet);
 			}
 			
-			
-			//perche qua il socket viene chiuso? non si potrebbe in qualche modo
-			//passarlo a ping? che così ha già la connessione con gli altri nodi
-			
-			//hai ragione nel senso che creiamo un socket ogni volta, nel ping 
-			//invece i socket vengono creati una volta per tutte e salvate nella 
-			//routingTable. In ricezione sarebbe piu problematico visto che dovremmo 
-			//avere 1 Thread per ogni nodo su ogni nodo (n² threads) che aspettano,
-			//allora pensavo che 1 che riceveva tutti e aprisse un socket quando ce né 
-			//bisognofosse piu conveniente
-			
-			//nodeSocket.close();
-			
-			TableUpdater tu = new TableUpdater(routingTable, in);
+						
+			TableUpdater tu = new TableUpdater(routingTable, nodeSocket);
 			tu.start();
 			
 			System.out.println("This is the received routing table");
@@ -101,12 +87,9 @@ public class Receiever extends Thread{
 
 	private void sendRoutingTable() {
 
-//		ObjectOutputStream out;
 		try {
-//			out = new ObjectOutputStream(nodeSocket.getOutputStream());
 			out.writeObject(routingTable);
 			out.flush();
-//			out.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
