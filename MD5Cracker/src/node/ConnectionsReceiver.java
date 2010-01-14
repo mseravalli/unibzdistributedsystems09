@@ -49,40 +49,31 @@ public class ConnectionsReceiver implements Runnable {
 			
 			while(true){
 				
-				System.out.println("Listening on " + port);
+				System.out.println("Listening on " + port);			
 				
 				incomingSocket = listenSocket.accept();
-				
-				System.out.println("contacted by a new node");
 				
 				in = new ObjectInputStream(incomingSocket.getInputStream());
 				out = new ObjectOutputStream(incomingSocket.getOutputStream());
 				
-				System.out.println("connection accepted");
+				HelloPacket packet = (HelloPacket) in.readObject();
+				routingTable.add(new RoutingRecord(packet.IP, packet.port, RoutingRecord.IS_NOT_ME));
 				
-				//receives a hello packet from the new node and adds it to the table
-				HelloPacket packet;
-				try {
-					packet = (HelloPacket) in.readObject();
-					routingTable.add(new RoutingRecord(packet.IP, packet.port, RoutingRecord.IS_NOT_ME));
-					
-					//TODO maybe we can send the current routing table to the connected node
-					
-					
-					InputReceiver receiver = new InputReceiver(in);
-//					receiver.start();
-					
-					
-				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-				}
+				out.writeObject(routingTable);
+				out.flush();
 				
+				System.out.println("packet received and table updated");
+				for(RoutingRecord rr : routingTable)
+					System.out.printf("%s:%d %b\n", rr.IP, rr.port, rr.isMe);
 				
-				
-				
+				InputReceiver receiver = new InputReceiver(in, routingTable);
+				receiver.start();
+								
 			}
 			
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 	}

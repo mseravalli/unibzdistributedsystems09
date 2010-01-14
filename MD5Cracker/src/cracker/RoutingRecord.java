@@ -31,11 +31,9 @@ public class RoutingRecord implements Serializable{
 		isMe = iM;
 		if(!iM){
 			try {
-				socket = new Socket(IP,port);
+				socket = null;
+//				socket = new Socket(IP,port);
 			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

@@ -28,7 +28,7 @@ public class Node {
 
 	public Node(String ipAddress, int portAddress){
 		
-		this.myIP = Node.getOwnIP("wlan0");
+		this.myIP = Node.getOwnIP("eth0");
 		this.myPort = portAddress;
 		
 		this.connectionIP = ipAddress;
@@ -63,6 +63,23 @@ public class Node {
     }
 	
 	
+	public ArrayList <RoutingRecord> cleanTable(ArrayList <RoutingRecord> receivedTable){
+		
+		for(RoutingRecord rr : receivedTable){
+			
+			if(rr.IP.equals(myIP) && rr.port == myPort){
+				rr.isMe = true;
+			} else {
+				rr.isMe = false;
+			}
+			
+		}
+		
+		return receivedTable;
+		
+	}
+	
+	
 	public void connectToNode(String ipAddress, int portAddress){		
 		
 		try {
@@ -79,11 +96,18 @@ public class Node {
 			out.writeObject(packet);
 			out.flush();
 			
+			ArrayList <RoutingRecord> readObject = (ArrayList <RoutingRecord>) in.readObject();
+			routingTable = cleanTable(readObject);
+			for(RoutingRecord rr : routingTable)
+				System.out.printf("%s:%d %b\n", rr.IP, rr.port, rr.isMe);
+			
 			System.out.println("connected to " + this.connectionIP);
 			
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 		
@@ -98,7 +122,7 @@ public class Node {
 			int conPort = Integer.parseInt(connectionIP.substring(connectionIP.indexOf(':')+1));
 			
 			this.connectToNode(conIP, conPort);
-		}
+		}		
 		
 		Runnable runnable = new ConnectionsReceiver(this.myIP, this.myPort, this.routingTable);
 		Thread thread = new Thread(runnable); 
