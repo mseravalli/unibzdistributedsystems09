@@ -17,10 +17,12 @@ public class RoutingRecord implements Serializable{
 	public int port;
 	public Socket socket;
 	public boolean isMe;
+	public int age;
 	
 	
 	//constructor that sets the IP and sets the ID to null
 	public RoutingRecord(String ip, int po,boolean iM){
+		age = 0;
 		IP = ip;
 		ID = NULL_ID;
 		port = po;
@@ -39,6 +41,7 @@ public class RoutingRecord implements Serializable{
 	}
 	
 	public RoutingRecord(String ip, int id, int po,boolean iM){
+		age = 0;
 		IP = ip;
 		ID = id;
 		port = po;
