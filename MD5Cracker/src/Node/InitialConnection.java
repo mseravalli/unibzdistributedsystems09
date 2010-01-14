@@ -30,6 +30,7 @@ public class InitialConnection implements Runnable{
 	private Ping ping;
 	private Node node;
 	private Receiever rec;
+	private TableUpdate update;
 	private Election el;
 	
 	
@@ -113,9 +114,13 @@ public class InitialConnection implements Runnable{
 		ping = new Ping(routingTable);
 		ping.start();
 		
+		//start Tableupdate, which checks for nodes that left connection
+		update = new TableUpdate(routingTable);
+		update.start();
 		
 		Scanner sc = new Scanner(System.in);
 		sc.next();
+		
 		//elect Leader
 		el = new Election(routingTable,IP,port);
 		
