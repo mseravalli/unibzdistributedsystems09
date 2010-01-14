@@ -94,8 +94,6 @@ public class InitialConnection implements Runnable{
 			routingTable = (ArrayList <RoutingRecord>) in.readObject();
 			routingTable.add(new RoutingRecord(getOwnIP(INTERFACE_NAME),port,IS_ME));
 			
-			routingTable.add(new RoutingRecord(this.getOwnIP("wlan0"),port, false));
-			
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
