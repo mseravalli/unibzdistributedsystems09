@@ -119,6 +119,11 @@ public class InitialConnection implements Runnable{
 		
 		System.out.println("Ping started");
 		
+		
+		TableUpdater tu = new TableUpdater(routingTable, connectionSocket);
+		tu.start();
+		
+		
 		//start Tableupdate, which checks for nodes that left connection
 		update = new TableUpdate(routingTable);
 		update.start();

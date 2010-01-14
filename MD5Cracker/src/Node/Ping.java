@@ -22,11 +22,6 @@ public class Ping extends Thread {
 		routingTable = rT;
 	}
 	
-	// da quello che ho capito ping si collega ogni volta con un nodo e manda
-	// un pacchetto, non è meglio tenere le connessioni vecchie?
-	
-	//si hai ragione, in effetti non é un problema, visto che abbiamo tutti 
-	//socket nella routing table
 	public void run(){
 		
 		while(true){
@@ -46,7 +41,6 @@ public class Ping extends Thread {
 						out.writeObject(actualHello);
 						out.flush();
 //						out.close();
-						out = null;
 					} catch (UnknownHostException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -58,7 +52,7 @@ public class Ping extends Thread {
 			}
 			
 			try {
-				Thread.sleep(500);
+				Thread.sleep(2000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

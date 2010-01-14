@@ -36,19 +36,6 @@ public class Election {
 			
 		}
 		
-//		try {
-//			
-//			//TODO really broadcast
-//			oos = new ObjectOutputStream(socket.getOutputStream());
-//			
-//			oos.writeObject(routingTable);
-//			
-//			
-//		} catch (IOException e) {
-//			e.getMessage();
-//			e.printStackTrace();
-//		}
-		
 	}
 	
 	
