@@ -24,6 +24,9 @@ public class Ping extends Thread {
 	
 	// da quello che ho capito ping si collega ogni volta con un nodo e manda
 	// un pacchetto, non è meglio tenere le connessioni vecchie?
+	
+	//si hai ragione, in effetti non é un problema, visto che abbiamo tutti 
+	//socket nella routing table
 	public void run(){
 		
 		while(true){
@@ -35,7 +38,7 @@ public class Ping extends Thread {
 				if(!actualRecord.isMe){
 					actualHello = new HelloPacket(actualRecord.IP,actualRecord.port,IS_HELLO,actualRecord.ID);
 					try {
-						asocket = new Socket(actualRecord.IP,actualRecord.port);
+						asocket = actualRecord.socket;
 						out = new ObjectOutputStream(asocket.getOutputStream());
 						out.writeObject(actualHello);
 						out.flush();
