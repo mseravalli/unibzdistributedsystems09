@@ -100,7 +100,7 @@ public class Node {
 			
 			ArrayList <RoutingRecord> readObject = (ArrayList <RoutingRecord>) in.readObject();
 			
-			//check whethet the record is already present and modify it		
+			//check whether the record is already present and modify it		
 			boolean isPresent = false;
 			int position = -1;
 			for(int i = 0; i < routingTable.size(); i++){
@@ -125,6 +125,9 @@ public class Node {
 				else
 					System.out.printf("%s:%d %b %o\n", rr.IP, rr.port, rr.isMe, rr.socket);
 			}
+			
+			new InputReceiver(ipAddress,portAddress,in,routingTable).start();
+			
 			System.out.println("Node: connected to " + portAddress);
 			
 		} catch (UnknownHostException e) {
