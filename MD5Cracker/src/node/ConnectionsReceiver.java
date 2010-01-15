@@ -76,7 +76,7 @@ public class ConnectionsReceiver implements Runnable {
 				for(RoutingRecord rr : routingTable)
 					System.out.printf("%s:%d %b\n", rr.IP, rr.port, rr.isMe);
 				
-				InputReceiver receiver = new InputReceiver(in, routingTable);
+				InputReceiver receiver = new InputReceiver(packet.IP, packet.port, in, routingTable);
 				receiver.start();
 								
 			}
