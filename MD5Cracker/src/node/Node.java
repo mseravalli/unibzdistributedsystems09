@@ -18,6 +18,8 @@ public class Node {
 	
 	public static final int NULL_ID = -1;
 	
+	public static final String ELECTION = "election";
+	
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
 	private Socket mySocket;
@@ -25,6 +27,8 @@ public class Node {
 	private int myPort;
 	private String connectionIP;
 	private ArrayList <RoutingRecord> routingTable;
+	
+
 
 	public Node(String ipAddress, int portAddress){
 		
@@ -126,7 +130,7 @@ public class Node {
 					System.out.printf("%s:%d %b %o\n", rr.IP, rr.port, rr.isMe, rr.socket);
 			}
 			
-			new InputReceiver(ipAddress,portAddress,in,routingTable).start();
+			new InputReceiver(ipAddress,portAddress,mySocket,routingTable).start();
 			
 			System.out.println("Node: connected to " + portAddress);
 			
@@ -179,6 +183,24 @@ public class Node {
 	}
 	
 	
+	public void startElection(String hash){
+		
+		for(RoutingRecord rr : routingTable){
+			try {
+				if(!rr.isMe){
+					out = new ObjectOutputStream( rr.socket.getOutputStream());
+					out.writeUTF(ELECTION);		
+				}
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	
+	
+	
 	public static void main(String[] args){
 		
 		Scanner sc = new Scanner(System.in);
@@ -190,6 +212,10 @@ public class Node {
 		Node node = new Node(address, port);		
 		
 		node.startNode();
+		
+		System.out.println("insert the hash to decode");
+		node.startElection(sc.next());
+		
 		
 	}
 	
