@@ -99,6 +99,9 @@ public class Node {
 			out.flush();
 			
 			ArrayList <RoutingRecord> readObject = (ArrayList <RoutingRecord>) in.readObject();
+			
+			this.routingTable.add(new RoutingRecord(ipAddress, portAddress, RoutingRecord.IS_NOT_ME, Node.NULL_ID, mySocket));
+			
 			this.addNewRecords(cleanTable(readObject));
 			for(RoutingRecord rr : routingTable){
 				System.out.printf("%s:%d %b\n", rr.IP, rr.port, rr.isMe);
