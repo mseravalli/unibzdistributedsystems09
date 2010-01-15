@@ -100,7 +100,23 @@ public class Node {
 			
 			ArrayList <RoutingRecord> readObject = (ArrayList <RoutingRecord>) in.readObject();
 			
-			this.routingTable.add(new RoutingRecord(ipAddress, portAddress, RoutingRecord.IS_NOT_ME, Node.NULL_ID, mySocket));
+			//check whethet the record is already present and modify it		
+			boolean isPresent = false;
+			int position = -1;
+			for(int i = 0; i < routingTable.size(); i++){
+				RoutingRecord rr = routingTable.get(i);
+				if(rr.IP.equals(ipAddress) && rr.port == portAddress){
+					isPresent = true;
+					position = i;
+				}
+			}
+			
+			if(isPresent){
+				routingTable.get(position).socket = mySocket;
+			}else
+				this.routingTable.add(new RoutingRecord(ipAddress, portAddress, RoutingRecord.IS_NOT_ME, Node.NULL_ID, mySocket));
+			
+			
 			
 			this.addNewRecords(cleanTable(readObject));
 			for(RoutingRecord rr : routingTable){
@@ -144,11 +160,13 @@ public class Node {
 			
 			this.connectToNode(conIP, conPort);
 			
-			for(RoutingRecord rr : this.routingTable){
+			for(int i = 0; i < routingTable.size(); i++){
+				RoutingRecord rr = routingTable.get(i);
 				if((!rr.isMe) && (rr.socket == null)){
 					this.connectToNode(rr.IP,rr.port);
 				}
 			}
+			
 		}		
 		
 		Runnable runnable = new ConnectionsReceiver(this.myIP, this.myPort, this.routingTable);
