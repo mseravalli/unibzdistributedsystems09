@@ -104,9 +104,12 @@ public class Node {
 			
 			this.addNewRecords(cleanTable(readObject));
 			for(RoutingRecord rr : routingTable){
-				System.out.printf("%s:%d %b\n", rr.IP, rr.port, rr.isMe);
+				if(rr.socket != null)
+					System.out.printf("%s:%d %b %s\n", rr.IP, rr.port, rr.isMe, rr.socket.toString());
+				else
+					System.out.printf("%s:%d %b %o\n", rr.IP, rr.port, rr.isMe, rr.socket);
 			}
-			System.out.println("connected to " + this.connectionIP);
+			System.out.println("Node: connected to " + portAddress);
 			
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -142,8 +145,9 @@ public class Node {
 			this.connectToNode(conIP, conPort);
 			
 			for(RoutingRecord rr : this.routingTable){
-				if((!rr.isMe) && (rr.socket == null))
+				if((!rr.isMe) && (rr.socket == null)){
 					this.connectToNode(rr.IP,rr.port);
+				}
 			}
 		}		
 		
