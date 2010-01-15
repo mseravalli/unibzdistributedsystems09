@@ -14,10 +14,14 @@ import cracker.RoutingRecord;
 
 public class InputReceiver extends Thread {
 	
+	private String ip;
+	private int port;
 	private ObjectInputStream in;
 	private ArrayList <RoutingRecord> routingTable;
 	
-	public InputReceiver(ObjectInputStream inStr, ArrayList <RoutingRecord> rTable){
+	public InputReceiver(String addr, int portNum, ObjectInputStream inStr, ArrayList <RoutingRecord> rTable){
+		ip = addr;
+		port = portNum;
 		in = inStr;
 		routingTable = rTable;
 	}
@@ -38,7 +42,17 @@ public class InputReceiver extends Thread {
 		    
 		} catch(EOFException e) {
                     
-			System.out.println("node disconnected");
+			System.out.printf("node %s:%d disconnected and deleted from routing table\n", ip, port);
+			
+			int position = -1;
+			
+			for(int i = 0; i < routingTable.size(); i++){
+				if(routingTable.get(i).IP.equals(ip) && routingTable.get(i).port == port)
+					position = i;
+			}
+			
+			routingTable.remove(position);
+			
 			
 //			int i = this.clients.indexOf(this.clientSocket);
 //			System.out.println("Client "+this.nicknames.get(i)+" disconnected");
