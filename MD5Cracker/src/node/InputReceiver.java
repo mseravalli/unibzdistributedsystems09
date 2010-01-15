@@ -16,13 +16,17 @@ public class InputReceiver extends Thread {
 	
 	private String ip;
 	private int port;
+	
+	private Socket socket;
+	
 	private ObjectInputStream in;
 	private ArrayList <RoutingRecord> routingTable;
 	
-	public InputReceiver(String addr, int portNum, ObjectInputStream inStr, ArrayList <RoutingRecord> rTable){
+	public InputReceiver(String addr, int portNum, Socket aSocket, ArrayList <RoutingRecord> rTable){
 		ip = addr;
 		port = portNum;
-		in = inStr;
+		socket = aSocket;
+		in = null;
 		routingTable = rTable;
 	}
 	
@@ -35,6 +39,7 @@ public class InputReceiver extends Thread {
 			
 			while(true){
 				
+				in = new ObjectInputStream(socket.getInputStream());
 		    
 				Object o = in.readObject();
 		    	
