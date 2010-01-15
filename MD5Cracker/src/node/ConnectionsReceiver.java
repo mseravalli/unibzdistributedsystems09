@@ -57,9 +57,19 @@ public class ConnectionsReceiver implements Runnable {
 				out = new ObjectOutputStream(incomingSocket.getOutputStream());
 				
 				HelloPacket packet = (HelloPacket) in.readObject();
-				routingTable.add(new RoutingRecord(packet.IP, packet.port, RoutingRecord.IS_NOT_ME,Node.NULL_ID,null));
+				routingTable.add(new RoutingRecord(packet.IP, packet.port, RoutingRecord.IS_NOT_ME,Node.NULL_ID,incomingSocket));
 				
-				out.writeObject(routingTable);
+				ArrayList <RoutingRecord> sendTable = new ArrayList <RoutingRecord>();
+				
+				for(RoutingRecord rr : this.routingTable){
+					sendTable.add(rr);
+				}
+				
+				for(RoutingRecord st : sendTable){
+					st.socket=null;
+				}
+							
+				out.writeObject(sendTable);
 				out.flush();
 				
 				System.out.println("packet received and table updated");
