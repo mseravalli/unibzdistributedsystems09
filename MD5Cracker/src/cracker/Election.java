@@ -16,7 +16,12 @@ public class Election extends Thread{
 	
 	private RoutingRecord winner;
 	
-	public Election(ArrayList<RoutingRecord> rTable){
+	private String hash;
+	
+	public Election(ArrayList<RoutingRecord> rTable, String aHash){
+		
+		hash = aHash;
+		
 		routingTable = rTable;
 
 		socket = new Socket();
@@ -161,6 +166,22 @@ public class Election extends Thread{
 			
 		}while(!isUniqueMaxID());
 		System.out.println("The winner is " + winner.IP + ":" + winner.port);
+		
+		//if this is the hash possessor and not the leader he sends the hash to the leader
+		if(!hash.equals("") && !winner.isMe){
+			try {
+				new ObjectOutputStream(winner.socket.getOutputStream()).writeObject(hash);
+				System.out.println("I am sending the hash to the leader");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		//else if this is the hash possessor and the leader it starts to "lead"
+		else if(!hash.equals("") && winner.isMe){
+			System.out.println("I AM THE LEADER & Already have the hash");
+			//TODO  start the leading
+		}
 		
 	}	
 	
