@@ -61,7 +61,7 @@ public class InitialConnection implements Runnable{
 		Scanner sc = new Scanner(System.in);
 		sc.next();
 		//elect Leader
-		el = new Election(routingTable,IP,port);
+		el = new Election(routingTable);
 		
 	}
 	
@@ -132,7 +132,7 @@ public class InitialConnection implements Runnable{
 		sc.next();
 		
 		//elect Leader
-		el = new Election(routingTable,IP,port);
+		el = new Election(routingTable);
 		
 		
 	}	

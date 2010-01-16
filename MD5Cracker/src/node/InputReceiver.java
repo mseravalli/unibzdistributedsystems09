@@ -1,18 +1,18 @@
 package node;
 
-import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import Node.HelloPacket;
-
+import cracker.Election;
 import cracker.RoutingRecord;
 
 public class InputReceiver extends Thread {
+	
+	private boolean[] isElecting;
+	private boolean[] isWorking;
 	
 	private String ip;
 	private int port;
@@ -22,7 +22,11 @@ public class InputReceiver extends Thread {
 	private ObjectInputStream in;
 	private ArrayList <RoutingRecord> routingTable;
 	
-	public InputReceiver(String addr, int portNum, Socket aSocket, ArrayList <RoutingRecord> rTable){
+	public InputReceiver(String addr, int portNum, Socket aSocket, ArrayList <RoutingRecord> rTable, boolean[] electing, boolean[] working){
+		
+		isElecting = electing;
+		isWorking = working;
+		
 		ip = addr;
 		port = portNum;
 		socket = aSocket;
@@ -30,10 +34,23 @@ public class InputReceiver extends Thread {
 		routingTable = rTable;
 	}
 	
+	public void checkString(String toParse){
+		
+		//part for election
+		if(toParse.equals(Node.ELECTION)){
+			isElecting[0] = false;
+			System.out.println("election started!!");
+			
+			Election el = new Election(routingTable);
+			el.start();
+			
+		}
+		
+	}	
 	
 	public void run(){		
 		
-		System.out.println("InputReceiver: ready to receive data");
+		System.out.printf("InputReceiver: ready to receive data from: %s - %d\n", socket.getInetAddress(),  socket.getPort());
 		
 		try { 
 			
@@ -42,6 +59,12 @@ public class InputReceiver extends Thread {
 				in = new ObjectInputStream(socket.getInputStream());
 		    
 				Object o = in.readObject();
+//				System.out.println(" i received a " + o.getClass().toString());
+				if(o.getClass().toString().equals("class java.lang.String")){
+					checkString((String)o);
+				} else if (o.getClass().toString().equals("class cracker.RoutingRecord")){
+					System.out.printf("%d - %d\n",((RoutingRecord)o).port, ((RoutingRecord)o).ID);
+				}
 		    	
 			}
 		    
@@ -52,18 +75,13 @@ public class InputReceiver extends Thread {
 			int position = -1;
 			
 			for(int i = 0; i < routingTable.size(); i++){
-				if(routingTable.get(i).IP.equals(ip) && routingTable.get(i).port == port)
+				if(routingTable.get(i).IP.equals(ip) && routingTable.get(i).port == port){
 					position = i;
+				}
+					
 			}
 			
 			routingTable.remove(position);
-			
-			
-//			int i = this.clients.indexOf(this.clientSocket);
-//			System.out.println("Client "+this.nicknames.get(i)+" disconnected");
-//			this.nicknames.remove(i);
-//			this.clients.remove(this.clientSocket);
-			
 
 		} catch (IOException e) {
 			e.printStackTrace();

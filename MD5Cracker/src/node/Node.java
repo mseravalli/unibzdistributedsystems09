@@ -20,6 +20,9 @@ public class Node {
 	
 	public static final String ELECTION = "election";
 	
+	private boolean[] isElecting;
+	private boolean[] isWorking;
+	
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
 	private Socket mySocket;
@@ -32,10 +35,16 @@ public class Node {
 
 	public Node(String ipAddress, int portAddress){
 		
-		this.myIP = Node.getOwnIP("wlan0");
-		this.myPort = portAddress;
+		isElecting = new boolean[1];
+		isElecting[0] = false;
+		isWorking = new boolean[1];
+		isWorking[0] = false;
 		
-		this.connectionIP = ipAddress;
+		
+		myIP = Node.getOwnIP("eth0");
+		myPort = portAddress;
+		
+		connectionIP = ipAddress;
 		
 		out = null;
 		in = null;
@@ -123,16 +132,18 @@ public class Node {
 			
 			
 			this.addNewRecords(cleanTable(readObject));
-			for(RoutingRecord rr : routingTable){
-				if(rr.socket != null)
-					System.out.printf("%s:%d %b %s\n", rr.IP, rr.port, rr.isMe, rr.socket.toString());
-				else
-					System.out.printf("%s:%d %b %o\n", rr.IP, rr.port, rr.isMe, rr.socket);
-			}
 			
-			new InputReceiver(ipAddress,portAddress,mySocket,routingTable).start();
+			//prints the routing table
+//			for(RoutingRecord rr : routingTable){
+//				if(rr.socket != null)
+//					System.out.printf("%s:%d %b %s\n", rr.IP, rr.port, rr.isMe, rr.socket.toString());
+//				else
+//					System.out.printf("%s:%d %b %o\n", rr.IP, rr.port, rr.isMe, rr.socket);
+//			}
 			
-			System.out.println("Node: connected to " + portAddress);
+			new InputReceiver(ipAddress,portAddress,mySocket,routingTable,isElecting, isWorking).start();
+			
+//			System.out.println("Node: connected to " + portAddress);
 			
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -176,7 +187,7 @@ public class Node {
 			
 		}		
 		
-		Runnable runnable = new ConnectionsReceiver(this.myIP, this.myPort, this.routingTable);
+		Runnable runnable = new ConnectionsReceiver(this.myIP, this.myPort, this.routingTable, isElecting, isWorking);
 		Thread thread = new Thread(runnable); 
 		thread.start();
 		
@@ -185,17 +196,19 @@ public class Node {
 	
 	public void startElection(String hash){
 		
-		for(RoutingRecord rr : routingTable){
-			try {
+		isElecting[0] = true;
+		try {
+			for(RoutingRecord rr : routingTable){
 				if(!rr.isMe){
 					out = new ObjectOutputStream( rr.socket.getOutputStream());
-					out.writeUTF(ELECTION);		
-				}
-				
-			} catch (IOException e) {
-				e.printStackTrace();
+					out.writeObject(ELECTION);
+					out.flush();
+				}			
 			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+		System.out.println("Election started");
 		
 	}
 	
