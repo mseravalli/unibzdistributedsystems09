@@ -6,8 +6,6 @@ import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import cracker.Election;
-import cracker.RoutingRecord;
 
 public class InputReceiver extends Thread {
 	

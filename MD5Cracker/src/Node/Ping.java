@@ -7,7 +7,9 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
-import cracker.RoutingRecord;
+import node.HelloPacket;
+import node.RoutingRecord;
+
 
 public class Ping extends Thread {
 

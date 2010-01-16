@@ -10,8 +10,10 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Scanner;
 
-import cracker.Election;
-import cracker.RoutingRecord;
+import node.Election;
+import node.HelloPacket;
+import node.RoutingRecord;
+
 
 public class InitialConnection implements Runnable{
 	
@@ -61,7 +63,7 @@ public class InitialConnection implements Runnable{
 		Scanner sc = new Scanner(System.in);
 		sc.next();
 		//elect Leader
-		el = new Election(routingTable);
+//		el = new Election(routingTable);
 		
 	}
 	
@@ -132,7 +134,7 @@ public class InitialConnection implements Runnable{
 		sc.next();
 		
 		//elect Leader
-		el = new Election(routingTable);
+//		el = new Election(routingTable);
 		
 		
 	}	
