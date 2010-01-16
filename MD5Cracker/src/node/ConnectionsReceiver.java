@@ -12,6 +12,9 @@ import Node.HelloPacket;
 import cracker.RoutingRecord;
 
 public class ConnectionsReceiver implements Runnable {
+	
+	private boolean[] isElecting;
+	private boolean[] isWorking;
 
 	private String ip;
 	private int port;
@@ -29,7 +32,11 @@ public class ConnectionsReceiver implements Runnable {
 	 * @param ipAddress
 	 * @param portAddress
 	 */
-	public ConnectionsReceiver(String ipAddress, int portAddress, ArrayList <RoutingRecord> rTable){
+	public ConnectionsReceiver(String ipAddress, int portAddress, ArrayList <RoutingRecord> rTable, boolean[] electing, boolean[] working){
+		
+		isElecting = electing;
+		isWorking = working;
+		
 		this.ip = ipAddress;
 		this.port = portAddress;
 		this.listenSocket = null;
@@ -42,6 +49,19 @@ public class ConnectionsReceiver implements Runnable {
 	}
 	
 	
+	public static ArrayList <RoutingRecord> copyRoutingTable(ArrayList <RoutingRecord> rTable){
+
+		ArrayList <RoutingRecord> newRT  = new ArrayList <RoutingRecord>();
+		
+		for(RoutingRecord rr : rTable){
+			newRT.add(new RoutingRecord(rr.IP, rr.port, RoutingRecord.IS_NOT_ME, rr.ID, null));
+		}
+		
+		return newRT;
+		
+	}
+	
+	
 	@Override
 	public void run() {
 		try {
@@ -49,7 +69,7 @@ public class ConnectionsReceiver implements Runnable {
 			
 			while(true){
 				
-				System.out.println("Listening on " + port);			
+//				System.out.println("Listening on " + port);			
 				
 				incomingSocket = listenSocket.accept();
 				
@@ -59,24 +79,20 @@ public class ConnectionsReceiver implements Runnable {
 				HelloPacket packet = (HelloPacket) in.readObject();
 				routingTable.add(new RoutingRecord(packet.IP, packet.port, RoutingRecord.IS_NOT_ME,Node.NULL_ID,incomingSocket));
 				
-				ArrayList <RoutingRecord> sendTable = new ArrayList <RoutingRecord>();
-				
-				for(RoutingRecord rr : this.routingTable){
-					sendTable.add(rr);
-				}
-				
-				for(RoutingRecord st : sendTable){
-					st.socket=null;
-				}
+				ArrayList <RoutingRecord> sendTable = copyRoutingTable(this.routingTable);				
 							
 				out.writeObject(sendTable);
 				out.flush();
 				
-				System.out.println("packet received and table updated");
-				for(RoutingRecord rr : routingTable)
-					System.out.printf("%s:%d %b\n", rr.IP, rr.port, rr.isMe);
+				//prints the routing table
+//				for(RoutingRecord rr : routingTable){
+//					if(rr.socket != null)
+//						System.out.printf("%s:%d %b %s\n", rr.IP, rr.port, rr.isMe, rr.socket.toString());
+//					else
+//						System.out.printf("%s:%d %b %o\n", rr.IP, rr.port, rr.isMe, rr.socket);
+//				}
 				
-				InputReceiver receiver = new InputReceiver(packet.IP, packet.port, incomingSocket, routingTable);
+				InputReceiver receiver = new InputReceiver(packet.IP, packet.port, incomingSocket, routingTable, isElecting, isWorking);
 				receiver.start();
 								
 			}
