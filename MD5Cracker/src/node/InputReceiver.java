@@ -11,6 +11,7 @@ import cracker.RoutingRecord;
 
 public class InputReceiver extends Thread {
 	
+	private static final String NOT_POSESSOR = "";
 	private boolean[] isElecting;
 	private boolean[] isWorking;
 	
@@ -41,7 +42,7 @@ public class InputReceiver extends Thread {
 			isElecting[0] = false;
 			System.out.println("election started!!");
 			
-			Election el = new Election(routingTable);
+			Election el = new Election(routingTable,NOT_POSESSOR);
 			el.start();
 			
 		}
@@ -76,13 +77,22 @@ public class InputReceiver extends Thread {
 //				System.out.println(" i received a " + o.getClass().toString());
 				//if the received object is a string
 				if(o.getClass().toString().equals("class java.lang.String")){
-					checkString((String)o);
+					if(((String)o).equals("election")){
+						checkString((String)o);
+						System.out.println("received election");
+					}
+					else{
+						//TODO start leading
+						System.out.println("received hash");
+					}
 				
 				//if the received object is a routing record
 				} else if (o.getClass().toString().equals("class cracker.RoutingRecord")){
 					System.out.printf("%d - %d\n",((RoutingRecord)o).port, ((RoutingRecord)o).ID);
 					updateTable((RoutingRecord)o);
 				}
+				
+			
 		    	
 			}
 		    
