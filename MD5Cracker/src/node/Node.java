@@ -10,10 +10,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Scanner;
 
-import Node.HelloPacket;
 
-import cracker.Election;
-import cracker.RoutingRecord;
 
 public class Node {
 	

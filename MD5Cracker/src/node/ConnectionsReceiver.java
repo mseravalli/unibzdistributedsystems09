@@ -7,9 +7,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import Node.HelloPacket;
 
-import cracker.RoutingRecord;
 
 public class ConnectionsReceiver implements Runnable {
 	
