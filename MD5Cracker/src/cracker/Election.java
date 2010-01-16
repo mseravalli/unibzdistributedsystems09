@@ -27,7 +27,7 @@ public class Election extends Thread{
 		String address = "";
 		int port = -1;
 		
-		//set the id of the current process to
+		//set the id of the current process to the new created ID
 		for(int i = 0; i < routingTable.size(); i++){
 			if(routingTable.get(i).isMe){
 				routingTable.get(i).ID = id;
@@ -83,7 +83,7 @@ public class Election extends Thread{
 	public boolean isFilled(){
 		
 		for(int i = 0; i < routingTable.size(); i++){
-			if (routingTable.get(i).ID == -1){
+			if (routingTable.get(i).ID == node.Node.NULL_ID){
 				return false;
 			}
 		}
@@ -121,6 +121,21 @@ public class Election extends Thread{
 		
 		do{
 			broadCastID();
+			
+			do{
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					e.getMessage();
+					e.printStackTrace();
+				}
+				System.out.println("waiting for the ids");
+			}while(!isFilled());
+			
+			System.out.println("All nodes have an id");
+			
+			
+			
 		}while(false);
 		
 		

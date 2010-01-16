@@ -46,7 +46,21 @@ public class InputReceiver extends Thread {
 			
 		}
 		
-	}	
+	}
+	
+	
+	public void updateTable(RoutingRecord record){
+		
+		for(RoutingRecord rr : routingTable){
+			
+			if(rr.IP.equals(record.IP) && rr.port == record.port){
+				rr.ID = record.ID;
+			}
+			
+		}
+		
+	}
+	
 	
 	public void run(){		
 		
@@ -60,10 +74,14 @@ public class InputReceiver extends Thread {
 		    
 				Object o = in.readObject();
 //				System.out.println(" i received a " + o.getClass().toString());
+				//if the received object is a string
 				if(o.getClass().toString().equals("class java.lang.String")){
 					checkString((String)o);
+				
+				//if the received object is a routing record
 				} else if (o.getClass().toString().equals("class cracker.RoutingRecord")){
 					System.out.printf("%d - %d\n",((RoutingRecord)o).port, ((RoutingRecord)o).ID);
+					updateTable((RoutingRecord)o);
 				}
 		    	
 			}
