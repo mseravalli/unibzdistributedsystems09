@@ -45,6 +45,10 @@ public class InputReceiver extends Thread {
 			Election el = new Election(routingTable,NOT_POSESSOR);
 			el.start();
 			
+		// part for hash exchanging
+		//TODO improve the parser and start the work
+		} else if(true){
+			System.out.println("hash received: " + toParse);
 		}
 		
 	}
@@ -77,14 +81,8 @@ public class InputReceiver extends Thread {
 //				System.out.println(" i received a " + o.getClass().toString());
 				//if the received object is a string
 				if(o.getClass().toString().equals("class java.lang.String")){
-					if(((String)o).equals("election")){
-						checkString((String)o);
-						System.out.println("received election");
-					}
-					else{
-						//TODO start leading
-						System.out.println("received hash");
-					}
+					
+					checkString((String)o);
 				
 				//if the received object is a routing record
 				} else if (o.getClass().toString().equals("class cracker.RoutingRecord")){
