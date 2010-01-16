@@ -22,6 +22,10 @@ public class Election extends Thread{
 		socket = new Socket();
 	}
 	
+	public RoutingRecord getWinner(){
+		return winner;
+	}
+	
 	public void broadCastID(){
 		
 		int id = (int) (Math.random() * (routingTable.size()*routingTable.size()));
