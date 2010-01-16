@@ -12,6 +12,7 @@ import java.util.Scanner;
 
 import Node.HelloPacket;
 
+import cracker.Election;
 import cracker.RoutingRecord;
 
 public class Node {
@@ -113,7 +114,7 @@ public class Node {
 			
 			ArrayList <RoutingRecord> readObject = (ArrayList <RoutingRecord>) in.readObject();
 			
-			//check whether the record is already present and modify it		
+			//check whether the record is already present and modifies it		
 			boolean isPresent = false;
 			int position = -1;
 			for(int i = 0; i < routingTable.size(); i++){
@@ -208,6 +209,10 @@ public class Node {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		Election el = new Election(routingTable);
+		el.start();
+		
 		System.out.println("Election started");
 		
 	}
