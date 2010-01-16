@@ -38,6 +38,7 @@ public class Election extends Thread{
 		
 		RoutingRecord rrToSend = new RoutingRecord(address, port, RoutingRecord.IS_ME, id, null);
 		
+		//the method sends the id to all the connected nodes
 		try {
 			for(RoutingRecord rr : routingTable){
 				if(!rr.isMe){
