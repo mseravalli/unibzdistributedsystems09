@@ -28,6 +28,7 @@ public class Node {
 	private ObjectInputStream in;
 	private Socket mySocket;
 	private String myIP;
+	private String hashval ="";
 	private int myPort;
 	private String connectionIP;
 	private ArrayList <RoutingRecord> routingTable;
@@ -42,7 +43,7 @@ public class Node {
 		isWorking[0] = false;
 		
 		
-		myIP = Node.getOwnIP("eth0");
+		myIP = Node.getOwnIP("wlan0");
 		myPort = portAddress;
 		
 		connectionIP = ipAddress;
@@ -210,7 +211,7 @@ public class Node {
 			e.printStackTrace();
 		}
 		
-		Election el = new Election(routingTable);
+		Election el = new Election(routingTable,hash);
 		el.start();
 		
 		System.out.println("Election started");
