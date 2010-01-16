@@ -45,7 +45,7 @@ public class InputReceiver extends Thread {
 			
 		// part for hash exchanging
 		//TODO improve the parser and start the work
-		} else if(true){
+		} else if(toParse.startsWith("hashval:")){
 			System.out.println("hash received: " + toParse);
 		}
 		

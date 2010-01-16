@@ -230,7 +230,7 @@ public class Node {
 		node.startNode();
 		
 		System.out.println("insert the hash to decode");
-		node.startElection(sc.next());
+		node.startElection("hashval:"+sc.next());
 		
 		
 	}
