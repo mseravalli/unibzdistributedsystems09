@@ -14,6 +14,8 @@ public class Election extends Thread{
 	
 	private Socket socket;
 	
+	private RoutingRecord winner;
+	
 	public Election(ArrayList<RoutingRecord> rTable){
 		routingTable = rTable;
 
@@ -54,7 +56,7 @@ public class Election extends Thread{
 	}
 	
 	
-	
+	//returns false if there is no unique winner, otherwhise returns true and sets the winner
 	public boolean isUniqueMaxID(){
 		
 		//find the maximum id and its position
@@ -75,6 +77,8 @@ public class Election extends Thread{
 			}
 		}
 		
+		if(isUnique)
+			winner = routingTable.get(maxIDPos);
 		return isUnique;		
 		
 	}	
@@ -134,52 +138,25 @@ public class Election extends Thread{
 			
 			System.out.println("All nodes have an id");
 			
+			if(!isUniqueMaxID()){
+				clearRTable();
+				System.out.println("there are 2 nodes that have the same max id" +"the ids will be cleared");
+				
+				//wait until table until it is clean
+				do{
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+						e.getMessage();
+						e.printStackTrace();
+					}
+				}while(!isClean());				
+			}
+
 			
 			
-		}while(false);
-		
-		
-//		do{
-//			
-//			broadCastID();
-//			
-//			//wait until the table is completely filled
-//			do{
-//				try {
-//					Thread.sleep(200);
-//				} catch (InterruptedException e) {
-//					e.getMessage();
-//					e.printStackTrace();
-//				}
-//				System.out.println("waiting for the ids");
-//			}while(!isFilled());
-//			
-//			System.out.println("every node has an id");
-//			
-//			//if there is no unique max id clear the routing table and wait until
-//			//it is completely clean
-//			if(!isUniqueMaxID()){
-//				clearRTable();
-//				System.out.println("there are 2 nodes that have the same max id" +
-//						"the ids will be cleared");
-//				
-//				//wait until table until it is clean
-//				do{
-//					try {
-//						Thread.sleep(200);
-//					} catch (InterruptedException e) {
-//						e.getMessage();
-//						e.printStackTrace();
-//					}
-//				}while(!isClean());				
-//			}			
-//			
-//		} while(!isUniqueMaxID());
-//		
-//		System.out.println("we have the leader;");
-//		
-//		//we have a leader!!
-		
+		}while(!isUniqueMaxID());
+		System.out.println("The winner is " + winner.IP + ":" + winner.port);
 		
 	}	
 	
