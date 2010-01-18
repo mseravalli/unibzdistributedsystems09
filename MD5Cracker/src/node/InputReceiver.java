@@ -78,12 +78,12 @@ public class InputReceiver extends Thread {
 				Object o = in.readObject();
 //				System.out.println(" i received a " + o.getClass().toString());
 				//if the received object is a string
-				if(o.getClass().toString().equals("class java.lang.String")){
+				if(o.getClass().equals(String.class)){
 					
 					checkString((String)o);
 				
 				//if the received object is a routing record
-				} else if (o.getClass().toString().equals("class cracker.RoutingRecord")){
+				} else if (o.getClass().equals(RoutingRecord.class)){
 					System.out.printf("%d - %d\n",((RoutingRecord)o).port, ((RoutingRecord)o).ID);
 					updateTable((RoutingRecord)o);
 				}
