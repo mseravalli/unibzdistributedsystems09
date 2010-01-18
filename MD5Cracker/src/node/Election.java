@@ -3,6 +3,7 @@ package node;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 
 
@@ -32,9 +33,9 @@ public class Election extends Thread{
 		return winner;
 	}
 	
-	public void broadCastID(){
-		
-		int id = (int) (Math.random() * (routingTable.size()*routingTable.size()));
+	
+	public RoutingRecord createNewID(){
+		int id = (int) (Math.random()* (routingTable.size()*routingTable.size()));
 		
 		String address = "";
 		int port = -1;
@@ -48,7 +49,12 @@ public class Election extends Thread{
 			}
 		}
 		
-		RoutingRecord rrToSend = new RoutingRecord(address, port, RoutingRecord.IS_ME, id, null);
+		return new RoutingRecord(address, port, RoutingRecord.IS_NOT_ME, id);
+		
+	}
+	
+	
+	public void broadcastRoutingRecord(RoutingRecord rrToSend){		
 		
 		//the method sends the id to all the connected nodes
 		try {
@@ -59,6 +65,8 @@ public class Election extends Thread{
 					out.flush();
 				}			
 			}
+		} catch (SocketException e) {
+			System.out.printf("Election: node disconnected\n");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -108,11 +116,24 @@ public class Election extends Thread{
 	
 	public void clearRTable(){
 		
-		for(int i = 0; i < routingTable.size(); i++){
-			routingTable.get(i).ID = -1;
+		for(RoutingRecord rr : routingTable){
+			rr.ID = Node.NULL_ID;
 		}
 		
-		//TODO broadcast table
+		
+//		String address = "";
+//		int port = -1;
+//		
+//		//set the id of the current process to the new created ID
+//		for(int i = 0; i < routingTable.size(); i++){
+//			if(routingTable.get(i).isMe){
+//				routingTable.get(i).ID = Node.NULL_ID;
+//				address = routingTable.get(i).IP;
+//				port = routingTable.get(i).port;
+//			}
+//		}
+//		
+//		broadcastRoutingRecord(new RoutingRecord(address, port, RoutingRecord.IS_NOT_ME, Node.NULL_ID));
 		
 	}
 	
@@ -133,12 +154,16 @@ public class Election extends Thread{
 	@Override
 	public void run() {	
 		
+		
 		do{
-			broadCastID();
+			
+			System.out.println("broadcasting id");
+			
+			broadcastRoutingRecord(this.createNewID());
 			
 			do{
 				try {
-					Thread.sleep(500);
+					Thread.sleep(200);
 				} catch (InterruptedException e) {
 					e.getMessage();
 					e.printStackTrace();
@@ -147,20 +172,27 @@ public class Election extends Thread{
 			}while(!isFilled());
 			
 			System.out.println("All nodes have an id");
+
 			
+//			
 			if(!isUniqueMaxID()){
-				clearRTable();
-				System.out.println("there are 2 nodes that have the same max id" +"the ids will be cleared");
-				
-				//wait until table until it is clean
-				do{
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						e.getMessage();
-						e.printStackTrace();
-					}
-				}while(!isClean());				
+//				
+//				System.out.println("there are 2 nodes that have the same max id");
+//				
+//				//wait until table until it is clean
+//				do{
+					clearRTable();
+//					System.out.println("waiting for a clean table");
+//					try {
+//						Thread.sleep(500);
+//					} catch (InterruptedException e) {
+//						e.getMessage();
+//						e.printStackTrace();
+//					}
+//				}while(!isClean());	
+//				
+//				System.out.println("table is clean everywhere");
+//				
 			}
 
 			
