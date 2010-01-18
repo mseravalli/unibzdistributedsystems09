@@ -4,6 +4,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 
 
@@ -88,7 +89,6 @@ public class InputReceiver extends Thread {
 					updateTable((RoutingRecord)o);
 				}
 				
-			
 		    	
 			}
 		    
@@ -106,7 +106,9 @@ public class InputReceiver extends Thread {
 			}
 			
 			routingTable.remove(position);
-
+			
+		} catch (SocketException e) {
+			System.out.printf("node %s:%d disconnected\n", ip, port);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {

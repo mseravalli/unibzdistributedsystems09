@@ -52,7 +52,7 @@ public class ConnectionsReceiver implements Runnable {
 		ArrayList <RoutingRecord> newRT  = new ArrayList <RoutingRecord>();
 		
 		for(RoutingRecord rr : rTable){
-			newRT.add(new RoutingRecord(rr.IP, rr.port, RoutingRecord.IS_NOT_ME, rr.ID, null));
+			newRT.add(new RoutingRecord(rr.IP, rr.port, RoutingRecord.IS_NOT_ME, rr.ID));
 		}
 		
 		return newRT;

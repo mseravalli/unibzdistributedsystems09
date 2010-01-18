@@ -14,52 +14,42 @@ public class RoutingRecord implements Serializable{
 	public static final boolean IS_ME = true;
 	public static final boolean IS_NOT_ME = false;
 	
-	public int ID;
+	
 	public String IP;
 	public int port;
-	public Socket socket;
 	public boolean isMe;
-	public int age;
-	
+	public int ID;
+	public Socket socket;
+	public boolean isLeader;
 	
 	//constructor that sets the IP and sets the ID to null
 	public RoutingRecord(String ip, int po,boolean iM){
-		age = 0;
 		IP = ip;
-		ID = NULL_ID;
 		port = po;
 		isMe = iM;
-		if(!iM){
-			try {
-				socket = null;
-//				socket = new Socket(IP,port);
-			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		ID = NULL_ID;
+		socket = null;
+		isLeader = false;
+	}
+	
+	public RoutingRecord(String ip, int po, boolean iM, int id){
+		IP = ip;
+		ID = id;
+		port = po;
+		isMe = iM;
+		socket = null;	
+		isLeader = false;
 	}
 	
 	public RoutingRecord(String ip, int po, boolean iM, int id, Socket aSocket){
-		age = 0;
 		IP = ip;
 		ID = id;
 		port = po;
 		isMe = iM;
 		if(!iM){
-			
 			socket = aSocket;
-			
-//			try {
-//				socket = new Socket(IP,port);
-//			} catch (NumberFormatException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
 		}
+		isLeader = false;
 		
 	}
 

@@ -50,7 +50,7 @@ public class Node {
 		
 		routingTable = new ArrayList <RoutingRecord>();
 		
-		routingTable.add(new RoutingRecord(myIP, myPort, RoutingRecord.IS_ME,NULL_ID,null));
+		routingTable.add(new RoutingRecord(myIP, myPort, RoutingRecord.IS_ME));
 		
 	}
 	
