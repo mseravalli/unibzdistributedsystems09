@@ -21,14 +21,14 @@ public class StringCheckerTest {
 
 	@Test
 	public void testCompare() {
-		System.out.println(StringChecker.compare( "ciao mamma!!!","2317c3f5359466bbee2e0ff62d468b7c"));	
+		//System.out.println(StringChecker.compare( "CIAO","2317c3f5359466bbee2e0ff62d468b7c"));	
 		assertEquals("ciao mamma!!!", StringChecker.compare( "ciao mamma!!!","2317c3f5359466bbee2e0ff62d468b7c"));
 	}
 
 	@Test
 	public void testEncode() {
 		
-		System.out.println(StringChecker.encode("ciao mamma!!!"));
+		System.out.println(StringChecker.encode("CIAO"));
 		
 		assertEquals("2317c3f5359466bbee2e0ff62d468b7c", StringChecker.encode("ciao mamma!!!"));
 	}
