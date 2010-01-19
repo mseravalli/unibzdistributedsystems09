@@ -21,7 +21,8 @@ public class StringCheckerTest {
 
 	@Test
 	public void testCompare() {
-		fail("Not yet implemented");
+		System.out.println(StringChecker.compare( "ciao mamma!!!","2317c3f5359466bbee2e0ff62d468b7c"));	
+		assertEquals("ciao mamma!!!", StringChecker.compare( "ciao mamma!!!","2317c3f5359466bbee2e0ff62d468b7c"));
 	}
 
 	@Test

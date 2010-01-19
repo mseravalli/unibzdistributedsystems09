@@ -8,7 +8,10 @@ public class StringChecker {
 	private static String[] results;
 	
 	public static String[] compute(String toFind, String check, String prefix, int first, int last, int noOfUnknown){
-		
+		noOfUnknown--;
+		System.out.println("!!!!!!!!!!!!!!PREFIX: "+prefix+"!!!!!!!!!!!!!!!!!!!!!!");
+		prefix = prefix.substring(0,prefix.length()-3);
+		System.out.println("!!!!!!!!!!!!!!PREFIX: "+prefix+"!!!!!!!!!!!!!!!!!!!!!!");
 		results = new String[2];
 		results[0] = null;
 		results[1] = null;
@@ -37,8 +40,10 @@ public class StringChecker {
 			System.out.println(rng);
 			if(compare(rng,toFind) != null)
 				results[0] = compare(rng,toFind);
-			if(compare(rng,check) != null)
+			if(compare(rng,check) != null){
 				results[1] = compare(rng,check);
+				System.out.println("FOOOOOOOOUUUUUUUUUUUUUNNNNNNNNNNNDDDDDD");
+			}
 		}
 		
 		//recursive case - we don't know how many variable chars left
@@ -70,7 +75,7 @@ public class StringChecker {
 //            System.exit(1);
 //        };
 		
-        if (encode(toFind).equals(toFind))
+        if (encode(toTest).equals(toFind))
         	return toTest;
         else 
         	return null;

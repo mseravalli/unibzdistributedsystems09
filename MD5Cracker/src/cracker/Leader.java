@@ -220,7 +220,7 @@ public class Leader extends Thread{
 			
 			sRecord.checkString = checkingString;
 			
-			System.out.printf("Leader: sending %s - %s to %d\n", sRecord.str, checkingString, rr.port);
+			System.out.printf("Leader: sending %s - %s to %d\n", checkingString, sRecord.str, rr.port);
 			
 			//send the string to the node
 			SendingStrings ss = new SendingStrings(hash, StringChecker.encode(checkingString), sRecord.str, freeCharacters, firstChar, lastChar);
