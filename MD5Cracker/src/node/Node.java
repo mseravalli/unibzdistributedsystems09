@@ -207,8 +207,8 @@ public class Node {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		Election el = new Election(routingTable,hashval);
+	
+		Election el = new Election(routingTable,hashval,isElecting,hasLeader);
 		el.start();
 		
 		System.out.println("Election started");

@@ -20,7 +20,15 @@ public class Election extends Thread{
 	
 	private StringBuffer hashval;
 	
-	public Election(ArrayList<RoutingRecord> rTable, StringBuffer hash){
+	private boolean[] isElecting;
+	
+	private boolean[] hasLeader;
+	
+	public Election(ArrayList<RoutingRecord> rTable, StringBuffer hash, boolean[] iE, boolean[] hL){
+		
+		isElecting = iE;
+		
+		hasLeader = hL;
 		
 		hashval = hash;
 		
@@ -170,6 +178,10 @@ public class Election extends Thread{
 			
 		
 		System.out.println("The winner is " + winner.IP + ":" + winner.port);
+		
+		//sets the boolean variables isElecting and hasLeader
+		isElecting[1] = false;
+		hasLeader[1] = true;
 		
 		//if it is the leader
 		if(winner.isMe){
