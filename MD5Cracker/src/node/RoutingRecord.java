@@ -21,6 +21,7 @@ public class RoutingRecord implements Serializable{
 	public int ID;
 	public Socket socket;
 	public boolean isLeader;
+	public boolean isWorking;
 	
 	//constructor that sets the IP and sets the ID to null
 	public RoutingRecord(String ip, int po,boolean iM){
@@ -30,6 +31,7 @@ public class RoutingRecord implements Serializable{
 		ID = NULL_ID;
 		socket = null;
 		isLeader = false;
+		isWorking = false;
 	}
 	
 	public RoutingRecord(String ip, int po, boolean iM, int id){
@@ -39,6 +41,7 @@ public class RoutingRecord implements Serializable{
 		isMe = iM;
 		socket = null;	
 		isLeader = false;
+		isWorking = false;
 	}
 	
 	public RoutingRecord(String ip, int po, boolean iM, int id, Socket aSocket){
@@ -50,6 +53,7 @@ public class RoutingRecord implements Serializable{
 			socket = aSocket;
 		}
 		isLeader = false;
+		isWorking = false;
 		
 	}
 

@@ -1,9 +1,12 @@
 package cracker;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Leader {
+import node.RoutingRecord;
+
+public class Leader extends Thread{
 	
 	private int parsedStringLength;
 	private int firstChar;
@@ -11,23 +14,27 @@ public class Leader {
 	//have to be equal to the number of * + 1
 	private int freeCharacters;
 	
-	private ParsedString[] testedStrings;
+	private ParsedString[] stack;
+	
+	private ArrayList <RoutingRecord> routingTable;
 	
 	
-	public Leader(){
+	public Leader(ArrayList <RoutingRecord> rTable){
 		
-		parsedStringLength = 10;
+		parsedStringLength = 20;
 		firstChar = 65;
 		lastChar = 66;
 		freeCharacters = 4;
 		
 		initTestedStrings();
 		
+		routingTable = rTable;
+		
 	}
 	
-	public Leader(int arrayLength, int first, int last, int freeChars){
+	public Leader(int first, int last, int freeChars){
 		
-		parsedStringLength = arrayLength;
+		parsedStringLength = 20;
 		firstChar = first;
 		lastChar = last;
 		freeCharacters = freeChars;
@@ -36,41 +43,53 @@ public class Leader {
 		
 	}
 	
+	public Leader(int first, int last, int freeChars, ParsedString[] theStack){
+		
+		
+		firstChar = first;
+		lastChar = last;
+		freeCharacters = freeChars;
+		
+		stack = theStack;
+		parsedStringLength = theStack.length;
+		
+	}
+	
 	private void initTestedStrings(){
-		testedStrings = new ParsedString[parsedStringLength];
+		stack = new ParsedString[parsedStringLength];
 		
 		for(int i=0; i<parsedStringLength;i++){
-			testedStrings[i] = new ParsedString();
+			stack[i] = new ParsedString();
 		}		
 		
-		testedStrings[0].str = "***";
-		testedStrings[1].str = (char)firstChar+testedStrings[0].str;
+		stack[0].str = "***";
+		stack[1].str = (char)firstChar+stack[0].str;
 		
 		for (int i = 2; i < parsedStringLength; i++){
-			testedStrings[i].str = this.createNextString(testedStrings[i-1].str);
+			stack[i].str = this.createNextString(stack[i-1].str);
 		}
 	}
 	
 	
 	public ParsedString[] getTestedStrings(){		
-		return this.testedStrings;		
+		return this.stack;		
 	}
 	
 	public void setStringInArray(String newString, int position){		
 		if(position < parsedStringLength && position >= 0){			
-			this.testedStrings[position].str = newString;			
+			this.stack[position].str = newString;			
 		}		
 	}
 	
 	public void setStartedInArray(boolean isStarted, int position){		
 		if(position < parsedStringLength && position >= 0){			
-			this.testedStrings[position].isStarted = isStarted;			
+			this.stack[position].isStarted = isStarted;			
 		}		
 	}
 	
 	public void setFinishedInArray(boolean isFinished, int position){		
 		if(position < parsedStringLength && position >= 0){			
-			this.testedStrings[position].isFinished = isFinished;			
+			this.stack[position].isFinished = isFinished;			
 		}		
 	}
 	
@@ -174,22 +193,62 @@ public class Leader {
 			 * firstly the array is sorted and the already checked elements are put
 			 * at the end
 			 */
-			Arrays.sort(testedStrings, new ParsedStringCoparator());
+			Arrays.sort(stack, new ParsedStringCoparator());
 			
 			/*
 			 * then starting form the last valid element the stack is repopulated
 			 */
 			for(int i = parsedStringLength - computedElements; i < parsedStringLength; i++){
-				testedStrings[i].str = "";
-				testedStrings[i].isStarted = false;
-				testedStrings[i].isFinished = false;
-				testedStrings[i].str=createNextString(testedStrings[i-1].str);
+				stack[i].str = "";
+				stack[i].isStarted = false;
+				stack[i].isFinished = false;
+				stack[i].str=createNextString(stack[i-1].str);
 			}
 		}
 		
 	}
 	
 	
+	public void sendStringToNode(ParsedString ps, RoutingRecord rr){
+		
+		try {
+			ObjectOutputStream out = new ObjectOutputStream(rr.socket.getOutputStream());
+			
+			out.writeObject(ps.str);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	
+	public void run(){
+		
+		for(RoutingRecord rr : routingTable){
+			if(!rr.isWorking){
+				
+				synchronized(stack){
+					
+					for(ParsedString ps : stack){
+						if(!ps.isStarted){
+							
+							//TODO pass the string to parse to the node
+							sendStringToNode(ps, rr);
+							
+						}
+					}
+					
+				}//synch end			
+				
+			}
+		}//for rr end
+		
+		
+		
+		
+	}
 	
 
 }
