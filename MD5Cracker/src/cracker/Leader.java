@@ -8,6 +8,8 @@ import node.RoutingRecord;
 
 public class Leader extends Thread{
 	
+	private String hash;
+	
 	private int firstChar;
 	private int lastChar;
 	//have to be equal to the number of * + 1
@@ -18,7 +20,9 @@ public class Leader extends Thread{
 	private ArrayList <RoutingRecord> routingTable;
 	private boolean[] isComputing;
 	
-	public Leader(int first, int last, int freeChars, boolean[] computing){
+	public Leader(String hashString, int first, int last, int freeChars, boolean[] computing){
+		
+		hash = hashString;
 		
 		firstChar = first;
 		lastChar = last;
@@ -30,7 +34,9 @@ public class Leader extends Thread{
 		
 	}
 	
-	public Leader(int first, int last, int freeChars, boolean[] computing, StackRecord[] theStack){
+	public Leader(String hashString, int first, int last, int freeChars, boolean[] computing, StackRecord[] theStack){
+		
+		hash = hashString;
 		
 		firstChar = first;
 		lastChar = last;
@@ -196,12 +202,26 @@ public class Leader extends Thread{
 	}
 	
 	
-	public void sendStringToNode(StackRecord ps, RoutingRecord rr){
+	public void sendStringToNode(StackRecord sRecord, RoutingRecord rr){
 		
 		try {
-			ObjectOutputStream out = new ObjectOutputStream(rr.socket.getOutputStream());
 			
-			out.writeObject(ps.str);
+			//generate a String for the liar detection and save it
+			String checkingString = sRecord.str;
+			
+			for(int i = 0; i < freeCharacters; i++){
+				String random =String.format("%c", (firstChar + (Math.random()*(lastChar-firstChar))));
+				checkingString = checkingString.concat(random);
+			}
+			
+			sRecord.checkString = checkingString;
+			
+			
+			//send the string to the node
+			SendingStrings ss = new SendingStrings(hash, checkingString, sRecord.str, freeCharacters, firstChar, lastChar);
+			
+			ObjectOutputStream out = new ObjectOutputStream(rr.socket.getOutputStream());
+			out.writeObject(ss);
 			out.flush();
 			
 		} catch (IOException e) {
