@@ -3,9 +3,12 @@ package node;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
+
+import cracker.SendingStrings;
 
 
 public class InputReceiver extends Thread {
@@ -49,6 +52,8 @@ public class InputReceiver extends Thread {
 			
 		}
 		
+		
+		
 	}
 	
 	
@@ -61,6 +66,20 @@ public class InputReceiver extends Thread {
 			}
 			
 		}
+		
+	}
+	
+	
+	public void checkRange(String toFind, String check, String pref, int first, int last, int noOfVar) throws IOException{
+		
+		String result[] = StringChecker.compute(toFind, check, pref,first, last, noOfVar);
+		Socket leaderSocket = null;
+		for(RoutingRecord rr : routingTable){
+			if(rr.isLeader)
+				leaderSocket = rr.socket;
+		}
+		//sending computation results back to leader
+		new ObjectOutputStream(leaderSocket.getOutputStream()).writeObject(result);
 		
 	}
 	
@@ -86,6 +105,9 @@ public class InputReceiver extends Thread {
 				} else if (o.getClass().equals(RoutingRecord.class)){
 					System.out.printf("%d - %d\n",((RoutingRecord)o).port, ((RoutingRecord)o).ID);
 					updateTable((RoutingRecord)o);
+				} else if (o.getClass().equals(SendingStrings.class)){
+					SendingStrings ss = (SendingStrings) o;
+					checkRange(ss.hash,ss.checkingHash,ss.prefix,ss.firstChar,ss.lastChar,ss.freeChars);
 				}
 				
 		    	
