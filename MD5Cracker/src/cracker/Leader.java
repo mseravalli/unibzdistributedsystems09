@@ -250,7 +250,7 @@ public class Leader extends Thread{
 	}
 	
 	
-	public static void checkSolution(String[] result, ArrayList <RoutingRecord> rTable, StackRecord[] aStack){
+	public static void checkSolution(String[] result, ArrayList <RoutingRecord> rTable, StackRecord[] aStack , boolean leader[]){
 		
 		//check which routing record should be updated
 		
@@ -262,6 +262,14 @@ public class Leader extends Thread{
 				if(!sRecord.isFinished && result[1].equals(sRecord.checkString)){
 					System.out.printf("%s:%s good boy!! %s == %s!!", result[2], result[3], result[1], sRecord.checkString);
 					
+					//if there is a solution stop everything
+					if(result[0] != null){
+						System.out.printf("The key is: %s\n", result[0]);
+						leader[0]= false;
+					}
+					
+					
+					//set the stackrecord as computed and the node as non calculating
 					for(RoutingRecord rr : rTable){
 						if(rr.IP.equals(result[2]) && rr.port == Integer.parseInt(result[3])){
 							
@@ -344,6 +352,7 @@ public class Leader extends Thread{
 		
 		}while(hasLeader[0]);
 		
+		System.out.println("key decoded");
 		
 	}
 	

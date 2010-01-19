@@ -128,7 +128,7 @@ public class InputReceiver extends Thread {
 					checkRange(ss.hash,ss.checkingHash,ss.prefix,ss.firstChar,ss.lastChar,ss.freeChars);
 				} else if(o.getClass().equals(String[].class)){
 //					System.out.printf("received a solution\n");
-					Leader.checkSolution((String[])o, routingTable, stack);
+					Leader.checkSolution((String[])o, routingTable, stack, hasLeader);
 				}
 				
 		    	
