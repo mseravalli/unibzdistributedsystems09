@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Scanner;
 
+import cracker.StackRecord;
+
 
 
 public class Node {
@@ -23,13 +25,17 @@ public class Node {
 	
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
+	
 	private Socket mySocket;
 	private String myIP;
-	private StringBuffer hashval;
 	private int myPort;
 	private String connectionIP;
+	
+	private StringBuffer hashval;
+		
 	private ArrayList <RoutingRecord> routingTable;
 	
+	private StackRecord[] stack;
 
 
 	public Node(String ipAddress, int portAddress){
@@ -51,6 +57,8 @@ public class Node {
 		routingTable = new ArrayList <RoutingRecord>();
 		
 		routingTable.add(new RoutingRecord(myIP, myPort, RoutingRecord.IS_ME));
+		
+		stack = new StackRecord[20];
 		
 	}
 	
@@ -140,7 +148,7 @@ public class Node {
 //					System.out.printf("%s:%d %b %o\n", rr.IP, rr.port, rr.isMe, rr.socket);
 //			}
 			
-			new InputReceiver(ipAddress,portAddress,mySocket,routingTable,isElecting, hasLeader, hashval).start();
+			new InputReceiver(ipAddress,portAddress,mySocket,routingTable,isElecting, hasLeader, hashval, stack).start();
 			
 //			System.out.println("Node: connected to " + portAddress);
 			
@@ -186,7 +194,7 @@ public class Node {
 			
 		}		
 		
-		Runnable runnable = new ConnectionsReceiver(this.myIP, this.myPort, this.routingTable, isElecting, hasLeader, hashval);
+		Runnable runnable = new ConnectionsReceiver(this.myIP, this.myPort, this.routingTable, isElecting, hasLeader, hashval, stack);
 		Thread thread = new Thread(runnable); 
 		thread.start();
 		
@@ -210,7 +218,7 @@ public class Node {
 		
 		isElecting[0] = true;
 		hasLeader[0] = false;
-		Election el = new Election(routingTable,hashval,isElecting,hasLeader);
+		Election el = new Election(routingTable, hashval, isElecting, hasLeader, stack);
 		el.start();
 		
 		System.out.println("Election started");

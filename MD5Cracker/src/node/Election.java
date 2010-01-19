@@ -7,6 +7,7 @@ import java.net.SocketException;
 import java.util.ArrayList;
 
 import cracker.Leader;
+import cracker.StackRecord;
 
 
 public class Election extends Thread{
@@ -26,17 +27,19 @@ public class Election extends Thread{
 	
 	private boolean[] hasLeader;
 	
-	public Election(ArrayList<RoutingRecord> rTable, StringBuffer hash, boolean[] iE, boolean[] hL){
+	private StackRecord[] stack;
+	
+	public Election(ArrayList<RoutingRecord> rTable, StringBuffer hash, boolean[] iE, boolean[] hL, StackRecord[] aStack){
 		
-		isElecting = iE;
-		
+		isElecting = iE;		
 		hasLeader = hL;
 		
 		hashval = hash;
 		
 		routingTable = rTable;
-
 		socket = new Socket();
+		
+		stack = aStack;
 	}
 	
 	public RoutingRecord getWinner(){
@@ -189,7 +192,7 @@ public class Election extends Thread{
 		if(winner.isMe){
 			System.out.println("I am the leader");
 //			public Leader(String hashString, int first, int last, int freeChars, boolean[] computing){
-			new Leader(routingTable, hashval.toString(), 65, 66, 4, hasLeader).start();
+			new Leader(routingTable, hashval.toString(), 65, 80, 4, hasLeader, stack).start();
 		}
 		
 		//else if it is not

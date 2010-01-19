@@ -7,6 +7,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import cracker.StackRecord;
+
 
 
 public class ConnectionsReceiver implements Runnable {
@@ -25,6 +27,8 @@ public class ConnectionsReceiver implements Runnable {
 	
 	private ArrayList <RoutingRecord> routingTable;
 	
+	private StackRecord[] stack;
+	
 	
 	/**
 	 * 
@@ -32,7 +36,7 @@ public class ConnectionsReceiver implements Runnable {
 	 * @param portAddress
 	 * @param hashval 
 	 */
-	public ConnectionsReceiver(String ipAddress, int portAddress, ArrayList <RoutingRecord> rTable, boolean[] electing, boolean[] working, StringBuffer hash){
+	public ConnectionsReceiver(String ipAddress, int portAddress, ArrayList <RoutingRecord> rTable, boolean[] electing, boolean[] working, StringBuffer hash, StackRecord[] aStack){
 		
 		isElecting = electing;
 		hasLeader = working;
@@ -47,6 +51,8 @@ public class ConnectionsReceiver implements Runnable {
 		this.in = null;
 		
 		this.routingTable = rTable;
+		
+		stack = aStack;
 	}
 	
 	
@@ -93,7 +99,7 @@ public class ConnectionsReceiver implements Runnable {
 //						System.out.printf("%s:%d %b %o\n", rr.IP, rr.port, rr.isMe, rr.socket);
 //				}
 				
-				InputReceiver receiver = new InputReceiver(packet.IP, packet.port, incomingSocket, routingTable, isElecting, hasLeader, hashval);
+				InputReceiver receiver = new InputReceiver(packet.IP, packet.port, incomingSocket, routingTable, isElecting, hasLeader, hashval, stack);
 				receiver.start();
 								
 			}

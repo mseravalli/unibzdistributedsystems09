@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import cracker.Leader;
 import cracker.SendingStrings;
+import cracker.StackRecord;
 import cracker.StringChecker;
 
 
@@ -27,7 +28,9 @@ public class InputReceiver extends Thread {
 	private ObjectInputStream in;
 	private ArrayList <RoutingRecord> routingTable;
 	
-	public InputReceiver(String addr, int portNum, Socket aSocket, ArrayList <RoutingRecord> rTable, boolean[] electing, boolean[] working, StringBuffer hash){
+	private StackRecord[] stack;
+	
+	public InputReceiver(String addr, int portNum, Socket aSocket, ArrayList <RoutingRecord> rTable, boolean[] electing, boolean[] working, StringBuffer hash, StackRecord[] aStack){
 		
 		isElecting = electing;
 		hasLeader = working;
@@ -38,6 +41,9 @@ public class InputReceiver extends Thread {
 		socket = aSocket;
 		in = null;
 		routingTable = rTable;
+		
+		stack = aStack;
+		
 	}
 	
 	public void checkString(String toParse){
@@ -49,7 +55,7 @@ public class InputReceiver extends Thread {
 			hashval = new StringBuffer(toParse.substring(toParse.indexOf(":")+1));
 			isElecting[0] = true;
 			hasLeader[0] = false;
-			Election el = new Election(routingTable,hashval,isElecting,hasLeader);
+			Election el = new Election(routingTable, hashval, isElecting,hasLeader, stack);
 			el.start();
 			
 		}
@@ -97,7 +103,7 @@ public class InputReceiver extends Thread {
 	
 	public void run(){		
 		
-		System.out.printf("InputReceiver: ready to receive data from: %s - %d\n", socket.getInetAddress(),  socket.getPort());
+//		System.out.printf("InputReceiver: ready to receive data from: %s - %d\n", socket.getInetAddress(),  socket.getPort());
 		
 		try { 
 			
@@ -114,15 +120,15 @@ public class InputReceiver extends Thread {
 				
 				//if the received object is a routing record
 				} else if (o.getClass().equals(RoutingRecord.class)){
-					System.out.printf("%d - %d\n",((RoutingRecord)o).port, ((RoutingRecord)o).ID);
+//					System.out.printf("%d - %d\n",((RoutingRecord)o).port, ((RoutingRecord)o).ID);
 					updateTable((RoutingRecord)o);
 				} else if (o.getClass().equals(SendingStrings.class)){
-					System.out.printf("received a sendingString\n");
+//					System.out.printf("received a sendingString\n");
 					SendingStrings ss = (SendingStrings) o;
 					checkRange(ss.hash,ss.checkingHash,ss.prefix,ss.firstChar,ss.lastChar,ss.freeChars);
 				} else if(o.getClass().equals(String[].class)){
-					System.out.printf("received a solution\n");
-					Leader.checkSolution((String[])o, routingTable);
+//					System.out.printf("received a solution\n");
+					Leader.checkSolution((String[])o, routingTable, stack);
 				}
 				
 		    	
@@ -145,7 +151,7 @@ public class InputReceiver extends Thread {
 			if(routingTable.get(position).isLeader){
 				routingTable.remove(position);
 				
-				new Election(routingTable, hashval,isElecting,hasLeader).start();				
+				new Election(routingTable, hashval, isElecting, hasLeader, stack).start();				
 			} else {
 				routingTable.remove(position);
 			}
