@@ -17,12 +17,26 @@ public class Leader extends Thread{
 	
 	private StackRecord[] stack;
 	
-	public static StackRecord[] publicStack;
-	
 	private ArrayList <RoutingRecord> routingTable;
 	private boolean[] hasLeader;
 	
-	public Leader(ArrayList <RoutingRecord> rTable, String hashString, int first, int last, int freeChars, boolean[] leader){
+//	public Leader(ArrayList <RoutingRecord> rTable, String hashString, int first, int last, int freeChars, boolean[] leader){
+//		
+//		routingTable = rTable;
+//		
+//		hash = hashString;
+//		
+//		firstChar = first;
+//		lastChar = last;
+//		freeCharacters = freeChars;
+//		
+//		hasLeader = leader;
+//		
+//		initStack(20);
+//		
+//	}
+	
+	public Leader(ArrayList <RoutingRecord> rTable, String hashString, int first, int last, int freeChars, boolean[] leader, StackRecord[] theStack){
 		
 		routingTable = rTable;
 		
@@ -34,26 +48,22 @@ public class Leader extends Thread{
 		
 		hasLeader = leader;
 		
-		initStack(20);
-		
-	}
-	
-	public Leader(String hashString, int first, int last, int freeChars, boolean[] computing, StackRecord[] theStack){
-		
-		hash = hashString;
-		
-		firstChar = first;
-		lastChar = last;
-		freeCharacters = freeChars;
-		
-		hasLeader = computing;
-		
 		stack = theStack;
 		
+		boolean isEmpty = true;
+		for(int i = 0; i < stack.length; i++){
+			if(stack[i]!= null){
+				isEmpty = false;
+			}
+		}
+		
+		if(isEmpty){
+			initStack();
+		}
+		
 	}
 	
-	private void initStack(int dim){
-		stack = new StackRecord[dim];
+	private void initStack(){
 		
 		for(int i=0; i<stack.length;i++){
 			stack[i] = new StackRecord();
@@ -237,16 +247,31 @@ public class Leader extends Thread{
 	}
 	
 	
-	public static void checkSolution(String[] result, ArrayList <RoutingRecord> rTable){
+	public static void checkSolution(String[] result, ArrayList <RoutingRecord> rTable, StackRecord[] aStack){
 		
 		//check which routing record should be updated
-		for(RoutingRecord rr : rTable){
-			if(rr.IP.equals(result[2]) && rr.port == Integer.parseInt(result[3])){
+		for(StackRecord sRecord : aStack){
+			if(sRecord.ipComputing != null && sRecord.ipComputing.equals(result[2]) && sRecord.portComputing == Integer.parseInt(result[3])){
 				
+				if(result[1].equals(sRecord.checkString)){
+					System.out.printf("%s:%s good boy!! %s == %s!!", result[2], result[3], result[1], sRecord.checkString);
+					
+					for(RoutingRecord rr : rTable){
+						if(rr.IP.equals(result[2]) && rr.port == Integer.parseInt(result[3])){
+							
+							rr.isComputing = false;
+							sRecord.isFinished = true;
+							
+							System.out.printf("%s:%d ready for a new job\n", rr.IP, rr.port);
+						}
+						
+					}
+					
+					
+				} else {
+					System.out.printf("%s:%s you fucking liar you gave me %s instead of %s!!\n", result[2], result[3], result[1], sRecord.checkString);
+				}
 				
-				System.out.printf("results computed : %s\n", result[1]);
-				
-				rr.isComputing = false;
 			}
 		}
 		
@@ -273,7 +298,6 @@ public class Leader extends Thread{
 								sRecord.portComputing = rr.port;
 
 								rr.isComputing = true;
-								publicStack = stack;
 								break;
 							}
 						}

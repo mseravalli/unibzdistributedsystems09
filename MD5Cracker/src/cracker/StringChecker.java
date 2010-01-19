@@ -31,7 +31,7 @@ public class StringChecker {
 	//Recursively checks all Strings in a certain range
 	public static void checkStrings(String toFind, String check, String rng, int first, int last, int noOfUnknown){
 		
-		System.out.printf("string to find %s, string to check %s \n",toFind, check);
+//		System.out.printf("string to find %s, string to check %s \n",toFind, check);
 		
 		//base case - we've only one variable char left
 		if (noOfUnknown == 0){
@@ -39,8 +39,8 @@ public class StringChecker {
 			if(compare(rng,toFind) != null)
 				results[0] = compare(rng,toFind);
 			if(compare(rng,check) != null){
+				// the result is found
 				results[1] = compare(rng,check);
-				System.out.println("FOOOOOOOOUUUUUUUUUUUUUNNNNNNNNNNNDDDDDD");
 			}
 		}
 		
