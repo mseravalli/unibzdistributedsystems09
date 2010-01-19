@@ -239,7 +239,7 @@ public class Node {
 		node.startNode();
 		
 		System.out.println("insert the hash to decode");
-		//CIAO == 39f119842ebe582f049160f44bcd99f4
+		//CIAO == 16272a5dd83c63010e9f67977940e871
 		node.startElection("hashval:"+sc.next());
 		
 		
