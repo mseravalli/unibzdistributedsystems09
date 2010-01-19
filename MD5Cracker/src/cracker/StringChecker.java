@@ -9,9 +9,7 @@ public class StringChecker {
 	
 	public static String[] compute(String toFind, String check, String prefix, int first, int last, int noOfUnknown){
 		noOfUnknown--;
-		System.out.println("!!!!!!!!!!!!!!PREFIX: "+prefix+"!!!!!!!!!!!!!!!!!!!!!!");
 		prefix = prefix.substring(0,prefix.length()-3);
-		System.out.println("!!!!!!!!!!!!!!PREFIX: "+prefix+"!!!!!!!!!!!!!!!!!!!!!!");
 		results = new String[2];
 		results[0] = null;
 		results[1] = null;
