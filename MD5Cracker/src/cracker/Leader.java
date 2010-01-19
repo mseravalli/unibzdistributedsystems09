@@ -215,6 +215,7 @@ public class Leader extends Thread{
 			ObjectOutputStream out = new ObjectOutputStream(rr.socket.getOutputStream());
 			
 			out.writeObject(ps.str);
+			out.flush();
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -227,15 +228,16 @@ public class Leader extends Thread{
 	public void run(){
 		
 		for(RoutingRecord rr : routingTable){
-			if(!rr.isWorking){
+			
+			if(!rr.isComputing){
 				
 				synchronized(stack){
 					
 					for(ParsedString ps : stack){
 						if(!ps.isStarted){
 							
-							//TODO pass the string to parse to the node
 							sendStringToNode(ps, rr);
+							
 							
 						}
 					}

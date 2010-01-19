@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class InputReceiver extends Thread {
 	
 	private boolean[] isElecting;
-	private boolean[] isWorking;
+	private boolean[] hasLeader;
 	
 	private StringBuffer hashval;
 	private String ip;
@@ -25,7 +25,7 @@ public class InputReceiver extends Thread {
 	public InputReceiver(String addr, int portNum, Socket aSocket, ArrayList <RoutingRecord> rTable, boolean[] electing, boolean[] working, StringBuffer hash){
 		
 		isElecting = electing;
-		isWorking = working;
+		hasLeader = working;
 		
 		hashval = hash;
 		ip = addr;

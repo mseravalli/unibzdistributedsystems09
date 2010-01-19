@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class ConnectionsReceiver implements Runnable {
 	
 	private boolean[] isElecting;
-	private boolean[] isWorking;
+	private boolean[] hasLeader;
 
 	private String ip;
 	private StringBuffer hashval;
@@ -35,7 +35,7 @@ public class ConnectionsReceiver implements Runnable {
 	public ConnectionsReceiver(String ipAddress, int portAddress, ArrayList <RoutingRecord> rTable, boolean[] electing, boolean[] working, StringBuffer hash){
 		
 		isElecting = electing;
-		isWorking = working;
+		hasLeader = working;
 		
 		hashval = hash;
 		this.ip = ipAddress;
@@ -93,7 +93,7 @@ public class ConnectionsReceiver implements Runnable {
 //						System.out.printf("%s:%d %b %o\n", rr.IP, rr.port, rr.isMe, rr.socket);
 //				}
 				
-				InputReceiver receiver = new InputReceiver(packet.IP, packet.port, incomingSocket, routingTable, isElecting, isWorking, hashval);
+				InputReceiver receiver = new InputReceiver(packet.IP, packet.port, incomingSocket, routingTable, isElecting, hasLeader, hashval);
 				receiver.start();
 								
 			}
