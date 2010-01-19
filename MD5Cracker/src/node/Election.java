@@ -192,7 +192,7 @@ public class Election extends Thread{
 		if(winner.isMe){
 			System.out.println("I am the leader");
 //			public Leader(String hashString, int first, int last, int freeChars, boolean[] computing){
-			new Leader(routingTable, hashval.toString(), 65, 80, 4, hasLeader, stack).start();
+			new Leader(routingTable, hashval.toString(), 65, 122, 4, hasLeader, stack).start();
 		}
 		
 		//else if it is not
