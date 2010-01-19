@@ -36,7 +36,7 @@ public class StringChecker {
 			System.out.println(rng);
 			if(encode(rng,toFind) != null)
 				results[0] = encode(rng,toFind);
-			if(encode(rng,toFind) != null)
+			if(encode(rng,check) != null)
 				results[1] = encode(rng,check);
 		}
 		
