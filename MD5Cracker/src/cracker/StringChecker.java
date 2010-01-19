@@ -43,7 +43,7 @@ public class StringChecker {
 		
 		//recursive case - we don't know how many variable chars left
 		else if(noOfUnknown > 0){
-			for(int i = first; i< last;i++){
+			for(int i = first; i< last+1;i++){
 				String currentChar = new Character((char)i).toString();
 				String testString = rng.concat(currentChar);
 				checkStrings(toFind, check, testString, first, last, noOfUnknown -1);
