@@ -7,23 +7,25 @@ public class StackRecord {
 	public String str;
 	public boolean isStarted;
 	public boolean isFinished;
+	public String checkString;
 	
 	public StackRecord(){
-		str = "";
+		str = null;
 		isStarted = false;
 		isFinished = false;
+		checkString = null;
 	}
 	
-	public StackRecord clone(){
-		
-		StackRecord ps = new StackRecord();
-		
-		ps.str = this.str;
-		ps.isStarted = this.isStarted;
-		ps.isFinished = this.isFinished;
-		
-		return ps;
-	}
+//	public StackRecord clone(){
+//		
+//		StackRecord ps = new StackRecord();
+//		
+//		ps.str = this.str;
+//		ps.isStarted = this.isStarted;
+//		ps.isFinished = this.isFinished;
+//		
+//		return ps;
+//	}
 	
 }
 
