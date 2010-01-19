@@ -8,7 +8,9 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 
+import cracker.Leader;
 import cracker.SendingStrings;
+import cracker.StringChecker;
 
 
 public class InputReceiver extends Thread {
@@ -115,8 +117,12 @@ public class InputReceiver extends Thread {
 					System.out.printf("%d - %d\n",((RoutingRecord)o).port, ((RoutingRecord)o).ID);
 					updateTable((RoutingRecord)o);
 				} else if (o.getClass().equals(SendingStrings.class)){
+					System.out.printf("received a sendingString\n");
 					SendingStrings ss = (SendingStrings) o;
 					checkRange(ss.hash,ss.checkingHash,ss.prefix,ss.firstChar,ss.lastChar,ss.freeChars);
+				} else if(o.getClass().equals(String[].class)){
+					System.out.printf("received a solution\n");
+					Leader.checkSolution((String[])o, routingTable);
 				}
 				
 		    	
@@ -138,7 +144,7 @@ public class InputReceiver extends Thread {
 			
 			if(routingTable.get(position).isLeader){
 				routingTable.remove(position);
-				//TODO inserire la hash nel metodo
+				
 				new Election(routingTable, hashval,isElecting,hasLeader).start();				
 			} else {
 				routingTable.remove(position);

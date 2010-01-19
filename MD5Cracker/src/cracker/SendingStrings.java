@@ -1,6 +1,8 @@
 package cracker;
 
-public class SendingStrings {
+import java.io.Serializable;
+
+public class SendingStrings implements Serializable {
 
 	public String hash;
 	public String checkingHash;

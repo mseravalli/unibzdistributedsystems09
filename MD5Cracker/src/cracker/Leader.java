@@ -17,10 +17,14 @@ public class Leader extends Thread{
 	
 	private StackRecord[] stack;
 	
-	private ArrayList <RoutingRecord> routingTable;
-	private boolean[] isComputing;
+	public static StackRecord[] publicStack;
 	
-	public Leader(String hashString, int first, int last, int freeChars, boolean[] computing){
+	private ArrayList <RoutingRecord> routingTable;
+	private boolean[] hasLeader;
+	
+	public Leader(ArrayList <RoutingRecord> rTable, String hashString, int first, int last, int freeChars, boolean[] leader){
+		
+		routingTable = rTable;
 		
 		hash = hashString;
 		
@@ -28,7 +32,7 @@ public class Leader extends Thread{
 		lastChar = last;
 		freeCharacters = freeChars;
 		
-		isComputing = computing;
+		hasLeader = leader;
 		
 		initStack(20);
 		
@@ -42,7 +46,7 @@ public class Leader extends Thread{
 		lastChar = last;
 		freeCharacters = freeChars;
 		
-		isComputing = computing;
+		hasLeader = computing;
 		
 		stack = theStack;
 		
@@ -207,18 +211,19 @@ public class Leader extends Thread{
 		try {
 			
 			//generate a String for the liar detection and save it
-			String checkingString = sRecord.str;
+			String checkingString = sRecord.str.substring(0,1+sRecord.str.length()-freeCharacters);
 			
-			for(int i = 0; i < freeCharacters; i++){
-				String random =String.format("%c", (firstChar + (Math.random()*(lastChar-firstChar))));
+			for(int i = 0; i < freeCharacters-1; i++){
+				String random =String.format("%c", (char)(firstChar + (Math.random()*(1+lastChar-firstChar))));
 				checkingString = checkingString.concat(random);
 			}
 			
 			sRecord.checkString = checkingString;
 			
+			System.out.printf("Leader: sending %s - %s to %d\n", sRecord.str, checkingString, rr.port);
 			
 			//send the string to the node
-			SendingStrings ss = new SendingStrings(hash, checkingString, sRecord.str, freeCharacters, firstChar, lastChar);
+			SendingStrings ss = new SendingStrings(hash, StringChecker.encode(checkingString), sRecord.str, freeCharacters, firstChar, lastChar);
 			
 			ObjectOutputStream out = new ObjectOutputStream(rr.socket.getOutputStream());
 			out.writeObject(ss);
@@ -232,6 +237,22 @@ public class Leader extends Thread{
 	}
 	
 	
+	public static void checkSolution(String[] result, ArrayList <RoutingRecord> rTable){
+		
+		//check which routing record should be updated
+		for(RoutingRecord rr : rTable){
+			if(rr.IP.equals(result[2]) && rr.port == Integer.parseInt(result[3])){
+				
+				
+				System.out.printf("results computed : %s\n", result[1]);
+				
+				rr.isComputing = false;
+			}
+		}
+		
+	}
+	
+	
 	public void run(){
 		
 		do{
@@ -239,16 +260,21 @@ public class Leader extends Thread{
 			//for each non computing node there will be assigned a work
 			for(RoutingRecord rr : routingTable){
 				
-				if(!rr.isComputing){
+				if(!rr.isComputing && !rr.isMe){
 					
 					synchronized(stack){
 						
-						for(StackRecord ps : stack){
-							if(!ps.isStarted){
+						for(StackRecord sRecord : stack){
+							if(!sRecord.isStarted){
 								
-								sendStringToNode(ps, rr);
-								ps.isStarted = true;
-								
+								sendStringToNode(sRecord, rr);
+								sRecord.isStarted = true;
+								sRecord.ipComputing = rr.IP;
+								sRecord.portComputing = rr.port;
+
+								rr.isComputing = true;
+								publicStack = stack;
+								break;
 							}
 						}
 						
@@ -286,7 +312,7 @@ public class Leader extends Thread{
 				
 			}//synch end	
 		
-		}while(isComputing[0]);
+		}while(hasLeader[0]);
 		
 		
 	}
