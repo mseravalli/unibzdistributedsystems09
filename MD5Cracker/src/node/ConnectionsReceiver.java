@@ -15,6 +15,7 @@ public class ConnectionsReceiver implements Runnable {
 	private boolean[] isWorking;
 
 	private String ip;
+	private StringBuffer hashval;
 	private int port;
 	private ServerSocket listenSocket;
 	private Socket incomingSocket;
@@ -29,12 +30,14 @@ public class ConnectionsReceiver implements Runnable {
 	 * 
 	 * @param ipAddress
 	 * @param portAddress
+	 * @param hashval 
 	 */
-	public ConnectionsReceiver(String ipAddress, int portAddress, ArrayList <RoutingRecord> rTable, boolean[] electing, boolean[] working){
+	public ConnectionsReceiver(String ipAddress, int portAddress, ArrayList <RoutingRecord> rTable, boolean[] electing, boolean[] working, StringBuffer hash){
 		
 		isElecting = electing;
 		isWorking = working;
 		
+		hashval = hash;
 		this.ip = ipAddress;
 		this.port = portAddress;
 		this.listenSocket = null;
@@ -90,7 +93,7 @@ public class ConnectionsReceiver implements Runnable {
 //						System.out.printf("%s:%d %b %o\n", rr.IP, rr.port, rr.isMe, rr.socket);
 //				}
 				
-				InputReceiver receiver = new InputReceiver(packet.IP, packet.port, incomingSocket, routingTable, isElecting, isWorking);
+				InputReceiver receiver = new InputReceiver(packet.IP, packet.port, incomingSocket, routingTable, isElecting, isWorking, hashval);
 				receiver.start();
 								
 			}

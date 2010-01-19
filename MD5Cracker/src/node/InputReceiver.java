@@ -10,10 +10,10 @@ import java.util.ArrayList;
 
 public class InputReceiver extends Thread {
 	
-	private static final String NOT_POSESSOR = "";
 	private boolean[] isElecting;
 	private boolean[] isWorking;
 	
+	private StringBuffer hashval;
 	private String ip;
 	private int port;
 	
@@ -22,11 +22,12 @@ public class InputReceiver extends Thread {
 	private ObjectInputStream in;
 	private ArrayList <RoutingRecord> routingTable;
 	
-	public InputReceiver(String addr, int portNum, Socket aSocket, ArrayList <RoutingRecord> rTable, boolean[] electing, boolean[] working){
+	public InputReceiver(String addr, int portNum, Socket aSocket, ArrayList <RoutingRecord> rTable, boolean[] electing, boolean[] working, StringBuffer hash){
 		
 		isElecting = electing;
 		isWorking = working;
 		
+		hashval = hash;
 		ip = addr;
 		port = portNum;
 		socket = aSocket;
@@ -37,17 +38,13 @@ public class InputReceiver extends Thread {
 	public void checkString(String toParse){
 		
 		//part for election
-		if(toParse.equals(Node.ELECTION)){
-			isElecting[0] = false;
+		if(toParse.startsWith(Node.ELECTION)){
+			isElecting[0] = true;
 			System.out.println("election started!!");
-			
-			Election el = new Election(routingTable,NOT_POSESSOR);
+			hashval = new StringBuffer(toParse.substring(toParse.indexOf(":")+1));
+			Election el = new Election(routingTable,hashval);
 			el.start();
 			
-		// part for hash exchanging
-		//TODO improve the parser and start the work
-		} else if(toParse.startsWith("hashval:")){
-			System.out.println("hash received: " + toParse);
 		}
 		
 	}
@@ -91,6 +88,7 @@ public class InputReceiver extends Thread {
 				
 		    	
 			}
+			
 		    
 		} catch(EOFException e) {
                     
@@ -108,7 +106,7 @@ public class InputReceiver extends Thread {
 			if(routingTable.get(position).isLeader){
 				routingTable.remove(position);
 				//TODO inserire la hash nel metodo
-				new Election(routingTable, NOT_POSESSOR).start();				
+				new Election(routingTable, hashval).start();				
 			} else {
 				routingTable.remove(position);
 			}
