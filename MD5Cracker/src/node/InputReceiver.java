@@ -105,7 +105,14 @@ public class InputReceiver extends Thread {
 					
 			}
 			
-			routingTable.remove(position);
+			if(routingTable.get(position).isLeader){
+				routingTable.remove(position);
+				//TODO inserire la hash nel metodo
+				new Election(routingTable, NOT_POSESSOR).start();				
+			} else {
+				routingTable.remove(position);
+			}
+			
 			
 		} catch (SocketException e) {
 			System.out.printf("node %s:%d disconnected\n", ip, port);

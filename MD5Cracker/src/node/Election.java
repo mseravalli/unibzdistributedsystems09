@@ -35,7 +35,7 @@ public class Election extends Thread{
 	
 	
 	public RoutingRecord createNewID(){
-		int id = (int) (Math.random()* (routingTable.size()*routingTable.size()));
+		int id = (int) (Math.random()* (routingTable.size()*routingTable.size()*routingTable.size()));
 		
 		String address = "";
 		int port = -1;
@@ -95,8 +95,10 @@ public class Election extends Thread{
 			}
 		}
 		
-		if(isUnique)
+		if(isUnique){
 			winner = routingTable.get(maxIDPos);
+			winner.isLeader = true;
+		}
 		return isUnique;		
 		
 	}	
@@ -105,6 +107,7 @@ public class Election extends Thread{
 	public boolean isFilled(){
 		
 		for(int i = 0; i < routingTable.size(); i++){
+			System.out.printf("nodes: %d - %d : %d\n", i, routingTable.get(i).port, routingTable.get(i).ID);
 			if (routingTable.get(i).ID == node.Node.NULL_ID){
 				return false;
 			}
@@ -118,50 +121,23 @@ public class Election extends Thread{
 		
 		for(RoutingRecord rr : routingTable){
 			rr.ID = Node.NULL_ID;
-		}
-		
-		
-//		String address = "";
-//		int port = -1;
-//		
-//		//set the id of the current process to the new created ID
-//		for(int i = 0; i < routingTable.size(); i++){
-//			if(routingTable.get(i).isMe){
-//				routingTable.get(i).ID = Node.NULL_ID;
-//				address = routingTable.get(i).IP;
-//				port = routingTable.get(i).port;
-//			}
-//		}
-//		
-//		broadcastRoutingRecord(new RoutingRecord(address, port, RoutingRecord.IS_NOT_ME, Node.NULL_ID));
-		
+		}		
 	}
 	
 	
-	public boolean isClean(){
-		
-		for(int i = 0; i < routingTable.size(); i++){
-			if (routingTable.get(i).ID != -1){
-				return false;
-			}
-		}
-		
-		return true;
-	}
 	
 
 
 	@Override
 	public void run() {	
 		
-		
-		do{
-			
-			System.out.println("broadcasting id");
-			
-			broadcastRoutingRecord(this.createNewID());
-			
 			do{
+				
+				System.out.println("broadcasting id");
+				RoutingRecord toSend = this.createNewID();
+				
+				broadcastRoutingRecord(toSend);
+				
 				try {
 					Thread.sleep(200);
 				} catch (InterruptedException e) {
@@ -169,35 +145,30 @@ public class Election extends Thread{
 					e.printStackTrace();
 				}
 				System.out.println("waiting for the ids");
-			}while(!isFilled());
-			
-			System.out.println("All nodes have an id");
-
-			
-//			
-			if(!isUniqueMaxID()){
-//				
-//				System.out.println("there are 2 nodes that have the same max id");
-//				
-//				//wait until table until it is clean
-//				do{
-					clearRTable();
-//					System.out.println("waiting for a clean table");
-//					try {
-//						Thread.sleep(500);
-//					} catch (InterruptedException e) {
-//						e.getMessage();
-//						e.printStackTrace();
-//					}
-//				}while(!isClean());	
-//				
-//				System.out.println("table is clean everywhere");
-//				
-			}
+				
+				
+				synchronized(this.routingTable){
+					
+					if(isFilled()){
+					
+						System.out.println("All nodes have an id");
+						
+						if(isUniqueMaxID()){
+							break;
+						} else {
+							System.out.println("there are nodes that have the same max id");
+							clearRTable();
+						}				
+						
+					}	
+				
+				}
+				
+			}while(true);
 
 			
 			
-		}while(!isUniqueMaxID());
+		
 		System.out.println("The winner is " + winner.IP + ":" + winner.port);
 		
 		//if this is the hash possessor and not the leader he sends the hash to the leader
