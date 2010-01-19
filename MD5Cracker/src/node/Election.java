@@ -6,6 +6,8 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 
+import cracker.Leader;
+
 
 public class Election extends Thread{
 	
@@ -147,7 +149,7 @@ public class Election extends Thread{
 				broadcastRoutingRecord(toSend);
 				
 				try {
-					Thread.sleep(200);
+					Thread.sleep(500);
 				} catch (InterruptedException e) {
 					e.getMessage();
 					e.printStackTrace();
@@ -186,7 +188,8 @@ public class Election extends Thread{
 		//if it is the leader
 		if(winner.isMe){
 			System.out.println("I am the leader");
-			//TODO START LEADING
+//			public Leader(String hashString, int first, int last, int freeChars, boolean[] computing){
+			new Leader(routingTable, hashval.toString(), 65, 66, 4, hasLeader).start();
 		}
 		
 		//else if it is not

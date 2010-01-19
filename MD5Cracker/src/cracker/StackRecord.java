@@ -1,13 +1,17 @@
 package cracker;
+import java.io.Serializable;
 import java.util.Comparator;
 
 
-public class StackRecord {
+public class StackRecord{
 
 	public String str;
 	public boolean isStarted;
 	public boolean isFinished;
 	public String checkString;
+	
+	public String ipComputing;
+	public int portComputing;
 	
 	public StackRecord(){
 		str = null;
