@@ -72,14 +72,23 @@ public class InputReceiver extends Thread {
 	
 	public void checkRange(String toFind, String check, String pref, int first, int last, int noOfVar) throws IOException{
 		
-		String result[] = StringChecker.compute(toFind, check, pref,first, last, noOfVar);
+		String[] result = StringChecker.compute(toFind, check, pref,first, last, noOfVar);
+		String[] sendBack = new String[4];
+		sendBack[0] = result[0];
+		sendBack[1] = result[1];
+		
 		Socket leaderSocket = null;
 		for(RoutingRecord rr : routingTable){
 			if(rr.isLeader)
 				leaderSocket = rr.socket;
+			if(rr.isMe){
+				sendBack[2] = rr.IP;
+				sendBack[3] = Integer.toString(rr.port);
+			}
+				
 		}
 		//sending computation results back to leader
-		new ObjectOutputStream(leaderSocket.getOutputStream()).writeObject(result);
+		new ObjectOutputStream(leaderSocket.getOutputStream()).writeObject(sendBack);
 		
 	}
 	
