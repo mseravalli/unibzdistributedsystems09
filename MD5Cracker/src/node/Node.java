@@ -19,7 +19,7 @@ public class Node {
 	public static final String ELECTION = "election";
 	
 	private boolean[] isElecting;
-	private boolean[] isWorking;
+	private boolean[] hasLeader;
 	
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
@@ -36,8 +36,8 @@ public class Node {
 		
 		isElecting = new boolean[1];
 		isElecting[0] = false;
-		isWorking = new boolean[1];
-		isWorking[0] = false;
+		hasLeader = new boolean[1];
+		hasLeader[0] = false;
 		
 		
 		myIP = Node.getOwnIP("wlan0");
@@ -140,7 +140,7 @@ public class Node {
 //					System.out.printf("%s:%d %b %o\n", rr.IP, rr.port, rr.isMe, rr.socket);
 //			}
 			
-			new InputReceiver(ipAddress,portAddress,mySocket,routingTable,isElecting, isWorking, hashval).start();
+			new InputReceiver(ipAddress,portAddress,mySocket,routingTable,isElecting, hasLeader, hashval).start();
 			
 //			System.out.println("Node: connected to " + portAddress);
 			
@@ -186,7 +186,7 @@ public class Node {
 			
 		}		
 		
-		Runnable runnable = new ConnectionsReceiver(this.myIP, this.myPort, this.routingTable, isElecting, isWorking, hashval);
+		Runnable runnable = new ConnectionsReceiver(this.myIP, this.myPort, this.routingTable, isElecting, hasLeader, hashval);
 		Thread thread = new Thread(runnable); 
 		thread.start();
 		
