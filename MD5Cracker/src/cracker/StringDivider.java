@@ -10,12 +10,12 @@ public class StringDivider {
 	//have to be equal to the number of * + 1
 	public static final int FREE_CHARACTERS = 4;
 	
-	private ParsedString[] testedStrings = new ParsedString[PARSED_STRING_LENGTH];
+	private StackRecord[] testedStrings = new StackRecord[PARSED_STRING_LENGTH];
 	
 	public StringDivider(){
 		
 		for(int i=0; i<PARSED_STRING_LENGTH;i++){
-			testedStrings[i] = new ParsedString();
+			testedStrings[i] = new StackRecord();
 		}		
 		
 		testedStrings[0].str = "***";
@@ -28,7 +28,7 @@ public class StringDivider {
 	}
 	
 	
-	public ParsedString[] getTestedStrings(){		
+	public StackRecord[] getTestedStrings(){		
 		return this.testedStrings;		
 	}
 	

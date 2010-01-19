@@ -2,21 +2,21 @@ package cracker;
 import java.util.Comparator;
 
 
-public class ParsedString {
+public class StackRecord {
 
 	public String str;
 	public boolean isStarted;
 	public boolean isFinished;
 	
-	public ParsedString(){
+	public StackRecord(){
 		str = "";
 		isStarted = false;
 		isFinished = false;
 	}
 	
-	public ParsedString clone(){
+	public StackRecord clone(){
 		
-		ParsedString ps = new ParsedString();
+		StackRecord ps = new StackRecord();
 		
 		ps.str = this.str;
 		ps.isStarted = this.isStarted;
@@ -33,16 +33,16 @@ class ParsedStringCoparator implements Comparator<Object>{
 
 		//parameter are of type Object, so we have to downcast it to StringCoparator objects
 	
-		String firstStr = ( (ParsedString) str1 ).str;
+		String firstStr = ( (StackRecord) str1 ).str;
 	
-		String secondStr = ( (ParsedString) str2 ).str;
+		String secondStr = ( (StackRecord) str2 ).str;
 		
-		boolean isFisrtStarted = ( (ParsedString) str1 ).isStarted;
-		boolean isFisrtFinished = ( (ParsedString) str1 ).isFinished;
+		boolean isFisrtStarted = ( (StackRecord) str1 ).isStarted;
+		boolean isFisrtFinished = ( (StackRecord) str1 ).isFinished;
 		boolean isFirstComputed = isFisrtStarted && isFisrtFinished;
 		
-		boolean isSecondStarted = ( (ParsedString) str2 ).isStarted;		
-		boolean isSecondFinished = ( (ParsedString) str2 ).isFinished;
+		boolean isSecondStarted = ( (StackRecord) str2 ).isStarted;		
+		boolean isSecondFinished = ( (StackRecord) str2 ).isFinished;
 		boolean isSecondComputed = isSecondStarted && isSecondFinished;
 		
 	

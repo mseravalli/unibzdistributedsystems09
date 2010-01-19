@@ -8,87 +8,74 @@ import node.RoutingRecord;
 
 public class Leader extends Thread{
 	
-	private int parsedStringLength;
 	private int firstChar;
 	private int lastChar;
 	//have to be equal to the number of * + 1
 	private int freeCharacters;
 	
-	private ParsedString[] stack;
+	private StackRecord[] stack;
 	
 	private ArrayList <RoutingRecord> routingTable;
+	private boolean[] isComputing;
 	
-	
-	public Leader(ArrayList <RoutingRecord> rTable){
+	public Leader(int first, int last, int freeChars, boolean[] computing){
 		
-		parsedStringLength = 20;
-		firstChar = 65;
-		lastChar = 66;
-		freeCharacters = 4;
-		
-		initTestedStrings();
-		
-		routingTable = rTable;
-		
-	}
-	
-	public Leader(int first, int last, int freeChars){
-		
-		parsedStringLength = 20;
 		firstChar = first;
 		lastChar = last;
 		freeCharacters = freeChars;
 		
-		initTestedStrings();
+		isComputing = computing;
+		
+		initStack(20);
 		
 	}
 	
-	public Leader(int first, int last, int freeChars, ParsedString[] theStack){
-		
+	public Leader(int first, int last, int freeChars, boolean[] computing, StackRecord[] theStack){
 		
 		firstChar = first;
 		lastChar = last;
 		freeCharacters = freeChars;
+		
+		isComputing = computing;
 		
 		stack = theStack;
-		parsedStringLength = theStack.length;
 		
 	}
 	
-	private void initTestedStrings(){
-		stack = new ParsedString[parsedStringLength];
+	private void initStack(int dim){
+		stack = new StackRecord[dim];
 		
-		for(int i=0; i<parsedStringLength;i++){
-			stack[i] = new ParsedString();
+		for(int i=0; i<stack.length;i++){
+			stack[i] = new StackRecord();
 		}		
 		
 		stack[0].str = "***";
 		stack[1].str = (char)firstChar+stack[0].str;
 		
-		for (int i = 2; i < parsedStringLength; i++){
+		for (int i = 2; i < stack.length; i++){
 			stack[i].str = this.createNextString(stack[i-1].str);
 		}
 	}
 	
 	
-	public ParsedString[] getTestedStrings(){		
+	public StackRecord[] getTestedStrings(){		
 		return this.stack;		
 	}
 	
 	public void setStringInArray(String newString, int position){		
-		if(position < parsedStringLength && position >= 0){			
+		if(position < stack.length && position >= 0){			
 			this.stack[position].str = newString;			
 		}		
 	}
 	
 	public void setStartedInArray(boolean isStarted, int position){		
-		if(position < parsedStringLength && position >= 0){			
+		if(position < stack.length && position >= 0){			
 			this.stack[position].isStarted = isStarted;			
 		}		
 	}
 	
 	public void setFinishedInArray(boolean isFinished, int position){		
-		if(position < parsedStringLength && position >= 0){			
+		if(position < stack.length && position >= 0){			
 			this.stack[position].isFinished = isFinished;			
 		}		
 	}
@@ -198,7 +185,7 @@ public class Leader extends Thread{
 			/*
 			 * then starting form the last valid element the stack is repopulated
 			 */
-			for(int i = parsedStringLength - computedElements; i < parsedStringLength; i++){
+			for(int i = stack.length - computedElements; i < stack.length; i++){
 				stack[i].str = "";
 				stack[i].isStarted = false;
 				stack[i].isFinished = false;
@@ -209,7 +196,7 @@ public class Leader extends Thread{
 	}
 	
 	
-	public void sendStringToNode(ParsedString ps, RoutingRecord rr){
+	public void sendStringToNode(StackRecord ps, RoutingRecord rr){
 		
 		try {
 			ObjectOutputStream out = new ObjectOutputStream(rr.socket.getOutputStream());
@@ -227,27 +214,59 @@ public class Leader extends Thread{
 	
 	public void run(){
 		
-		for(RoutingRecord rr : routingTable){
-			
-			if(!rr.isComputing){
+		do{
+		
+			//for each non computing node there will be assigned a work
+			for(RoutingRecord rr : routingTable){
 				
-				synchronized(stack){
+				if(!rr.isComputing){
 					
-					for(ParsedString ps : stack){
-						if(!ps.isStarted){
-							
-							sendStringToNode(ps, rr);
-							ps.isStarted = true;
-							
+					synchronized(stack){
+						
+						for(StackRecord ps : stack){
+							if(!ps.isStarted){
+								
+								sendStringToNode(ps, rr);
+								ps.isStarted = true;
+								
+							}
 						}
-					}
+						
+					}//synch end			
 					
-				}//synch end			
-				
+				}
+			}//for rr end
+			
+
+			//waits for work being computed
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
-		}//for rr end
+			
+			
+			/*
+			 * reconstruct the stack if the number of computed elements id > than
+			 * the half of the length
+			 */
+			synchronized(stack){
+				
+				int count = 0;
+				
+				for(StackRecord ps : stack){
+					if(ps.isFinished){
+						count++;
+					}
+				}
+				
+				if (count > stack.length){
+					reconstructParsedString(count);
+				}
+				
+			}//synch end	
 		
-		
+		}while(isComputing[0]);
 		
 		
 	}
