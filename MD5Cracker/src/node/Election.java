@@ -180,8 +180,8 @@ public class Election extends Thread{
 		System.out.println("The winner is " + winner.IP + ":" + winner.port);
 		
 		//sets the boolean variables isElecting and hasLeader
-		isElecting[1] = false;
-		hasLeader[1] = true;
+		isElecting[0] = false;
+		hasLeader[0] = true;
 		
 		//if it is the leader
 		if(winner.isMe){

@@ -185,7 +185,7 @@ public class Leader extends Thread{
 	 * data structure is rebuilt, checked elements are deleted and the stack is
 	 * re-populated started from the last valid element in the list
 	 */
-	public void reconstructParsedString(int computedElements){
+	public synchronized void reconstructParsedString(int computedElements){
 		
 		if(computedElements > 0){
 			
@@ -237,7 +237,7 @@ public class Leader extends Thread{
 						if(!ps.isStarted){
 							
 							sendStringToNode(ps, rr);
-							
+							ps.isStarted = true;
 							
 						}
 					}
