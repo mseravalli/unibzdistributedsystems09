@@ -25,7 +25,7 @@ public class Node {
 	private ObjectInputStream in;
 	private Socket mySocket;
 	private String myIP;
-	private String hashval ="";
+	private StringBuffer hashval;
 	private int myPort;
 	private String connectionIP;
 	private ArrayList <RoutingRecord> routingTable;
@@ -140,7 +140,7 @@ public class Node {
 //					System.out.printf("%s:%d %b %o\n", rr.IP, rr.port, rr.isMe, rr.socket);
 //			}
 			
-			new InputReceiver(ipAddress,portAddress,mySocket,routingTable,isElecting, isWorking).start();
+			new InputReceiver(ipAddress,portAddress,mySocket,routingTable,isElecting, isWorking, hashval).start();
 			
 //			System.out.println("Node: connected to " + portAddress);
 			
@@ -186,7 +186,7 @@ public class Node {
 			
 		}		
 		
-		Runnable runnable = new ConnectionsReceiver(this.myIP, this.myPort, this.routingTable, isElecting, isWorking);
+		Runnable runnable = new ConnectionsReceiver(this.myIP, this.myPort, this.routingTable, isElecting, isWorking, hashval);
 		Thread thread = new Thread(runnable); 
 		thread.start();
 		
@@ -194,13 +194,13 @@ public class Node {
 	
 	
 	public void startElection(String hash){
-		
+		hashval = new StringBuffer(hash);
 		isElecting[0] = true;
 		try {
 			for(RoutingRecord rr : routingTable){
 				if(!rr.isMe){
 					out = new ObjectOutputStream( rr.socket.getOutputStream());
-					out.writeObject(ELECTION);
+					out.writeObject(this.ELECTION + hashval.toString());
 					out.flush();
 				}			
 			}
@@ -208,7 +208,7 @@ public class Node {
 			e.printStackTrace();
 		}
 		
-		Election el = new Election(routingTable,hash);
+		Election el = new Election(routingTable,hashval);
 		el.start();
 		
 		System.out.println("Election started");
@@ -218,7 +218,6 @@ public class Node {
 	
 	
 	public static void main(String[] args){
-		
 		Scanner sc = new Scanner(System.in);
 		
 		System.out.println("insert ip to connect address and port");
@@ -230,6 +229,7 @@ public class Node {
 		node.startNode();
 		
 		System.out.println("insert the hash to decode");
+		//TODO check whether isWorking
 		node.startElection("hashval:"+sc.next());
 		
 		
