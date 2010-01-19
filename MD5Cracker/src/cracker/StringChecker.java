@@ -28,7 +28,7 @@ public class StringChecker {
 	
 	
 	//Recursively checks all Strings in a certain range
-	private static void checkStrings(String toFind, String check, String rng, int first, int last, int noOfUnknown){
+	public static void checkStrings(String toFind, String check, String rng, int first, int last, int noOfUnknown){
 		
 		System.out.printf("string to find %s, string to check %s \n",toFind, check);
 		
@@ -56,7 +56,7 @@ public class StringChecker {
 	//Encodes a certain String and compares it to the searched String, 
 	//if they are the same (key was cracked), then it returns the original message
 	//else it returns null
-	private static String compare(String toTest, String toFind){
+	public static String compare(String toTest, String toFind){
 		
 //		String encoded = "";
 //        byte a[] = toTest.getBytes();
