@@ -42,6 +42,8 @@ public class InputReceiver extends Thread {
 			isElecting[0] = true;
 			System.out.println("election started!!");
 			hashval = new StringBuffer(toParse.substring(toParse.indexOf(":")+1));
+			isElecting[0] = true;
+			hasLeader[0] = false;
 			Election el = new Election(routingTable,hashval,isElecting,hasLeader);
 			el.start();
 			
