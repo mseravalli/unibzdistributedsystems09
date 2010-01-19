@@ -42,7 +42,7 @@ public class InputReceiver extends Thread {
 			isElecting[0] = true;
 			System.out.println("election started!!");
 			hashval = new StringBuffer(toParse.substring(toParse.indexOf(":")+1));
-			Election el = new Election(routingTable,hashval);
+			Election el = new Election(routingTable,hashval,isElecting,hasLeader);
 			el.start();
 			
 		}
@@ -106,7 +106,7 @@ public class InputReceiver extends Thread {
 			if(routingTable.get(position).isLeader){
 				routingTable.remove(position);
 				//TODO inserire la hash nel metodo
-				new Election(routingTable, hashval).start();				
+				new Election(routingTable, hashval,isElecting,hasLeader).start();				
 			} else {
 				routingTable.remove(position);
 			}
