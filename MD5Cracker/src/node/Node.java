@@ -46,7 +46,7 @@ public class Node {
 		hasLeader[0] = false;
 		
 		
-		myIP = Node.getOwnIP("wlan0");
+		myIP = Node.getOwnIP("eth0");
 		myPort = portAddress;
 		
 		connectionIP = ipAddress;
