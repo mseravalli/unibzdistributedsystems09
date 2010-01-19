@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import cracker.ParsedString;
+import cracker.StackRecord;
 import cracker.StringDivider;
 
 
@@ -38,7 +38,7 @@ public class StringDividerTest {
 		
 		
 		
-		ParsedString[] testedStrings = sd.getTestedStrings();
+		StackRecord[] testedStrings = sd.getTestedStrings();
 		
 		for(int i = 0; i < 6; i++){
 			sd.setStartedInArray(true, i);
