@@ -207,8 +207,11 @@ public class Leader extends Thread{
 			 */
 			for(int i = stack.length - computedElements; i < stack.length; i++){
 				stack[i].str = "";
+				stack[i].checkString = null;
 				stack[i].isStarted = false;
 				stack[i].isFinished = false;
+				stack[i].ipComputing = null;
+				stack[i].portComputing = 0;
 				stack[i].str=createNextString(stack[i-1].str);
 			}
 		}
@@ -250,10 +253,13 @@ public class Leader extends Thread{
 	public static void checkSolution(String[] result, ArrayList <RoutingRecord> rTable, StackRecord[] aStack){
 		
 		//check which routing record should be updated
+		
+		//for each record in the stack check whether its ip is equal to the given ip 
 		for(StackRecord sRecord : aStack){
 			if(sRecord.ipComputing != null && sRecord.ipComputing.equals(result[2]) && sRecord.portComputing == Integer.parseInt(result[3])){
 				
-				if(result[1].equals(sRecord.checkString)){
+				
+				if(!sRecord.isFinished && result[1].equals(sRecord.checkString)){
 					System.out.printf("%s:%s good boy!! %s == %s!!", result[2], result[3], result[1], sRecord.checkString);
 					
 					for(RoutingRecord rr : rTable){
@@ -268,7 +274,7 @@ public class Leader extends Thread{
 					}
 					
 					
-				} else {
+				} else if(!sRecord.isFinished && !result[1].equals(sRecord.checkString)){
 					System.out.printf("%s:%s you fucking liar you gave me %s instead of %s!!\n", result[2], result[3], result[1], sRecord.checkString);
 				}
 				
@@ -330,7 +336,7 @@ public class Leader extends Thread{
 					}
 				}
 				
-				if (count > stack.length){
+				if (count > stack.length/2){
 					reconstructParsedString(count);
 				}
 				
