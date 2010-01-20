@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 public class HelloPacket implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3132136853664077791L;
 	public boolean isHello;
 	public String IP;
 	public int ID;

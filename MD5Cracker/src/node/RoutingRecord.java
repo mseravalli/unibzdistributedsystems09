@@ -6,6 +6,10 @@ import java.net.Socket;
 
 public class RoutingRecord implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -194140748789275619L;
 	public static final int NULL_ID = -1;
 	public static final boolean IS_ME = true;
 	public static final boolean IS_NOT_ME = false;
@@ -54,29 +58,3 @@ public class RoutingRecord implements Serializable{
 	}
 
 }
-
-//class IntRRCoparator implements Comparator<Object>{
-//
-//	@Override
-//	public int compare(Object rr1, Object rr2){
-//
-//		//parameter are of type Object, so we have to downcast it to Employee objects
-//
-//		int rr1ID = ( (RoutingRecord) rr1).ID;
-//		
-//		int rr2ID = ( (RoutingRecord) rr2).ID;
-//
-//		if( rr1ID > rr2ID )
-//			return 1;
-//
-//		else if( rr1ID < rr2ID )
-//			return -1;
-//
-//		else
-//			return 0;
-//
-//	}
-//	
-//	
-//	
-//}
