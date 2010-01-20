@@ -49,18 +49,14 @@ public class InputReceiver extends Thread {
 	public void checkString(String toParse){
 		
 		//part for election
-		if(toParse.startsWith(Node.ELECTION)){
-			isElecting[0] = true;
-			System.out.println("election started!!");
-			hashval = new StringBuffer(toParse.substring(toParse.indexOf(":")+1));
-			isElecting[0] = true;
-			hasLeader[0] = false;
-			Election el = new Election(routingTable, hashval, isElecting,hasLeader, stack);
-			el.start();
+		isElecting[0] = true;
+		System.out.println("election started!!");
+		hashval = new StringBuffer(toParse);
+		isElecting[0] = true;
+		hasLeader[0] = false;
+		Election el = new Election(routingTable, hashval, isElecting,hasLeader, stack);
+		el.start();
 			
-		}
-		
-		
 		
 	}
 	

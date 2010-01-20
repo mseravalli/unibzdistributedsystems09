@@ -1,5 +1,4 @@
 package cracker;
-import java.io.Serializable;
 import java.util.Comparator;
 
 
@@ -19,17 +18,6 @@ public class StackRecord{
 		isFinished = false;
 		checkString = null;
 	}
-	
-//	public StackRecord clone(){
-//		
-//		StackRecord ps = new StackRecord();
-//		
-//		ps.str = this.str;
-//		ps.isStarted = this.isStarted;
-//		ps.isFinished = this.isFinished;
-//		
-//		return ps;
-//	}
 	
 }
 

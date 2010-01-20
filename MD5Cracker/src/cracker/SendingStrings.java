@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 public class SendingStrings implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8342462638967937823L;
 	public String hash;
 	public String checkingHash;
 	public String prefix;

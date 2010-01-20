@@ -2,7 +2,6 @@ package node;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 
@@ -16,9 +15,7 @@ public class Election extends Thread{
 	private ArrayList<RoutingRecord> routingTable;
 	
 	private ObjectOutputStream out;
-	
-	private Socket socket;
-	
+		
 	private RoutingRecord winner;
 	
 	private StringBuffer hashval;
@@ -37,7 +34,6 @@ public class Election extends Thread{
 		hashval = hash;
 		
 		routingTable = rTable;
-		socket = new Socket();
 		
 		stack = aStack;
 	}
@@ -194,11 +190,7 @@ public class Election extends Thread{
 //			public Leader(String hashString, int first, int last, int freeChars, boolean[] computing){
 			new Leader(routingTable, hashval.toString(), 65, 122, 4, hasLeader, stack).start();
 		}
-		
-		//else if it is not
-		else{
-			//TODO star
-		}
+
 		
 	}	
 	
