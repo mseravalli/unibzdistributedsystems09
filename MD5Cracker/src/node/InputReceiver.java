@@ -113,6 +113,7 @@ public class InputReceiver extends Thread {
 		}
 		//sending computation results back to leader
 		new ObjectOutputStream(leaderSocket.getOutputStream()).writeObject(sendBack);
+		System.out.println("answered to the leader for " + toFind);
 		
 	}
 	
