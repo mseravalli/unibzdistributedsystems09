@@ -4,18 +4,19 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import node.Node;
 import node.RoutingRecord;
 
 public class Leader extends Thread{
 	
-	private String hash;
+	private StringBuffer hash;
 	
 	private int firstChar;
 	private int lastChar;
 	//have to be equal to the number of * + 1
 	private int freeCharacters;
 	
-	private StackRecord[] stack;
+	private QueueRecord[] queue;
 	
 	private ArrayList <RoutingRecord> routingTable;
 	private boolean[] hasLeader;
@@ -36,7 +37,8 @@ public class Leader extends Thread{
 //		
 //	}
 	
-	public Leader(ArrayList <RoutingRecord> rTable, String hashString, int first, int last, int freeChars, boolean[] leader, StackRecord[] theStack){
+	public Leader(ArrayList <RoutingRecord> rTable, StringBuffer hashString, int first, int last, int freeChars, boolean[] leader, QueueRecord[] theQueue){
+		
 		
 		routingTable = rTable;
 		
@@ -48,55 +50,55 @@ public class Leader extends Thread{
 		
 		hasLeader = leader;
 		
-		stack = theStack;
+		queue = theQueue;
 		
 		boolean isEmpty = true;
-		for(int i = 0; i < stack.length; i++){
-			if(stack[i]!= null){
+		for(int i = 0; i < queue.length; i++){
+			if(queue[i]!= null){
 				isEmpty = false;
 			}
 		}
 		
 		if(isEmpty){
-			initStack();
+			initQueue();
 		}
 		
 	}
 	
-	private void initStack(){
+	private void initQueue(){
 		
-		for(int i=0; i<stack.length;i++){
-			stack[i] = new StackRecord();
+		for(int i=0; i<queue.length;i++){
+			queue[i] = new QueueRecord();
 		}		
 		
-		stack[0].str = "***";
-		stack[1].str = (char)firstChar+stack[0].str;
+		queue[0].str = "***";
+		queue[1].str = (char)firstChar+queue[0].str;
 		
-		for (int i = 2; i < stack.length; i++){
-			stack[i].str = this.createNextString(stack[i-1].str);
+		for (int i = 2; i < queue.length; i++){
+			queue[i].str = this.createNextString(queue[i-1].str);
 		}
 	}
 	
 	
-	public StackRecord[] getTestedStrings(){		
-		return this.stack;		
+	public QueueRecord[] getTestedStrings(){		
+		return this.queue;		
 	}
 	
 	public void setStringInArray(String newString, int position){		
-		if(position < stack.length && position >= 0){			
-			this.stack[position].str = newString;			
+		if(position < queue.length && position >= 0){			
+			this.queue[position].str = newString;			
 		}		
 	}
 	
 	public void setStartedInArray(boolean isStarted, int position){		
-		if(position < stack.length && position >= 0){			
-			this.stack[position].isStarted = isStarted;			
+		if(position < queue.length && position >= 0){			
+			this.queue[position].isStarted = isStarted;			
 		}		
 	}
 	
 	public void setFinishedInArray(boolean isFinished, int position){		
-		if(position < stack.length && position >= 0){			
-			this.stack[position].isFinished = isFinished;			
+		if(position < queue.length && position >= 0){			
+			this.queue[position].isFinished = isFinished;			
 		}		
 	}
 	
@@ -189,7 +191,7 @@ public class Leader extends Thread{
 	
 	/**
 	 * when some of the elements in the data structure are checked the whole
-	 * data structure is rebuilt, checked elements are deleted and the stack is
+	 * data structure is rebuilt, checked elements are deleted and the queue is
 	 * re-populated started from the last valid element in the list
 	 */
 	public synchronized void reconstructParsedString(int computedElements){
@@ -200,43 +202,43 @@ public class Leader extends Thread{
 			 * firstly the array is sorted and the already checked elements are put
 			 * at the end
 			 */
-			Arrays.sort(stack, new ParsedStringCoparator());
+			Arrays.sort(queue, new ParsedStringCoparator());
 			
 			/*
-			 * then starting form the last valid element the stack is repopulated
+			 * then starting form the last valid element the queue is repopulated
 			 */
-			for(int i = stack.length - computedElements; i < stack.length; i++){
-				stack[i].str = "";
-				stack[i].checkString = null;
-				stack[i].isStarted = false;
-				stack[i].isFinished = false;
-				stack[i].ipComputing = null;
-				stack[i].portComputing = 0;
-				stack[i].str=createNextString(stack[i-1].str);
+			for(int i = queue.length - computedElements; i < queue.length; i++){
+				queue[i].str = "";
+				queue[i].checkString = null;
+				queue[i].isStarted = false;
+				queue[i].isFinished = false;
+				queue[i].ipComputing = null;
+				queue[i].portComputing = 0;
+				queue[i].str=createNextString(queue[i-1].str);
 			}
 		}
 		
 	}
 	
 	
-	public void sendStringToNode(StackRecord sRecord, RoutingRecord rr){
+	public void sendStringToNode(QueueRecord qRecord, RoutingRecord rr){
 		
 		try {
 			
 			//generate a String for the liar detection and save it
-			String checkingString = sRecord.str.substring(0,1+sRecord.str.length()-freeCharacters);
+			String checkingString = qRecord.str.substring(0,1+qRecord.str.length()-freeCharacters);
 			
 			for(int i = 0; i < freeCharacters-1; i++){
 				String random =String.format("%c", (char)(firstChar + (Math.random()*(1+lastChar-firstChar))));
 				checkingString = checkingString.concat(random);
 			}
 			
-			sRecord.checkString = checkingString;
+			qRecord.checkString = checkingString;
 			
-			System.out.printf("Leader: sending %s - %s to %d\n", checkingString, sRecord.str, rr.port);
+			System.out.printf("Leader: sending %s - %s to %d\n", checkingString, qRecord.str, rr.port);
 			
 			//send the string to the node
-			SendingStrings ss = new SendingStrings(hash, StringChecker.encode(checkingString), sRecord.str, freeCharacters, firstChar, lastChar);
+			SendingStrings ss = new SendingStrings(hash.toString(), StringChecker.encode(checkingString), qRecord.str, freeCharacters, firstChar, lastChar);
 			
 			ObjectOutputStream out = new ObjectOutputStream(rr.socket.getOutputStream());
 			out.writeObject(ss);
@@ -250,40 +252,46 @@ public class Leader extends Thread{
 	}
 	
 	
-	public static void checkSolution(String[] result, ArrayList <RoutingRecord> rTable, StackRecord[] aStack , boolean leader[]){
+	public static void checkSolution(String[] result, ArrayList <RoutingRecord> rTable, QueueRecord[] aQueue , boolean leader[], StringBuffer solution){
 		
 		//check which routing record should be updated
 		
-		//for each record in the stack check whether its ip is equal to the given ip 
-		for(StackRecord sRecord : aStack){
-			if(sRecord.ipComputing != null && sRecord.ipComputing.equals(result[2]) && sRecord.portComputing == Integer.parseInt(result[3])){
+		//for each record in the queue check whether its ip is equal to the given ip 
+		for(QueueRecord qRecord : aQueue){
+			if(qRecord.ipComputing != null && qRecord.ipComputing.equals(result[2]) && qRecord.portComputing == Integer.parseInt(result[3])){
 				
 				
-				if(!sRecord.isFinished && result[1].equals(sRecord.checkString)){
-					System.out.printf("%s:%s good boy!! %s == %s!!", result[2], result[3], result[1], sRecord.checkString);
+				if(!qRecord.isFinished && result[1].equals(qRecord.checkString)){
+					System.out.printf("%s:%s good boy!! %s == %s!!", result[2], result[3], result[1], qRecord.checkString);
 					
 					//if there is a solution stop everything
 					if(result[0] != null){
 						System.out.printf("The key is: %s\n", result[0]);
+						if(solution != null)
+							solution.replace(0, solution.length(), result[0]);
+						else
+							System.out.println("dio poi!!");
 						leader[0]= false;
 					}
 					
 					
-					//set the stackrecord as computed and the node as non calculating
+					//set the queuerecord as computed and the node as non calculating
 					for(RoutingRecord rr : rTable){
 						if(rr.IP.equals(result[2]) && rr.port == Integer.parseInt(result[3])){
 							
 							rr.isComputing = false;
-							sRecord.isFinished = true;
+							qRecord.isFinished = true;
 							
 							System.out.printf("%s:%d ready for a new job\n", rr.IP, rr.port);
 						}
 						
 					}
 					
-					
-				} else if(!sRecord.isFinished && !result[1].equals(sRecord.checkString)){
-					System.out.printf("%s:%s you fucking liar you gave me %s instead of %s!!\n", result[2], result[3], result[1], sRecord.checkString);
+				//if the node is a liar it will set as working and no other job 
+				//will be assigned to it, and the work it was computing set as not started
+				} else if(!qRecord.isFinished && !result[1].equals(qRecord.checkString)){
+					System.out.printf("%s:%s liar you gave me %s instead of %s!!\n", result[2], result[3], result[1], qRecord.checkString);
+					qRecord.isStarted = false;
 				}
 				
 			}
@@ -301,15 +309,16 @@ public class Leader extends Thread{
 				
 				if(!rr.isComputing && !rr.isMe){
 					
-					synchronized(stack){
+					synchronized(queue){
 						
-						for(StackRecord sRecord : stack){
-							if(!sRecord.isStarted){
+						for(int j = 0; j < queue.length; j++){
+							QueueRecord qRecord = queue[j];
+							if(!qRecord.isStarted && j!=(queue.length-1)){
 								
-								sendStringToNode(sRecord, rr);
-								sRecord.isStarted = true;
-								sRecord.ipComputing = rr.IP;
-								sRecord.portComputing = rr.port;
+								sendStringToNode(qRecord, rr);
+								qRecord.isStarted = true;
+								qRecord.ipComputing = rr.IP;
+								qRecord.portComputing = rr.port;
 
 								rr.isComputing = true;
 								break;
@@ -331,29 +340,54 @@ public class Leader extends Thread{
 			
 			
 			/*
-			 * reconstruct the stack if the number of computed elements id > than
+			 * reconstruct the queue if the number of computed elements id > than
 			 * the half of the length
 			 */
-			synchronized(stack){
+			
+			QueueRecord[] queueCopy;
+			
+			synchronized(queue){
 				
 				int count = 0;
 				
-				for(StackRecord ps : stack){
+				for(QueueRecord ps : queue){
 					if(ps.isFinished){
 						count++;
 					}
 				}
 				
-				if (count > stack.length/2){
+				if (count > queue.length/2){
 					reconstructParsedString(count);
+					queueCopy = queue.clone();
+					
+					// clears the queue copy and broadcasts it
+					for(int i = 0; i < queueCopy.length; i++){
+						queueCopy[i].isFinished = false;
+						queueCopy[i].isFinished = false;
+						queueCopy[i].ipComputing = null;
+						queueCopy[i].portComputing = 0;
+					}
+			
+					Node.broadcastObject(routingTable, queueCopy);
 				}
 				
-			}//synch end	
+				
+				
+			}//synch end
+			
+			
+			
 		
 		}while(hasLeader[0]);
 		
-		System.out.println("key decoded");
+		System.out.println("key decoded, it was: " + hash.toString());
 		
+		//clear the queue, send it and set it as null
+		for(int i = 0; i < queue.length; i++){
+			queue[i] = null;
+		}
+		Node.broadcastObject(routingTable, queue);
+		queue = null;
 	}
 	
 

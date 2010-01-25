@@ -10,7 +10,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Scanner;
 
-import cracker.StackRecord;
+import cracker.QueueRecord;
+import cracker.StringChecker;
 
 
 
@@ -33,7 +34,7 @@ public class Node {
 		
 	private ArrayList <RoutingRecord> routingTable;
 	
-	private StackRecord[] stack;
+	private QueueRecord[] queue;
 
 
 	public Node(String ipAddress, int portAddress){
@@ -44,7 +45,7 @@ public class Node {
 		hasLeader[0] = false;
 		
 		
-		myIP = Node.getOwnIP("wlan0");
+		myIP = Node.getOwnIP();
 		myPort = portAddress;
 		
 		connectionIP = ipAddress;
@@ -52,33 +53,48 @@ public class Node {
 		out = null;
 		in = null;
 		
+		hashval = new StringBuffer();
+		
 		routingTable = new ArrayList <RoutingRecord>();
 		
 		routingTable.add(new RoutingRecord(myIP, myPort, RoutingRecord.IS_ME));
 		
-		stack = new StackRecord[64];
+		queue = new QueueRecord[64];
 		
 	}
 		
 	/**
-	 * The method returns the ip of the passed interface
+	 * The method returns the ip of either wlan0 or eth0
 	 * 
-	 * @param interfaceName
 	 * @return
 	 */
-	public static String getOwnIP(String interfaceName){
+	public static String getOwnIP(){
+		
+		String interfaceName = "";
+		
     	String ip = "";
     	NetworkInterface net = null;
 		try {
+			interfaceName = "eth0";
 			net = NetworkInterface.getByName(interfaceName);
+			if(net == null){
+				interfaceName = "wlan0";
+				net = NetworkInterface.getByName(interfaceName);
+			}
+				
 		} catch (SocketException e) {
-			System.out.println("no IP for the passed interface");
+			System.out.println("no IP for " + interfaceName);
 			e.printStackTrace();
 		}
-    	Enumeration<InetAddress> ipadds = net.getInetAddresses();
-        while(ipadds.hasMoreElements()){
-        	ip = ipadds.nextElement().toString().substring(1);
-        }
+		if(net != null){
+	    	Enumeration<InetAddress> ipadds = net.getInetAddresses();
+	        while(ipadds.hasMoreElements()){
+	        	ip = ipadds.nextElement().toString().substring(1);
+	        }
+		} else {
+			System.out.println("no IP for the passed interface retry");
+			System.exit(0);
+		}
         return ip;
     }
 	
@@ -183,7 +199,7 @@ public class Node {
 			this.addNewRecords(cleanTable(readObject));
 			
 			//An input receiver will be started and will listen from the connected node 
-			new InputReceiver(ipAddress,portAddress,mySocket,routingTable,isElecting, hasLeader, hashval, stack).start();
+			new InputReceiver(ipAddress,portAddress,mySocket,routingTable,isElecting, hasLeader, hashval, queue).start();
 			
 //			System.out.println("Node: connected to " + portAddress);
 			
@@ -219,7 +235,7 @@ public class Node {
 		}		
 		
 		//the node is ready to receive connections from other nodes
-		Runnable runnable = new ConnectionsReceiver(this.myPort, this.routingTable, isElecting, hasLeader, hashval, stack);
+		Runnable runnable = new ConnectionsReceiver(this.myPort, this.routingTable, isElecting, hasLeader, hashval, queue);
 		Thread thread = new Thread(runnable); 
 		thread.start();
 		
@@ -230,7 +246,7 @@ public class Node {
 		
 		if(!isElecting[0] && !hasLeader[0]){
 		
-			hashval = new StringBuffer(hash);
+			hashval.replace(0, hashval.length(), hash);
 			isElecting[0] = true;
 			try {
 				for(RoutingRecord rr : routingTable){
@@ -246,7 +262,7 @@ public class Node {
 			
 			isElecting[0] = true;
 			hasLeader[0] = false;
-			Election el = new Election(routingTable, hashval, isElecting, hasLeader, stack);
+			Election el = new Election(routingTable, hashval, isElecting, hasLeader, queue);
 			el.start();
 			
 			System.out.println("Election started");
@@ -261,6 +277,28 @@ public class Node {
 	
 	
 	
+	public static void broadcastObject(ArrayList<RoutingRecord> rTable, Object toSend){		
+		
+		//the method sends the passed object to all the connected nodes
+		
+		ObjectOutputStream out;
+		
+		try {
+			for(RoutingRecord rr : rTable){
+				if(!rr.isMe){
+					out = new ObjectOutputStream(rr.socket.getOutputStream());
+					out.writeObject(toSend);
+					out.flush();
+				}			
+			}
+		} catch (SocketException e) {
+			System.out.printf("Node: node disconnected\n");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
 	public static void main(String[] args){
 		Scanner sc = new Scanner(System.in);
 		
@@ -281,6 +319,8 @@ public class Node {
 			if(inputString.equals("exit")){
 				System.exit(0);
 			}
+			
+			inputString = StringChecker.encode(inputString);
 			
 			node.startElection(inputString);
 		}while(true);

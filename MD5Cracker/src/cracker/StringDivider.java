@@ -10,12 +10,12 @@ public class StringDivider {
 	//have to be equal to the number of * + 1
 	public static final int FREE_CHARACTERS = 4;
 	
-	private StackRecord[] testedStrings = new StackRecord[PARSED_STRING_LENGTH];
+	private QueueRecord[] testedStrings = new QueueRecord[PARSED_STRING_LENGTH];
 	
 	public StringDivider(){
 		
 		for(int i=0; i<PARSED_STRING_LENGTH;i++){
-			testedStrings[i] = new StackRecord();
+			testedStrings[i] = new QueueRecord();
 		}		
 		
 		testedStrings[0].str = "***";
@@ -28,7 +28,7 @@ public class StringDivider {
 	}
 	
 	
-	public StackRecord[] getTestedStrings(){		
+	public QueueRecord[] getTestedStrings(){		
 		return this.testedStrings;		
 	}
 	
@@ -139,7 +139,7 @@ public class StringDivider {
 	
 	/**
 	 * when some of the elements in the data structure are checked the whole
-	 * data structure is rebuilt, checked elements are deleted and the stack is
+	 * data structure is rebuilt, checked elements are deleted and the queue is
 	 * re-populated started from the last valid element in the list
 	 */
 	public void reconstructParsedString(int computedElements){
@@ -153,7 +153,7 @@ public class StringDivider {
 			Arrays.sort(testedStrings, new ParsedStringCoparator());
 			
 			/*
-			 * then starting form the last valid element the stack is repopulated
+			 * then starting form the last valid element the queue is repopulated
 			 */
 			for(int i = PARSED_STRING_LENGTH - computedElements; i < PARSED_STRING_LENGTH; i++){
 				testedStrings[i].str = "";
