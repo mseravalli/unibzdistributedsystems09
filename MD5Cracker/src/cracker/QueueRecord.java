@@ -1,9 +1,14 @@
 package cracker;
+import java.io.Serializable;
 import java.util.Comparator;
 
 
-public class StackRecord{
+public class QueueRecord implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3802535699132233481L;
 	public String str;
 	public boolean isStarted;
 	public boolean isFinished;
@@ -12,11 +17,14 @@ public class StackRecord{
 	public String ipComputing;
 	public int portComputing;
 	
-	public StackRecord(){
+	public QueueRecord(){
 		str = null;
 		isStarted = false;
 		isFinished = false;
 		checkString = null;
+		
+		ipComputing = null;
+		portComputing = 0;
 	}
 	
 }
@@ -27,16 +35,16 @@ class ParsedStringCoparator implements Comparator<Object>{
 
 		//parameter are of type Object, so we have to downcast it to StringCoparator objects
 	
-		String firstStr = ( (StackRecord) str1 ).str;
+		String firstStr = ( (QueueRecord) str1 ).str;
 	
-		String secondStr = ( (StackRecord) str2 ).str;
+		String secondStr = ( (QueueRecord) str2 ).str;
 		
-		boolean isFisrtStarted = ( (StackRecord) str1 ).isStarted;
-		boolean isFisrtFinished = ( (StackRecord) str1 ).isFinished;
+		boolean isFisrtStarted = ( (QueueRecord) str1 ).isStarted;
+		boolean isFisrtFinished = ( (QueueRecord) str1 ).isFinished;
 		boolean isFirstComputed = isFisrtStarted && isFisrtFinished;
 		
-		boolean isSecondStarted = ( (StackRecord) str2 ).isStarted;		
-		boolean isSecondFinished = ( (StackRecord) str2 ).isFinished;
+		boolean isSecondStarted = ( (QueueRecord) str2 ).isStarted;		
+		boolean isSecondFinished = ( (QueueRecord) str2 ).isFinished;
 		boolean isSecondComputed = isSecondStarted && isSecondFinished;
 		
 	

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 import cracker.Leader;
 import cracker.SendingStrings;
-import cracker.StackRecord;
+import cracker.QueueRecord;
 import cracker.StringChecker;
 
 
@@ -28,9 +28,9 @@ public class InputReceiver extends Thread {
 	private ObjectInputStream in;
 	private ArrayList <RoutingRecord> routingTable;
 	
-	private StackRecord[] stack;
+	private QueueRecord[] queue;
 	
-	public InputReceiver(String addr, int portNum, Socket aSocket, ArrayList <RoutingRecord> rTable, boolean[] electing, boolean[] working, StringBuffer hash, StackRecord[] aStack){
+	public InputReceiver(String addr, int portNum, Socket aSocket, ArrayList <RoutingRecord> rTable, boolean[] electing, boolean[] working, StringBuffer hash, QueueRecord[] aQueue){
 		
 		isElecting = electing;
 		hasLeader = working;
@@ -42,7 +42,7 @@ public class InputReceiver extends Thread {
 		in = null;
 		routingTable = rTable;
 		
-		stack = aStack;
+		queue = aQueue;
 		
 	}
 	
@@ -51,10 +51,10 @@ public class InputReceiver extends Thread {
 		//part for election
 		isElecting[0] = true;
 		System.out.println("election started!!");
-		hashval = new StringBuffer(toParse);
+		hashval.replace(0, hashval.length(), toParse);
 		isElecting[0] = true;
 		hasLeader[0] = false;
-		Election el = new Election(routingTable, hashval, isElecting,hasLeader, stack);
+		Election el = new Election(routingTable, hashval, isElecting,hasLeader, queue);
 		el.start();
 			
 		
@@ -71,6 +71,26 @@ public class InputReceiver extends Thread {
 			
 		}
 		
+	}
+	
+	
+	
+	public void updateQueue (QueueRecord[] recQueue){
+		
+		boolean isEmpty = true;
+		
+		for(int i = 0; i < recQueue.length; i++){
+			if(recQueue[i] != null){
+				isEmpty = false;
+			}
+		}
+		
+		if(isEmpty){
+			System.out.println("a key has been found!! I'm free!!!");
+			hasLeader[0] = false;
+		}
+		
+		this.queue = recQueue;
 	}
 	
 	
@@ -124,7 +144,10 @@ public class InputReceiver extends Thread {
 					checkRange(ss.hash,ss.checkingHash,ss.prefix,ss.firstChar,ss.lastChar,ss.freeChars);
 				} else if(o.getClass().equals(String[].class)){
 //					System.out.printf("received a solution\n");
-					Leader.checkSolution((String[])o, routingTable, stack, hasLeader);
+					Leader.checkSolution((String[])o, routingTable, queue, hasLeader, hashval);
+				} else if(o.getClass().equals(QueueRecord[].class)){
+					System.out.printf("received a complete queue\n");
+					this.updateQueue((QueueRecord[])o);
 				}
 				
 		    	
@@ -147,7 +170,7 @@ public class InputReceiver extends Thread {
 			if(routingTable.get(position).isLeader){
 				routingTable.remove(position);
 				
-				new Election(routingTable, hashval, isElecting, hasLeader, stack).start();				
+				new Election(routingTable, hashval, isElecting, hasLeader, queue).start();				
 			} else {
 				routingTable.remove(position);
 			}

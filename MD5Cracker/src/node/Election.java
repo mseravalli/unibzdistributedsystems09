@@ -1,21 +1,16 @@
 package node;
 
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.net.SocketException;
 import java.util.ArrayList;
 
 import cracker.Leader;
-import cracker.StackRecord;
+import cracker.QueueRecord;
 
 
 public class Election extends Thread{
 	
 
 	private ArrayList<RoutingRecord> routingTable;
-	
-	private ObjectOutputStream out;
-		
+			
 	private RoutingRecord winner;
 	
 	private StringBuffer hashval;
@@ -24,9 +19,9 @@ public class Election extends Thread{
 	
 	private boolean[] hasLeader;
 	
-	private StackRecord[] stack;
+	private QueueRecord[] queue;
 	
-	public Election(ArrayList<RoutingRecord> rTable, StringBuffer hash, boolean[] iE, boolean[] hL, StackRecord[] aStack){
+	public Election(ArrayList<RoutingRecord> rTable, StringBuffer hash, boolean[] iE, boolean[] hL, QueueRecord[] aQueue){
 		
 		isElecting = iE;		
 		hasLeader = hL;
@@ -35,7 +30,7 @@ public class Election extends Thread{
 		
 		routingTable = rTable;
 		
-		stack = aStack;
+		queue = aQueue;
 	}
 	
 	public RoutingRecord getWinner(){
@@ -59,26 +54,6 @@ public class Election extends Thread{
 		}
 		
 		return new RoutingRecord(address, port, RoutingRecord.IS_NOT_ME, id);
-		
-	}
-	
-	
-	public void broadcastRoutingRecord(RoutingRecord rrToSend){		
-		
-		//the method sends the id to all the connected nodes
-		try {
-			for(RoutingRecord rr : routingTable){
-				if(!rr.isMe){
-					out = new ObjectOutputStream(rr.socket.getOutputStream());
-					out.writeObject(rrToSend);
-					out.flush();
-				}			
-			}
-		} catch (SocketException e) {
-			System.out.printf("Election: node disconnected\n");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		
 	}
 	
@@ -145,7 +120,7 @@ public class Election extends Thread{
 				System.out.println("broadcasting id");
 				RoutingRecord toSend = this.createNewID();
 				
-				broadcastRoutingRecord(toSend);
+				Node.broadcastObject(routingTable, toSend);
 				
 				try {
 					Thread.sleep(500);
@@ -188,7 +163,7 @@ public class Election extends Thread{
 		if(winner.isMe){
 			System.out.println("I am the leader");
 //			public Leader(String hashString, int first, int last, int freeChars, boolean[] computing){
-			new Leader(routingTable, hashval.toString(), 65, 122, 4, hasLeader, stack).start();
+			new Leader(routingTable, hashval, 65, 68, 4, hasLeader, queue).start();
 		}
 
 		
