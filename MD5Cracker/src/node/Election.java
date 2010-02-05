@@ -39,7 +39,7 @@ public class Election extends Thread{
 	
 	
 	public RoutingRecord createNewID(){
-		int id = (int) (Math.random()* (routingTable.size()*routingTable.size()*routingTable.size()));
+		int id = (int) (Math.random()* 2);//(routingTable.size()*routingTable.size()*routingTable.size()));
 		
 		String address = "";
 		int port = -1;

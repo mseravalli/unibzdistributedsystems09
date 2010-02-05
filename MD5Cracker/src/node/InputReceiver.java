@@ -46,15 +46,15 @@ public class InputReceiver extends Thread {
 		
 	}
 	
-	public void checkString(String toParse){
+	public void setHash(String passedHash){
 		
 		//part for election
 		isElecting[0] = true;
 		System.out.println("election started!!");
-		hashval.replace(0, hashval.length(), toParse);
+		hashval.replace(0, hashval.length(), passedHash);
 		isElecting[0] = true;
 		hasLeader[0] = false;
-		Election el = new Election(routingTable, hashval, isElecting,hasLeader, queue);
+		Election el = new Election(routingTable, hashval, isElecting, hasLeader, queue);
 		el.start();
 			
 		
@@ -63,12 +63,14 @@ public class InputReceiver extends Thread {
 	
 	public void updateTable(RoutingRecord record){
 		
-		for(RoutingRecord rr : routingTable){
-			
-			if(rr.IP.equals(record.IP) && rr.port == record.port){
-				rr.ID = record.ID;
+		synchronized(this.routingTable){		
+			for(RoutingRecord rr : routingTable){
+				
+				if(rr.IP.equals(record.IP) && rr.port == record.port){
+					rr.ID = record.ID;
+				}
+				
 			}
-			
 		}
 		
 	}
@@ -88,6 +90,7 @@ public class InputReceiver extends Thread {
 		if(isEmpty){
 			System.out.println("a key has been found!! I'm free!!!");
 			hasLeader[0] = false;
+			isElecting[0] = false;
 		}
 		
 		this.queue = recQueue;
@@ -133,7 +136,7 @@ public class InputReceiver extends Thread {
 				//if the received object is a string
 				if(o.getClass().equals(String.class)){
 					
-					checkString((String)o);
+					setHash((String)o);
 				
 				//if the received object is a routing record
 				} else if (o.getClass().equals(RoutingRecord.class)){
