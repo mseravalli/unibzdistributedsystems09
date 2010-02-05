@@ -262,7 +262,7 @@ public class Leader extends Thread{
 				
 				
 				if(!qRecord.isFinished && result[1].equals(qRecord.checkString)){
-					System.out.printf("%s:%s good boy!! %s == %s!!", result[2], result[3], result[1], qRecord.checkString);
+					System.out.printf("%s:%s not liar %s == %s!!", result[2], result[3], result[1], qRecord.checkString);
 					
 					//if there is a solution stop everything
 					if(result[0] != null){
@@ -270,7 +270,7 @@ public class Leader extends Thread{
 						if(solution != null)
 							solution.replace(0, solution.length(), result[0]);
 						else
-							System.out.println("dio poi!!");
+							System.out.println("ERROR");
 						leader[0]= false;
 					}
 					
@@ -282,7 +282,7 @@ public class Leader extends Thread{
 							rr.isComputing = false;
 							qRecord.isFinished = true;
 							
-							System.out.printf("%s:%d ready for a new job\n", rr.IP, rr.port);
+							System.out.printf(" ready for a new job\n");
 						}
 						
 					}

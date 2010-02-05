@@ -247,18 +247,20 @@ public class Node {
 		if(!isElecting[0] && !hasLeader[0]){
 		
 			hashval.replace(0, hashval.length(), hash);
-			isElecting[0] = true;
-			try {
-				for(RoutingRecord rr : routingTable){
-					if(!rr.isMe){
-						out = new ObjectOutputStream( rr.socket.getOutputStream());
-						out.writeObject(hashval.toString());
-						out.flush();
-					}			
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+
+			broadcastObject(routingTable, hash);
+			
+//			try {
+//				for(RoutingRecord rr : routingTable){
+//					if(!rr.isMe){
+//						out = new ObjectOutputStream( rr.socket.getOutputStream());
+//						out.writeObject(hashval.toString());
+//						out.flush();
+//					}			
+//				}
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
 			
 			isElecting[0] = true;
 			hasLeader[0] = false;
