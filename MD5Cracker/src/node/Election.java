@@ -7,23 +7,15 @@ import cracker.QueueRecord;
 
 
 public class Election extends Thread{
-	
-
-//	private ArrayList<RoutingRecord> routingTable;
 			
 	private RoutingRecord winner;
 	
 	private StringBuffer hashval;
 	
-//	private QueueRecord[] queue;
-	
 	public Election(StringBuffer hash){
 		
 		hashval = hash;
 		
-//		routingTable = rTable;
-		
-//		queue = aQueue;
 	}
 	
 	public RoutingRecord getWinner(){

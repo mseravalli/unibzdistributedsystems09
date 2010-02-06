@@ -16,25 +16,6 @@ public class Leader extends Thread{
 	//have to be equal to the number of * + 1
 	private int freeCharacters;
 	
-//	private QueueRecord[] queue;
-	
-//	private ArrayList <RoutingRecord> routingTable;
-	
-//	public Leader(ArrayList <RoutingRecord> rTable, String hashString, int first, int last, int freeChars, boolean[] leader){
-//		
-//		routingTable = rTable;
-//		
-//		hash = hashString;
-//		
-//		firstChar = first;
-//		lastChar = last;
-//		freeCharacters = freeChars;
-//		
-//		hasLeader = leader;
-//		
-//		initStack(20);
-//		
-//	}
 	
 	public Leader(StringBuffer hashString, int first, int last, int freeChars){
 		
@@ -244,12 +225,12 @@ public class Leader extends Thread{
 	}
 	
 	
-	public static void checkSolution(String[] result, QueueRecord[] aQueue , StringBuffer solution){
+	public static void checkSolution(String[] result, StringBuffer solution){
 		
 		//check which routing record should be updated
 		
 		//for each record in the queue check whether its ip is equal to the given ip
-		for(QueueRecord qRecord : aQueue){
+		for(QueueRecord qRecord : Node.getQueue()){
 			if(qRecord!= null && qRecord.ipComputing != null && qRecord.ipComputing.equals(result[2]) && qRecord.portComputing == Integer.parseInt(result[3])){
 				
 				
@@ -263,7 +244,6 @@ public class Leader extends Thread{
 							solution.replace(0, solution.length(), result[0]);
 						else
 							System.out.println("ERROR");
-//						Node.hasLeader= false;
 						Node.setHasLeader(false);
 					}
 					
@@ -385,6 +365,7 @@ public class Leader extends Thread{
 		//set every routing record as non Leader
 		for(RoutingRecord rr : Node.getRoutingTable()){
 			rr.isLeader = false;
+			rr.isComputing = false;
 		}
 		Node.broadcastObject(Node.getRoutingTable(), Node.getQueue());
 //		Node.setQueue(null);

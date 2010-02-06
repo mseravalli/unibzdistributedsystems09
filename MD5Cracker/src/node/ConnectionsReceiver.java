@@ -21,10 +21,6 @@ public class ConnectionsReceiver implements Runnable {
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
 	
-	private ArrayList <RoutingRecord> routingTable;
-	
-	private QueueRecord[] queue;
-	
 	
 	/**
 	 * 
@@ -32,7 +28,7 @@ public class ConnectionsReceiver implements Runnable {
 	 * @param portAddress
 	 * @param hashval 
 	 */
-	public ConnectionsReceiver(int portAddress, ArrayList <RoutingRecord> rTable, StringBuffer hash, QueueRecord[] aQueue){
+	public ConnectionsReceiver(int portAddress, StringBuffer hash){
 		
 		hashval = hash;
 		this.port = portAddress;
@@ -42,9 +38,6 @@ public class ConnectionsReceiver implements Runnable {
 		this.out = null;
 		this.in = null;
 		
-		this.routingTable = rTable;
-		
-		queue = aQueue;
 	}
 	
 	
@@ -77,9 +70,9 @@ public class ConnectionsReceiver implements Runnable {
 				out = new ObjectOutputStream(incomingSocket.getOutputStream());
 				
 				HelloPacket packet = (HelloPacket) in.readObject();
-				routingTable.add(new RoutingRecord(packet.IP, packet.port, RoutingRecord.IS_NOT_ME,Node.NULL_ID,incomingSocket));
+				Node.getRoutingTable().add(new RoutingRecord(packet.IP, packet.port, RoutingRecord.IS_NOT_ME,Node.NULL_ID,incomingSocket));
 				
-				ArrayList <RoutingRecord> sendTable = copyRoutingTable(this.routingTable);				
+				ArrayList <RoutingRecord> sendTable = copyRoutingTable(Node.getRoutingTable());				
 							
 				out.writeObject(sendTable);
 				out.flush();
@@ -92,7 +85,7 @@ public class ConnectionsReceiver implements Runnable {
 //						System.out.printf("%s:%d %b %o\n", rr.IP, rr.port, rr.isMe, rr.socket);
 //				}
 				
-				InputReceiver receiver = new InputReceiver(packet.IP, packet.port, incomingSocket, hashval, queue);
+				InputReceiver receiver = new InputReceiver(packet.IP, packet.port, incomingSocket, hashval);
 				receiver.start();
 								
 			}
