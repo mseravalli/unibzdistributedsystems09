@@ -1,7 +1,6 @@
 package node;
 
 import java.io.*;
-import java.io.ObjectInputStream.GetField;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.Socket;
@@ -220,7 +219,7 @@ public class Node {
 			if(isPresent){
 				routingTable.get(position).socket = mySocket;
 			}else {
-				this.routingTable.add(new RoutingRecord(ipAddress, portAddress, RoutingRecord.IS_NOT_ME, Node.NULL_ID, mySocket));
+				routingTable.add(new RoutingRecord(ipAddress, portAddress, RoutingRecord.IS_NOT_ME, Node.NULL_ID, mySocket));
 			}
 			
 			
@@ -230,7 +229,7 @@ public class Node {
 			this.addNewRecords(cleanTable(readObject));
 			
 			//An input receiver will be started and will listen from the connected node 
-			new InputReceiver(ipAddress,portAddress,mySocket, hashval, queue).start();
+			new InputReceiver(ipAddress,portAddress,mySocket, hashval).start();
 			
 //			System.out.println("Node: connected to " + portAddress);
 			
@@ -266,7 +265,7 @@ public class Node {
 		}		
 		
 		//the node is ready to receive connections from other nodes
-		Runnable runnable = new ConnectionsReceiver(this.myPort, this.routingTable, hashval, queue);
+		Runnable runnable = new ConnectionsReceiver(this.myPort, hashval);
 		Thread thread = new Thread(runnable); 
 		thread.start();
 		
@@ -280,19 +279,7 @@ public class Node {
 			hashval.replace(0, hashval.length(), hash);
 
 			broadcastObject(routingTable, hash);
-			
-//			try {
-//				for(RoutingRecord rr : routingTable){
-//					if(!rr.isMe){
-//						out = new ObjectOutputStream( rr.socket.getOutputStream());
-//						out.writeObject(hashval.toString());
-//						out.flush();
-//					}			
-//				}
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-			
+						
 			isElecting = true;
 			hasLeader = false;
 			Election el = new Election(hashval);
@@ -344,11 +331,14 @@ public class Node {
 		node.startNode();
 		
 		String inputString = "exit";
+		
 		//Ciao == 16272a5dd83c63010e9f67977940e871
 		System.out.println("Insert the hash to decode");
 		do{
 			
 			inputString = sc.next();
+			
+			System.out.println("insert the first char in the range");			
 			
 			if(inputString.equals("exit")){
 				System.exit(0);

@@ -23,31 +23,23 @@ public class InputReceiver extends Thread {
 	private Socket socket;
 	
 	private ObjectInputStream in;
-//	private ArrayList <RoutingRecord> routingTable;
 	
-	private QueueRecord[] queue;
-	
-	public InputReceiver(String addr, int portNum, Socket aSocket, StringBuffer hash, QueueRecord[] aQueue){
+	public InputReceiver(String addr, int portNum, Socket aSocket, StringBuffer hash){
 		
 		hashval = hash;
 		ip = addr;
 		port = portNum;
 		socket = aSocket;
 		in = null;
-//		routingTable = rTable;
-		
-		queue = aQueue;
 		
 	}
 	
 	public void setHash(String passedHash){
 		
 		//part for election
-//		Node.setIsElecting(true);
 		Node.setIsElecting(true);
 		System.out.println("election started!!");
 		hashval.replace(0, hashval.length(), passedHash);
-//		Node.hasLeader = false;
 		Node.setHasLeader(false);
 		Election el = new Election(hashval);
 		el.start();
@@ -89,11 +81,12 @@ public class InputReceiver extends Thread {
 			
 			for(RoutingRecord rr : Node.getRoutingTable()){
 				rr.isLeader = false;
+				rr.isComputing = false;
 			}
 			
 		}
 		
-		this.queue = recQueue;
+		Node.setQueue(recQueue);
 	}
 	
 	
@@ -147,8 +140,8 @@ public class InputReceiver extends Thread {
 					SendingStrings ss = (SendingStrings) o;
 					checkRange(ss.hash,ss.checkingHash,ss.prefix,ss.firstChar,ss.lastChar,ss.freeChars);
 				} else if(o.getClass().equals(String[].class)){
-					System.out.printf("received a solution\n");
-					Leader.checkSolution((String[])o, queue, hashval);
+//					System.out.printf("received a solution\n");
+					Leader.checkSolution((String[])o, hashval);
 				} else if(o.getClass().equals(QueueRecord[].class)){
 					this.updateQueue((QueueRecord[])o);
 				}
