@@ -25,7 +25,7 @@ public class Leader extends Thread{
 		hash = hashString;
 		
 		firstChar = (int)'A';
-		lastChar = (int)'Z';
+		lastChar = (int)'z';
 		freeCharacters = 4;
 		
 		boolean isEmpty = true;
