@@ -16,10 +16,9 @@ public class Leader extends Thread{
 	//have to be equal to the number of * + 1
 	private int freeCharacters;
 	
-	private QueueRecord[] queue;
+//	private QueueRecord[] queue;
 	
-	private ArrayList <RoutingRecord> routingTable;
-	private boolean[] hasLeader;
+//	private ArrayList <RoutingRecord> routingTable;
 	
 //	public Leader(ArrayList <RoutingRecord> rTable, String hashString, int first, int last, int freeChars, boolean[] leader){
 //		
@@ -37,10 +36,7 @@ public class Leader extends Thread{
 //		
 //	}
 	
-	public Leader(ArrayList <RoutingRecord> rTable, StringBuffer hashString, int first, int last, int freeChars, boolean[] leader, QueueRecord[] theQueue){
-		
-		
-		routingTable = rTable;
+	public Leader(StringBuffer hashString, int first, int last, int freeChars){
 		
 		hash = hashString;
 		
@@ -48,13 +44,9 @@ public class Leader extends Thread{
 		lastChar = last;
 		freeCharacters = freeChars;
 		
-		hasLeader = leader;
-		
-		queue = theQueue;
-		
 		boolean isEmpty = true;
-		for(int i = 0; i < queue.length; i++){
-			if(queue[i]!= null){
+		for(int i = 0; i < Node.getQueue().length; i++){
+			if(Node.getQueue()[i]!= null){
 				isEmpty = false;
 			}
 		}
@@ -67,38 +59,38 @@ public class Leader extends Thread{
 	
 	private void initQueue(){
 		
-		for(int i=0; i<queue.length;i++){
-			queue[i] = new QueueRecord();
+		for(int i=0; i<Node.getQueue().length;i++){
+			Node.getQueue()[i] = new QueueRecord();
 		}		
 		
-		queue[0].str = "***";
-		queue[1].str = (char)firstChar+queue[0].str;
+		Node.getQueue()[0].str = "***";
+		Node.getQueue()[1].str = (char)firstChar+Node.getQueue()[0].str;
 		
-		for (int i = 2; i < queue.length; i++){
-			queue[i].str = this.createNextString(queue[i-1].str);
+		for (int i = 2; i < Node.getQueue().length; i++){
+			Node.getQueue()[i].str = this.createNextString(Node.getQueue()[i-1].str);
 		}
 	}
 	
 	
-	public QueueRecord[] getTestedStrings(){		
-		return this.queue;		
-	}
+//	public QueueRecord[] getTestedStrings(){		
+//		return Node.getQueue();		
+//	}
 	
 	public void setStringInArray(String newString, int position){		
-		if(position < queue.length && position >= 0){			
-			this.queue[position].str = newString;			
+		if(position < Node.getQueue().length && position >= 0){			
+			Node.getQueue()[position].str = newString;			
 		}		
 	}
 	
 	public void setStartedInArray(boolean isStarted, int position){		
-		if(position < queue.length && position >= 0){			
-			this.queue[position].isStarted = isStarted;			
+		if(position < Node.getQueue().length && position >= 0){			
+			Node.getQueue()[position].isStarted = isStarted;			
 		}		
 	}
 	
 	public void setFinishedInArray(boolean isFinished, int position){		
-		if(position < queue.length && position >= 0){			
-			this.queue[position].isFinished = isFinished;			
+		if(position < Node.getQueue().length && position >= 0){			
+			Node.getQueue()[position].isFinished = isFinished;			
 		}		
 	}
 	
@@ -202,19 +194,19 @@ public class Leader extends Thread{
 			 * firstly the array is sorted and the already checked elements are put
 			 * at the end
 			 */
-			Arrays.sort(queue, new ParsedStringCoparator());
+			Arrays.sort(Node.getQueue(), new ParsedStringCoparator());
 			
 			/*
 			 * then starting form the last valid element the queue is repopulated
 			 */
-			for(int i = queue.length - computedElements; i < queue.length; i++){
-				queue[i].str = "";
-				queue[i].checkString = null;
-				queue[i].isStarted = false;
-				queue[i].isFinished = false;
-				queue[i].ipComputing = null;
-				queue[i].portComputing = 0;
-				queue[i].str=createNextString(queue[i-1].str);
+			for(int i = Node.getQueue().length - computedElements; i < Node.getQueue().length; i++){
+				Node.getQueue()[i].str = "";
+				Node.getQueue()[i].checkString = null;
+				Node.getQueue()[i].isStarted = false;
+				Node.getQueue()[i].isFinished = false;
+				Node.getQueue()[i].ipComputing = null;
+				Node.getQueue()[i].portComputing = 0;
+				Node.getQueue()[i].str=createNextString(Node.getQueue()[i-1].str);
 			}
 		}
 		
@@ -235,7 +227,7 @@ public class Leader extends Thread{
 			
 			qRecord.checkString = checkingString;
 			
-			System.out.printf("Leader: sending %s - %s to %d\n", checkingString, qRecord.str, rr.port);
+			System.out.printf("Sending %s - %s to %d\n", checkingString, qRecord.str, rr.port);
 			
 			//send the string to the node
 			SendingStrings ss = new SendingStrings(hash.toString(), StringChecker.encode(checkingString), qRecord.str, freeCharacters, firstChar, lastChar);
@@ -252,13 +244,13 @@ public class Leader extends Thread{
 	}
 	
 	
-	public static void checkSolution(String[] result, ArrayList <RoutingRecord> rTable, QueueRecord[] aQueue , boolean leader[], StringBuffer solution){
+	public static void checkSolution(String[] result, QueueRecord[] aQueue , StringBuffer solution){
 		
 		//check which routing record should be updated
 		
-		//for each record in the queue check whether its ip is equal to the given ip 
+		//for each record in the queue check whether its ip is equal to the given ip
 		for(QueueRecord qRecord : aQueue){
-			if(qRecord.ipComputing != null && qRecord.ipComputing.equals(result[2]) && qRecord.portComputing == Integer.parseInt(result[3])){
+			if(qRecord!= null && qRecord.ipComputing != null && qRecord.ipComputing.equals(result[2]) && qRecord.portComputing == Integer.parseInt(result[3])){
 				
 				
 				if(!qRecord.isFinished && result[1].equals(qRecord.checkString)){
@@ -271,12 +263,13 @@ public class Leader extends Thread{
 							solution.replace(0, solution.length(), result[0]);
 						else
 							System.out.println("ERROR");
-						leader[0]= false;
+//						Node.hasLeader= false;
+						Node.setHasLeader(false);
 					}
 					
 					
 					//set the queuerecord as computed and the node as non calculating
-					for(RoutingRecord rr : rTable){
+					for(RoutingRecord rr : Node.getRoutingTable()){
 						if(rr.IP.equals(result[2]) && rr.port == Integer.parseInt(result[3])){
 							
 							rr.isComputing = false;
@@ -305,15 +298,15 @@ public class Leader extends Thread{
 		do{
 		
 			//for each non computing node there will be assigned a work
-			for(RoutingRecord rr : routingTable){
+			for(RoutingRecord rr : Node.getRoutingTable()){
 				
 				if(!rr.isComputing && !rr.isMe){
 					
-					synchronized(queue){
+					synchronized(Node.getQueue()){
 						
-						for(int j = 0; j < queue.length; j++){
-							QueueRecord qRecord = queue[j];
-							if(!qRecord.isStarted && j!=(queue.length-1)){
+						for(int j = 0; j < Node.getQueue().length; j++){
+							QueueRecord qRecord = Node.getQueue()[j];
+							if(!qRecord.isStarted && j!=(Node.getQueue().length-1)){
 								
 								sendStringToNode(qRecord, rr);
 								qRecord.isStarted = true;
@@ -346,19 +339,19 @@ public class Leader extends Thread{
 			
 			QueueRecord[] queueCopy;
 			
-			synchronized(queue){
+			synchronized(Node.getQueue()){
 				
 				int count = 0;
 				
-				for(QueueRecord ps : queue){
+				for(QueueRecord ps : Node.getQueue()){
 					if(ps.isFinished){
 						count++;
 					}
 				}
 				
-				if (count > queue.length/2){
+				if (count > Node.getQueue().length/2){
 					reconstructParsedString(count);
-					queueCopy = queue.clone();
+					queueCopy = Node.getQueue().clone();
 					
 					// clears the queue copy and broadcasts it
 					for(int i = 0; i < queueCopy.length; i++){
@@ -368,7 +361,8 @@ public class Leader extends Thread{
 						queueCopy[i].portComputing = 0;
 					}
 			
-					Node.broadcastObject(routingTable, queueCopy);
+					System.out.println("Broadcasting the routing table");
+					Node.broadcastObject(Node.getRoutingTable(), queueCopy);
 				}
 				
 				
@@ -378,16 +372,22 @@ public class Leader extends Thread{
 			
 			
 		
-		}while(hasLeader[0]);
+		}while(Node.getHasLeader());
 		
 		System.out.println("key decoded, it was: " + hash.toString());
 		
+		System.out.println("Work finished\nInsert the hash to decode");
+		
 		//clear the queue, send it and set it as null
-		for(int i = 0; i < queue.length; i++){
-			queue[i] = null;
+		for(int i = 0; i < Node.getQueue().length; i++){
+			Node.getQueue()[i] = null;
 		}
-		Node.broadcastObject(routingTable, queue);
-		queue = null;
+		//set every routing record as non Leader
+		for(RoutingRecord rr : Node.getRoutingTable()){
+			rr.isLeader = false;
+		}
+		Node.broadcastObject(Node.getRoutingTable(), Node.getQueue());
+//		Node.setQueue(null);
 	}
 	
 

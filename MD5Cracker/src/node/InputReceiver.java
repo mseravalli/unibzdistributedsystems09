@@ -16,9 +16,6 @@ import cracker.StringChecker;
 
 public class InputReceiver extends Thread {
 	
-	private boolean[] isElecting;
-	private boolean[] hasLeader;
-	
 	private StringBuffer hashval;
 	private String ip;
 	private int port;
@@ -26,21 +23,18 @@ public class InputReceiver extends Thread {
 	private Socket socket;
 	
 	private ObjectInputStream in;
-	private ArrayList <RoutingRecord> routingTable;
+//	private ArrayList <RoutingRecord> routingTable;
 	
 	private QueueRecord[] queue;
 	
-	public InputReceiver(String addr, int portNum, Socket aSocket, ArrayList <RoutingRecord> rTable, boolean[] electing, boolean[] working, StringBuffer hash, QueueRecord[] aQueue){
-		
-		isElecting = electing;
-		hasLeader = working;
+	public InputReceiver(String addr, int portNum, Socket aSocket, StringBuffer hash, QueueRecord[] aQueue){
 		
 		hashval = hash;
 		ip = addr;
 		port = portNum;
 		socket = aSocket;
 		in = null;
-		routingTable = rTable;
+//		routingTable = rTable;
 		
 		queue = aQueue;
 		
@@ -49,12 +43,13 @@ public class InputReceiver extends Thread {
 	public void setHash(String passedHash){
 		
 		//part for election
-		isElecting[0] = true;
+//		Node.setIsElecting(true);
+		Node.setIsElecting(true);
 		System.out.println("election started!!");
 		hashval.replace(0, hashval.length(), passedHash);
-		isElecting[0] = true;
-		hasLeader[0] = false;
-		Election el = new Election(routingTable, hashval, isElecting, hasLeader, queue);
+//		Node.hasLeader = false;
+		Node.setHasLeader(false);
+		Election el = new Election(hashval);
 		el.start();
 			
 		
@@ -63,8 +58,8 @@ public class InputReceiver extends Thread {
 	
 	public void updateTable(RoutingRecord record){
 		
-		synchronized(this.routingTable){		
-			for(RoutingRecord rr : routingTable){
+		synchronized(Node.getRoutingTable()){		
+			for(RoutingRecord rr : Node.getRoutingTable()){
 				
 				if(rr.IP.equals(record.IP) && rr.port == record.port){
 					rr.ID = record.ID;
@@ -88,9 +83,14 @@ public class InputReceiver extends Thread {
 		}
 		
 		if(isEmpty){
-			System.out.println("a key has been found!! I'm free!!!");
-			hasLeader[0] = false;
-			isElecting[0] = false;
+			System.out.println("Work finished\nInsert the hash to decode");
+			Node.setHasLeader(false);
+			Node.setIsElecting(false);
+			
+			for(RoutingRecord rr : Node.getRoutingTable()){
+				rr.isLeader = false;
+			}
+			
 		}
 		
 		this.queue = recQueue;
@@ -99,13 +99,13 @@ public class InputReceiver extends Thread {
 	
 	public void checkRange(String toFind, String check, String pref, int first, int last, int noOfVar) throws IOException{
 		
-		String[] result = StringChecker.compute(toFind, check, pref,first, last, noOfVar);
+		String[] result = StringChecker.compute(toFind, check, pref, first, last, noOfVar);
 		String[] sendBack = new String[4];
 		sendBack[0] = result[0];
 		sendBack[1] = result[1];
 		
 		Socket leaderSocket = null;
-		for(RoutingRecord rr : routingTable){
+		for(RoutingRecord rr : Node.getRoutingTable()){
 			if(rr.isLeader)
 				leaderSocket = rr.socket;
 			if(rr.isMe){
@@ -116,7 +116,7 @@ public class InputReceiver extends Thread {
 		}
 		//sending computation results back to leader
 		new ObjectOutputStream(leaderSocket.getOutputStream()).writeObject(sendBack);
-		System.out.println("answered to the leader for " + toFind);
+		System.out.println("Answered to the leader for " + pref);
 		
 	}
 	
@@ -147,10 +147,9 @@ public class InputReceiver extends Thread {
 					SendingStrings ss = (SendingStrings) o;
 					checkRange(ss.hash,ss.checkingHash,ss.prefix,ss.firstChar,ss.lastChar,ss.freeChars);
 				} else if(o.getClass().equals(String[].class)){
-//					System.out.printf("received a solution\n");
-					Leader.checkSolution((String[])o, routingTable, queue, hasLeader, hashval);
+					System.out.printf("received a solution\n");
+					Leader.checkSolution((String[])o, queue, hashval);
 				} else if(o.getClass().equals(QueueRecord[].class)){
-					System.out.printf("received a complete queue\n");
 					this.updateQueue((QueueRecord[])o);
 				}
 				
@@ -160,28 +159,15 @@ public class InputReceiver extends Thread {
 		    
 		} catch(EOFException e) {
                     
-			System.out.printf("node %s:%d disconnected and deleted from routing table\n", ip, port);
+			System.out.printf("node %s:%d disconnected because of a EOFException\n", ip, port);
 			
-			int position = -1;
-			
-			for(int i = 0; i < routingTable.size(); i++){
-				if(routingTable.get(i).IP.equals(ip) && routingTable.get(i).port == port){
-					position = i;
-				}
-					
-			}
-			
-			if(routingTable.get(position).isLeader){
-				routingTable.remove(position);
-				
-				new Election(routingTable, hashval, isElecting, hasLeader, queue).start();				
-			} else {
-				routingTable.remove(position);
-			}
-			
+			updateRoutingTable();
 			
 		} catch (SocketException e) {
-			System.out.printf("node %s:%d disconnected\n", ip, port);
+			System.out.printf("node %s:%d disconnected because of a SocketException\n", ip, port);
+			
+			updateRoutingTable();
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
@@ -190,4 +176,22 @@ public class InputReceiver extends Thread {
 		
 	}
 
+	private void updateRoutingTable(){
+		int position = -1;
+			
+			for(int i = 0; i < Node.getRoutingTable().size(); i++){
+				if(Node.getRoutingTable().get(i).IP.equals(ip) && Node.getRoutingTable().get(i).port == port){
+					position = i;
+				}
+					
+			}
+			
+			if(Node.getRoutingTable().get(position).isLeader){
+				Node.getRoutingTable().remove(position);
+				
+				new Election(hashval).start();				
+			} else {
+				Node.getRoutingTable().remove(position);
+			}
+	}
 }

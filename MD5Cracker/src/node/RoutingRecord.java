@@ -53,8 +53,20 @@ public class RoutingRecord implements Serializable{
 			socket = aSocket;
 		}
 		isLeader = false;
-		isComputing = false;
-		
+		isComputing = false;		
 	}
-
+	
+	public RoutingRecord(String ip, int po, boolean iM, int id, Socket aSocket, boolean leader){
+		IP = ip;
+		ID = id;
+		port = po;
+		isMe = iM;
+		if(!iM){
+			socket = aSocket;
+		}
+		isLeader = leader;
+		isComputing = false;		
+	}
+	
+	
 }
