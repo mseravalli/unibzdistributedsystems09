@@ -13,9 +13,6 @@ import cracker.QueueRecord;
 
 public class ConnectionsReceiver implements Runnable {
 	
-	private boolean[] isElecting;
-	private boolean[] hasLeader;
-
 	private StringBuffer hashval;
 	private int port;
 	private ServerSocket listenSocket;
@@ -35,10 +32,7 @@ public class ConnectionsReceiver implements Runnable {
 	 * @param portAddress
 	 * @param hashval 
 	 */
-	public ConnectionsReceiver(int portAddress, ArrayList <RoutingRecord> rTable, boolean[] electing, boolean[] working, StringBuffer hash, QueueRecord[] aQueue){
-		
-		isElecting = electing;
-		hasLeader = working;
+	public ConnectionsReceiver(int portAddress, ArrayList <RoutingRecord> rTable, StringBuffer hash, QueueRecord[] aQueue){
 		
 		hashval = hash;
 		this.port = portAddress;
@@ -58,8 +52,9 @@ public class ConnectionsReceiver implements Runnable {
 
 		ArrayList <RoutingRecord> newRT  = new ArrayList <RoutingRecord>();
 		
+		
 		for(RoutingRecord rr : rTable){
-			newRT.add(new RoutingRecord(rr.IP, rr.port, RoutingRecord.IS_NOT_ME, rr.ID));
+			newRT.add(new RoutingRecord(rr.IP, rr.port, RoutingRecord.IS_NOT_ME, rr.ID, null, rr.isLeader));
 		}
 		
 		return newRT;
@@ -97,7 +92,7 @@ public class ConnectionsReceiver implements Runnable {
 //						System.out.printf("%s:%d %b %o\n", rr.IP, rr.port, rr.isMe, rr.socket);
 //				}
 				
-				InputReceiver receiver = new InputReceiver(packet.IP, packet.port, incomingSocket, routingTable, isElecting, hasLeader, hashval, queue);
+				InputReceiver receiver = new InputReceiver(packet.IP, packet.port, incomingSocket, hashval, queue);
 				receiver.start();
 								
 			}

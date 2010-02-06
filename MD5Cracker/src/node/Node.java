@@ -1,6 +1,7 @@
 package node;
 
 import java.io.*;
+import java.io.ObjectInputStream.GetField;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.Socket;
@@ -19,8 +20,12 @@ public class Node {
 	
 	public static final int NULL_ID = -1;
 	
-	private boolean[] isElecting;
-	private boolean[] hasLeader;
+	private static boolean isElecting;
+	private static boolean hasLeader;
+	
+	private static ArrayList <RoutingRecord> routingTable;
+	
+	private static QueueRecord[] queue;
 	
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
@@ -31,18 +36,14 @@ public class Node {
 	private String connectionIP;
 	
 	private StringBuffer hashval;
-		
-	private ArrayList <RoutingRecord> routingTable;
 	
-	private QueueRecord[] queue;
+	
 
 
 	public Node(String ipAddress, int portAddress){
 		
-		isElecting = new boolean[1];
-		isElecting[0] = false;
-		hasLeader = new boolean[1];
-		hasLeader[0] = false;
+		isElecting = false;
+		hasLeader = false;
 		
 		
 		myIP = Node.getOwnIP();
@@ -59,9 +60,39 @@ public class Node {
 		
 		routingTable.add(new RoutingRecord(myIP, myPort, RoutingRecord.IS_ME));
 		
-		queue = new QueueRecord[64];
+		queue = new QueueRecord[32];
 		
 	}
+	
+	
+	public static boolean getIsElecting(){
+		return isElecting;
+	}
+	
+	public static boolean getHasLeader(){
+		return hasLeader;
+	}
+	
+	public static ArrayList<RoutingRecord> getRoutingTable(){
+		return routingTable;
+	}
+	
+	public static QueueRecord[] getQueue(){
+		return queue;
+	}
+	
+	public static void setIsElecting(boolean electing){
+		isElecting = electing;
+	}
+	
+	public static void setHasLeader(boolean leader){
+		hasLeader = leader;
+	}
+	
+	public static void setQueue(QueueRecord[] q){
+		queue = q;
+	}
+	
 		
 	/**
 	 * The method returns the ip of either wlan0 or eth0
@@ -136,7 +167,7 @@ public class Node {
 		for(RoutingRecord newRecord : newRoutingTable){
 		
 			if(newRecord.isLeader){
-				hasLeader[0] = true;
+				hasLeader = true;
 			}
 			
 			boolean isPresent = false;
@@ -199,7 +230,7 @@ public class Node {
 			this.addNewRecords(cleanTable(readObject));
 			
 			//An input receiver will be started and will listen from the connected node 
-			new InputReceiver(ipAddress,portAddress,mySocket,routingTable,isElecting, hasLeader, hashval, queue).start();
+			new InputReceiver(ipAddress,portAddress,mySocket, hashval, queue).start();
 			
 //			System.out.println("Node: connected to " + portAddress);
 			
@@ -235,7 +266,7 @@ public class Node {
 		}		
 		
 		//the node is ready to receive connections from other nodes
-		Runnable runnable = new ConnectionsReceiver(this.myPort, this.routingTable, isElecting, hasLeader, hashval, queue);
+		Runnable runnable = new ConnectionsReceiver(this.myPort, this.routingTable, hashval, queue);
 		Thread thread = new Thread(runnable); 
 		thread.start();
 		
@@ -244,7 +275,7 @@ public class Node {
 	
 	public void startElection(String hash){
 		
-		if(!isElecting[0] && !hasLeader[0]){
+		if(!isElecting && !hasLeader){
 		
 			hashval.replace(0, hashval.length(), hash);
 
@@ -262,16 +293,16 @@ public class Node {
 //				e.printStackTrace();
 //			}
 			
-			isElecting[0] = true;
-			hasLeader[0] = false;
-			Election el = new Election(routingTable, hashval, isElecting, hasLeader, queue);
+			isElecting = true;
+			hasLeader = false;
+			Election el = new Election(hashval);
 			el.start();
 			
 			System.out.println("Election started");
 		
-		} else if (isElecting[0]){
+		} else if (isElecting){
 			System.out.println("An election is currently taking place");
-		} else if (hasLeader[0]){
+		} else if (hasLeader){
 			System.out.println("There is already a leader and I am computing some work");
 		}
 		
@@ -314,8 +345,9 @@ public class Node {
 		
 		String inputString = "exit";
 		//Ciao == 16272a5dd83c63010e9f67977940e871
+		System.out.println("Insert the hash to decode");
 		do{
-			System.out.println("insert the hash to decode");
+			
 			inputString = sc.next();
 			
 			if(inputString.equals("exit")){

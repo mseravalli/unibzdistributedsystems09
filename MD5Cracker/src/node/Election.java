@@ -9,28 +9,21 @@ import cracker.QueueRecord;
 public class Election extends Thread{
 	
 
-	private ArrayList<RoutingRecord> routingTable;
+//	private ArrayList<RoutingRecord> routingTable;
 			
 	private RoutingRecord winner;
 	
 	private StringBuffer hashval;
 	
-	private boolean[] isElecting;
+//	private QueueRecord[] queue;
 	
-	private boolean[] hasLeader;
-	
-	private QueueRecord[] queue;
-	
-	public Election(ArrayList<RoutingRecord> rTable, StringBuffer hash, boolean[] iE, boolean[] hL, QueueRecord[] aQueue){
-		
-		isElecting = iE;		
-		hasLeader = hL;
+	public Election(StringBuffer hash){
 		
 		hashval = hash;
 		
-		routingTable = rTable;
+//		routingTable = rTable;
 		
-		queue = aQueue;
+//		queue = aQueue;
 	}
 	
 	public RoutingRecord getWinner(){
@@ -39,17 +32,18 @@ public class Election extends Thread{
 	
 	
 	public RoutingRecord createNewID(){
-		int id = (int) (Math.random()* 2);//(routingTable.size()*routingTable.size()*routingTable.size()));
+		int size = Node.getRoutingTable().size();
+		int id = (int) (Math.random()*(size*size*size));
 		
 		String address = "";
 		int port = -1;
 		
 		//set the id of the current process to the new created ID
-		for(int i = 0; i < routingTable.size(); i++){
-			if(routingTable.get(i).isMe){
-				routingTable.get(i).ID = id;
-				address = routingTable.get(i).IP;
-				port = routingTable.get(i).port;
+		for(int i = 0; i < Node.getRoutingTable().size(); i++){
+			if(Node.getRoutingTable().get(i).isMe){
+				Node.getRoutingTable().get(i).ID = id;
+				address = Node.getRoutingTable().get(i).IP;
+				port = Node.getRoutingTable().get(i).port;
 			}
 		}
 		
@@ -64,23 +58,23 @@ public class Election extends Thread{
 		//find the maximum id and its position
 		int maxID = -1;
 		int maxIDPos = 0;
-		for(int i = 0; i < routingTable.size(); i++){
-			if (routingTable.get(i).ID > maxID){
-				maxID = routingTable.get(i).ID;
+		for(int i = 0; i < Node.getRoutingTable().size(); i++){
+			if (Node.getRoutingTable().get(i).ID > maxID){
+				maxID = Node.getRoutingTable().get(i).ID;
 				maxIDPos = i;
 			}
 		}
-		
+
 		//check whether there is another ID in the list
 		boolean isUnique = true;
-		for(int i = 0; i < routingTable.size(); i++){
-			if (routingTable.get(i).ID == maxID && i != maxIDPos){
+		for(int i = 0; i < Node.getRoutingTable().size(); i++){
+			if (Node.getRoutingTable().get(i).ID == maxID && i != maxIDPos){
 				isUnique = false;
 			}
 		}
 		
 		if(isUnique){
-			winner = routingTable.get(maxIDPos);
+			winner = Node.getRoutingTable().get(maxIDPos);
 			winner.isLeader = true;
 		}
 		return isUnique;		
@@ -90,9 +84,9 @@ public class Election extends Thread{
 	
 	public boolean isFilled(){
 		
-		for(int i = 0; i < routingTable.size(); i++){
-			System.out.printf("nodes: %d - %d : %d\n", i, routingTable.get(i).port, routingTable.get(i).ID);
-			if (routingTable.get(i).ID == node.Node.NULL_ID){
+		for(int i = 0; i < Node.getRoutingTable().size(); i++){
+			System.out.printf("nodes: %d - %d : %d\n", i, Node.getRoutingTable().get(i).port, Node.getRoutingTable().get(i).ID);
+			if (Node.getRoutingTable().get(i).ID == node.Node.NULL_ID){
 				return false;
 			}
 		}
@@ -103,7 +97,7 @@ public class Election extends Thread{
 	
 	public void clearRTable(){
 		
-		for(RoutingRecord rr : routingTable){
+		for(RoutingRecord rr : Node.getRoutingTable()){
 			rr.ID = Node.NULL_ID;
 		}		
 	}
@@ -120,7 +114,7 @@ public class Election extends Thread{
 				System.out.println("broadcasting id");
 				RoutingRecord toSend = this.createNewID();
 				
-				Node.broadcastObject(routingTable, toSend);
+				Node.broadcastObject(Node.getRoutingTable(), toSend);
 				
 				try {
 					Thread.sleep(500);
@@ -131,7 +125,7 @@ public class Election extends Thread{
 				System.out.println("waiting for the ids");
 				
 				
-				synchronized(this.routingTable){
+				synchronized(Node.getRoutingTable()){
 					
 					if(isFilled()){
 					
@@ -156,14 +150,14 @@ public class Election extends Thread{
 		System.out.println("The winner is " + winner.IP + ":" + winner.port);
 		
 		//sets the boolean variables isElecting and hasLeader
-		isElecting[0] = false;
-		hasLeader[0] = true;
+		Node.setIsElecting(false);
+		Node.setHasLeader(true);
+		
 		
 		//if it is the leader
 		if(winner.isMe){
 			System.out.println("I am the leader");
-//			public Leader(String hashString, int first, int last, int freeChars, boolean[] computing){
-			new Leader(routingTable, hashval, 65, 90, 4, hasLeader, queue).start();
+			new Leader(hashval, 65, 90, 4).start();
 		}
 
 		
