@@ -6,7 +6,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.ArrayList;
 
 import cracker.Leader;
 import cracker.SendingStrings;
@@ -24,6 +23,14 @@ public class InputReceiver extends Thread {
 	
 	private ObjectInputStream in;
 	
+	/**
+	 * an InputReceiver is created for every connected node
+	 * 
+	 * @param addr
+	 * @param portNum
+	 * @param aSocket
+	 * @param hash
+	 */
 	public InputReceiver(String addr, int portNum, Socket aSocket, StringBuffer hash){
 		
 		hashval = hash;
@@ -34,6 +41,10 @@ public class InputReceiver extends Thread {
 		
 	}
 	
+	/**
+	 * 
+	 * @param passedHash
+	 */
 	public void setHash(String passedHash){
 		
 		//part for election
@@ -47,8 +58,11 @@ public class InputReceiver extends Thread {
 		
 	}
 	
-	
-	public void updateTable(RoutingRecord record){
+	/**
+	 * the id of each node is updated with the incoming one
+	 * @param record
+	 */
+	public void updateNodeID(RoutingRecord record){
 		
 		synchronized(Node.getRoutingTable()){		
 			for(RoutingRecord rr : Node.getRoutingTable()){
@@ -63,7 +77,10 @@ public class InputReceiver extends Thread {
 	}
 	
 	
-	
+	/**
+	 * the queue is updated with the incoming one
+	 * @param recQueue
+	 */
 	public void updateQueue (QueueRecord[] recQueue){
 		
 		boolean isEmpty = true;
@@ -90,6 +107,16 @@ public class InputReceiver extends Thread {
 	}
 	
 	
+	/**
+	 * 
+	 * @param toFind
+	 * @param check
+	 * @param pref
+	 * @param first
+	 * @param last
+	 * @param noOfVar
+	 * @throws IOException
+	 */
 	public void checkRange(String toFind, String check, String pref, int first, int last, int noOfVar) throws IOException{
 		
 		String[] result = StringChecker.compute(toFind, check, pref, first, last, noOfVar);
@@ -113,7 +140,9 @@ public class InputReceiver extends Thread {
 		
 	}
 	
-	
+	/**
+	 * wait for various input
+	 */
 	public void run(){		
 		
 //		System.out.printf("InputReceiver: ready to receive data from: %s - %d\n", socket.getInetAddress(),  socket.getPort());
@@ -134,7 +163,7 @@ public class InputReceiver extends Thread {
 				//if the received object is a routing record
 				} else if (o.getClass().equals(RoutingRecord.class)){
 //					System.out.printf("%d - %d\n",((RoutingRecord)o).port, ((RoutingRecord)o).ID);
-					updateTable((RoutingRecord)o);
+					updateNodeID((RoutingRecord)o);
 				} else if (o.getClass().equals(SendingStrings.class)){
 //					System.out.printf("received a sendingString\n");
 					SendingStrings ss = (SendingStrings) o;
@@ -154,12 +183,12 @@ public class InputReceiver extends Thread {
                     
 			System.out.printf("node %s:%d disconnected because of a EOFException\n", ip, port);
 			
-			updateRoutingTable();
+			clearRoutingTable();
 			
 		} catch (SocketException e) {
 			System.out.printf("node %s:%d disconnected because of a SocketException\n", ip, port);
 			
-			updateRoutingTable();
+			clearRoutingTable();
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -169,7 +198,10 @@ public class InputReceiver extends Thread {
 		
 	}
 
-	private void updateRoutingTable(){
+	/**
+	 * if a node disconnects it is deleted from the routing table
+	 */
+	private void clearRoutingTable(){
 		int position = -1;
 			
 			for(int i = 0; i < Node.getRoutingTable().size(); i++){
@@ -179,8 +211,22 @@ public class InputReceiver extends Thread {
 					
 			}
 			
+			//if the node was computing some work its work on the queue is deleted
+			//so it can be assigned to another node
+			String deadAddress = Node.getRoutingTable().get(position).IP;
+			int deadPort = Node.getRoutingTable().get(position).port;
+			
+			for(QueueRecord qr : Node.getQueue()){				
+				if(qr != null && qr.ipComputing.equals(deadAddress) && qr.portComputing == deadPort){
+					qr.isStarted = false;
+				}
+			}
+			
 			if(Node.getRoutingTable().get(position).isLeader){
 				Node.getRoutingTable().remove(position);
+				for(RoutingRecord rr : Node.getRoutingTable()){
+					rr.isComputing = false;
+				}
 				
 				new Election(hashval).start();				
 			} else {

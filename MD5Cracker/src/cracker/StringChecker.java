@@ -7,6 +7,17 @@ public class StringChecker {
 	
 	private static String[] results;
 	
+	
+	/**
+	 * 
+	 * @param toFind
+	 * @param check
+	 * @param prefix
+	 * @param first
+	 * @param last
+	 * @param noOfUnknown
+	 * @return
+	 */
 	public static String[] compute(String toFind, String check, String prefix, int first, int last, int noOfUnknown){
 		noOfUnknown--;
 		prefix = prefix.substring(0,prefix.length()-3);
@@ -28,7 +39,16 @@ public class StringChecker {
 	}
 	
 	
-	//Recursively checks all Strings in a certain range
+	/**
+	 * Recursively checks all Strings in a certain range
+	 * 
+	 * @param toFind
+	 * @param check
+	 * @param rng
+	 * @param first
+	 * @param last
+	 * @param noOfUnknown
+	 */
 	public static void checkStrings(String toFind, String check, String rng, int first, int last, int noOfUnknown){
 		
 //		System.out.printf("string to find %s, string to check %s \n",toFind, check);
@@ -56,23 +76,17 @@ public class StringChecker {
 	
 	
 	
-	//Encodes a certain String and compares it to the searched String, 
-	//if they are the same (key was cracked), then it returns the original message
-	//else it returns null
+	/**
+	 * Encodes a certain String and compares it to the searched String,
+	 * if they are the same (key was cracked), then it returns the original message
+	 * else it returns null
+	 * 
+	 * @param toTest
+	 * @param toFind
+	 * @return
+	 */
 	public static String compare(String toTest, String toFind){
-		
-//		String encoded = "";
-//        byte a[] = toTest.getBytes();
-//        try {
-//            MessageDigest md = MessageDigest.getInstance("MD5");
-//            byte hash[] = md.digest(a);
-//            for (byte b: hash) {
-//                encoded = encoded + String.format("%02x",b);
-//            }
-//        } catch (java.security.NoSuchAlgorithmException e) {
-//            System.exit(1);
-//        };
-		
+				
         if (encode(toTest).equals(toFind))
         	return toTest;
         else 
@@ -81,6 +95,11 @@ public class StringChecker {
 	}
 	
 	
+	/**
+	 * 
+	 * @param toEncode
+	 * @return
+	 */
 	public static String encode(String toEncode){
 		
 		byte a[] = toEncode.getBytes();

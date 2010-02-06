@@ -1,10 +1,6 @@
 package node;
 
-import java.util.ArrayList;
-
 import cracker.Leader;
-import cracker.QueueRecord;
-
 
 public class Election extends Thread{
 			
@@ -18,11 +14,10 @@ public class Election extends Thread{
 		
 	}
 	
-	public RoutingRecord getWinner(){
-		return winner;
-	}
-	
-	
+	/**
+	 * 
+	 * @return
+	 */
 	public RoutingRecord createNewID(){
 		int size = Node.getRoutingTable().size();
 		int id = (int) (Math.random()*(size*size*size));
@@ -44,7 +39,10 @@ public class Election extends Thread{
 	}
 	
 	
-	//returns false if there is no unique winner, otherwhise returns true and sets the winner
+	/**
+	 * returns false if there is no unique winner, otherwise returns true and sets the winner
+	 * @return
+	 */
 	public boolean isUniqueMaxID(){
 		
 		//find the maximum id and its position
@@ -73,7 +71,11 @@ public class Election extends Thread{
 		
 	}	
 	
-	
+	/**
+	 * Checks whether every node has sent an id
+	 * 
+	 * @return
+	 */
 	public boolean isFilled(){
 		
 		for(int i = 0; i < Node.getRoutingTable().size(); i++){
@@ -86,7 +88,9 @@ public class Election extends Thread{
 		return true;
 	}
 	
-	
+	/**
+	 * set every id as null
+	 */
 	public void clearRTable(){
 		
 		for(RoutingRecord rr : Node.getRoutingTable()){
@@ -97,7 +101,10 @@ public class Election extends Thread{
 	
 	
 
-
+	/**
+	 * waits until there is a leader, if the current node is the leader then
+	 * a new leader is created and started
+	 */
 	@Override
 	public void run() {	
 		
@@ -149,7 +156,7 @@ public class Election extends Thread{
 		//if it is the leader
 		if(winner.isMe){
 			System.out.println("I am the leader");
-			new Leader(hashval, 65, 90, 4).start();
+			new Leader(hashval).start();
 		}
 
 		
