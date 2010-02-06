@@ -90,14 +90,14 @@ public class Election extends Thread{
 	
 	/**
 	 * set every id as null
-	 */
+	 *
 	public void clearRTable(){
 		
 		for(RoutingRecord rr : Node.getRoutingTable()){
 			rr.ID = Node.NULL_ID;
 		}		
 	}
-	
+	*/
 	
 	
 
@@ -134,14 +134,14 @@ public class Election extends Thread{
 							break;
 						} else {
 							System.out.println("there are nodes that have the same max id");
-							clearRTable();
+//							clearRTable();
 						}				
 						
 					}	
 				
 				}
 				
-			}while(true);
+			}while(true && Node.getIsElecting());
 
 			
 			
