@@ -7,10 +7,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import cracker.QueueRecord;
-
-
-
 public class ConnectionsReceiver implements Runnable {
 	
 	private StringBuffer hashval;
@@ -40,7 +36,11 @@ public class ConnectionsReceiver implements Runnable {
 		
 	}
 	
-	
+	/**
+	 * 
+	 * @param rTable
+	 * @return
+	 */
 	public static ArrayList <RoutingRecord> copyRoutingTable(ArrayList <RoutingRecord> rTable){
 
 		ArrayList <RoutingRecord> newRT  = new ArrayList <RoutingRecord>();
@@ -54,15 +54,15 @@ public class ConnectionsReceiver implements Runnable {
 		
 	}
 	
-	
+	/**
+	 * listen for incoming connections and send to them the routing table
+	 */
 	@Override
 	public void run() {
 		try {
 			listenSocket = new ServerSocket(port);
 			
 			while(true){
-				
-//				System.out.println("Listening on " + port);			
 				
 				incomingSocket = listenSocket.accept();
 				
@@ -76,14 +76,6 @@ public class ConnectionsReceiver implements Runnable {
 							
 				out.writeObject(sendTable);
 				out.flush();
-				
-				//prints the routing table
-//				for(RoutingRecord rr : routingTable){
-//					if(rr.socket != null)
-//						System.out.printf("%s:%d %b %s\n", rr.IP, rr.port, rr.isMe, rr.socket.toString());
-//					else
-//						System.out.printf("%s:%d %b %o\n", rr.IP, rr.port, rr.isMe, rr.socket);
-//				}
 				
 				InputReceiver receiver = new InputReceiver(packet.IP, packet.port, incomingSocket, hashval);
 				receiver.start();

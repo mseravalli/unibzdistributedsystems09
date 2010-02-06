@@ -1,7 +1,6 @@
 package cracker;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import node.Node;
@@ -13,10 +12,43 @@ public class Leader extends Thread{
 	
 	private int firstChar;
 	private int lastChar;
-	//have to be equal to the number of * + 1
+	//have to be equal to the number of '*' + 1
 	private int freeCharacters;
 	
 	
+	/**
+	 * 
+	 * @param hashString
+	 */
+	public Leader(StringBuffer hashString){
+		
+		hash = hashString;
+		
+		firstChar = (int)'A';
+		lastChar = (int)'Z';
+		freeCharacters = 4;
+		
+		boolean isEmpty = true;
+		for(int i = 0; i < Node.getQueue().length; i++){
+			if(Node.getQueue()[i]!= null){
+				isEmpty = false;
+			}
+		}
+		
+		if(isEmpty){
+			initQueue();
+		}
+		
+	}
+	
+	
+	/**
+	 * 
+	 * @param hashString
+	 * @param first
+	 * @param last
+	 * @param freeChars
+	 */
 	public Leader(StringBuffer hashString, int first, int last, int freeChars){
 		
 		hash = hashString;
@@ -38,6 +70,10 @@ public class Leader extends Thread{
 		
 	}
 	
+	
+	/**
+	 * 
+	 */
 	private void initQueue(){
 		
 		for(int i=0; i<Node.getQueue().length;i++){
@@ -53,27 +89,39 @@ public class Leader extends Thread{
 	}
 	
 	
-//	public QueueRecord[] getTestedStrings(){		
-//		return Node.getQueue();		
-//	}
-	
+	/**
+	 * 
+	 */
 	public void setStringInArray(String newString, int position){		
 		if(position < Node.getQueue().length && position >= 0){			
 			Node.getQueue()[position].str = newString;			
 		}		
 	}
 	
+	
+	/**
+	 * 
+	 * @param isStarted
+	 * @param position
+	 */
 	public void setStartedInArray(boolean isStarted, int position){		
 		if(position < Node.getQueue().length && position >= 0){			
 			Node.getQueue()[position].isStarted = isStarted;			
 		}		
 	}
 	
+	
+	/**
+	 * 
+	 * @param isFinished
+	 * @param position
+	 */
 	public void setFinishedInArray(boolean isFinished, int position){		
 		if(position < Node.getQueue().length && position >= 0){			
 			Node.getQueue()[position].isFinished = isFinished;			
 		}		
 	}
+	
 	
 	/**
 	 * given a string the method returns the next string according to preset 
@@ -103,6 +151,7 @@ public class Leader extends Thread{
 		return s;
 		
 	}
+	
 	
 	/**
 	 * the method changes all the chars which are equal to the final char in the
@@ -193,7 +242,12 @@ public class Leader extends Thread{
 		
 	}
 	
-	
+	/**
+	 * send a range of string to a node
+	 * 
+	 * @param qRecord
+	 * @param rr
+	 */
 	public void sendStringToNode(QueueRecord qRecord, RoutingRecord rr){
 		
 		try {
@@ -224,7 +278,12 @@ public class Leader extends Thread{
 		
 	}
 	
-	
+	/**
+	 * check if the method has effectively computed some work
+	 * 
+	 * @param result
+	 * @param solution
+	 */
 	public static void checkSolution(String[] result, StringBuffer solution){
 		
 		//check which routing record should be updated
@@ -272,7 +331,10 @@ public class Leader extends Thread{
 		
 	}
 	
-	
+	/**
+	 * send to every node in the routing table a range of strings to check and wait
+	 * for their answer
+	 */
 	public void run(){
 		
 		do{
@@ -286,6 +348,8 @@ public class Leader extends Thread{
 						
 						for(int j = 0; j < Node.getQueue().length; j++){
 							QueueRecord qRecord = Node.getQueue()[j];
+							//the last string in the queue should not be passed 
+							//because it used as base for the creation of the next strings 
 							if(!qRecord.isStarted && j!=(Node.getQueue().length-1)){
 								
 								sendStringToNode(qRecord, rr);

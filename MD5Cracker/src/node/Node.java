@@ -8,6 +8,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import cracker.QueueRecord;
@@ -37,8 +38,13 @@ public class Node {
 	private StringBuffer hashval;
 	
 	
-
-
+	/**
+	 * 
+	 * A node is constructed starting from an IP address and the listening port
+	 * 
+	 * @param ipAddress
+	 * @param portAddress
+	 */
 	public Node(String ipAddress, int portAddress){
 		
 		isElecting = false;
@@ -64,30 +70,64 @@ public class Node {
 	}
 	
 	
+	/**
+	 * 
+	 * @return isElecting
+	 */
 	public static boolean getIsElecting(){
 		return isElecting;
 	}
 	
+	
+	/**
+	 * 
+	 * @return hasLeader
+	 */
 	public static boolean getHasLeader(){
 		return hasLeader;
 	}
 	
+	
+	/**
+	 * 
+	 * @return routingTable
+	 */
 	public static ArrayList<RoutingRecord> getRoutingTable(){
 		return routingTable;
 	}
 	
+	
+	/**
+	 * 
+	 * @return queue
+	 */
 	public static QueueRecord[] getQueue(){
 		return queue;
 	}
 	
+	
+	/**
+	 * 
+	 * @param electing
+	 */
 	public static void setIsElecting(boolean electing){
 		isElecting = electing;
 	}
 	
+	
+	/**
+	 * 
+	 * @param leader
+	 */
 	public static void setHasLeader(boolean leader){
 		hasLeader = leader;
 	}
 	
+	
+	/**
+	 * 
+	 * @param q
+	 */
 	public static void setQueue(QueueRecord[] q){
 		queue = q;
 	}
@@ -96,7 +136,7 @@ public class Node {
 	/**
 	 * The method returns the ip of either wlan0 or eth0
 	 * 
-	 * @return
+	 * @return ip
 	 */
 	public static String getOwnIP(){
 		
@@ -184,6 +224,13 @@ public class Node {
 		}
 	}
 
+	
+	/**
+	 * The method creates a connection to the passed ip address and port
+	 * 
+	 * @param ipAddress
+	 * @param portAddress
+	 */
 	public void connectToNode(String ipAddress, int portAddress){		
 		
 		try {
@@ -243,6 +290,9 @@ public class Node {
 		
 	}
 	
+	/**
+	 * the node connects to the passed node and the to all the network
+	 */
 	public void startNode(){
 		
 		// if the current node it not the fisrt one it will try to connect to another one
@@ -271,7 +321,11 @@ public class Node {
 		
 	}
 	
-	
+	/**
+	 * The election is started if the node is not electing or working
+	 * 
+	 * @param hash
+	 */
 	public void startElection(String hash){
 		
 		if(!isElecting && !hasLeader){
@@ -296,7 +350,12 @@ public class Node {
 	}
 	
 	
-	
+	/**
+	 * the passed object is broadcasted
+	 * 
+	 * @param rTable
+	 * @param toSend
+	 */
 	public static void broadcastObject(ArrayList<RoutingRecord> rTable, Object toSend){		
 		
 		//the method sends the passed object to all the connected nodes
@@ -335,12 +394,19 @@ public class Node {
 		//Ciao == 16272a5dd83c63010e9f67977940e871
 		System.out.println("Insert the hash to decode");
 		do{
-			
-			inputString = sc.next();
+			try{
+				inputString = sc.next();
+				
+				
+			} catch (NoSuchElementException e){
+				System.out.println("System will exit");
+				System.exit(0);
+			}
 			
 			System.out.println("insert the first char in the range");			
 			
 			if(inputString.equals("exit")){
+				System.out.println("System will exit");
 				System.exit(0);
 			}
 			
