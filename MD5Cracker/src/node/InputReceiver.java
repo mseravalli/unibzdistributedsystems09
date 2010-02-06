@@ -217,7 +217,7 @@ public class InputReceiver extends Thread {
 			int deadPort = Node.getRoutingTable().get(position).port;
 			
 			for(QueueRecord qr : Node.getQueue()){				
-				if(qr != null && qr.ipComputing.equals(deadAddress) && qr.portComputing == deadPort){
+				if(deadAddress.equals(qr.ipComputing) && qr.portComputing == deadPort && !qr.isFinished){
 					qr.isStarted = false;
 				}
 			}
